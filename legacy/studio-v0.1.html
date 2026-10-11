@@ -1,0 +1,752 @@
+<title>Qontext Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a studio instrument. Sticky header with module tabs; each module = stage (the live object) + control rail. Stacks to one column on phones. */
+:root {
+  --paper: #f5f5f9;
+  --panel: #ffffff;
+  --field: #ececf3;
+  --ink: #16151e;
+  --ink-2: #5a596b;
+  --rule: #dad9e5;
+  --accent: #3b36c4;
+  --accent-soft: #e8e7fb;
+  --good: #1d7a4b;
+  --bad: #b3261e;
+  --warn: #8a5a00;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #100f17; --panel: #191823; --field: #23222f; --ink: #ecebf6; --ink-2: #a4a3b8;
+    --rule: #2f2e3d; --accent: #a29eff; --accent-soft: #26244a; --good: #5fd195; --bad: #ff8b80; --warn: #f2c24f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #100f17; --panel: #191823; --field: #23222f; --ink: #ecebf6; --ink-2: #a4a3b8;
+  --rule: #2f2e3d; --accent: #a29eff; --accent-soft: #26244a; --good: #5fd195; --bad: #ff8b80; --warn: #f2c24f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; max-width: 65ch; }
+.mono, code, textarea { font-family: var(--font-mono); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+button, select, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--rule); }
+.top-in { max-width: 1180px; margin: 0 auto; padding: 12px 16px 0; display: grid; gap: 10px; }
+.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { font-size: 1.5rem; font-weight: 700; }
+.brand .mark { display: inline-grid; grid-template-columns: repeat(3, 7px); gap: 2px; transform: translateY(1px); }
+.brand .mark i { width: 7px; height: 7px; border-radius: 1px; display: block; }
+.vision { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+.vision select { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 8px; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px 10px; white-space: nowrap; cursor: pointer; color: var(--ink-2); font-weight: 500; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--ink); }
+
+/* Panels */
+main { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 48px; }
+.panel { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+.stage { display: grid; gap: 18px; min-width: 0; }
+.rail { display: grid; gap: 14px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+.card h3 { font-size: 0.98rem; }
+.head { display: grid; gap: 6px; }
+@media (max-width: 900px) { .panel { grid-template-columns: 1fr; } }
+
+.btn { background: var(--ink); color: var(--paper); border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: 0.9; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+.btn.small { padding: 6px 10px; font-size: 0.85rem; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.seg button { background: none; border: 0; padding: 7px 12px; cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+label.field { display: grid; gap: 4px; font-size: 0.85rem; color: var(--ink-2); }
+label.field .val { font-family: var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.field-top { display: flex; justify-content: space-between; gap: 8px; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+select.inp { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; border: 1px solid currentColor; }
+.pill.good { color: var(--good); } .pill.bad { color: var(--bad); } .pill.warn { color: var(--warn); }
+kbd { font-family: var(--font-mono); font-size: 0.75rem; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; }
+
+/* Context grid */
+.qgrid-wrap { overflow-x: auto; }
+.qgrid { display: grid; grid-template-columns: 54px repeat(3, minmax(84px, 150px)); grid-template-rows: 54px repeat(3, minmax(84px, 150px)); gap: 8px; width: max-content; max-width: 100%; }
+.ctx { background: var(--field); border: 1px solid transparent; border-radius: 8px; cursor: pointer; display: grid; place-items: center; text-align: center; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.25; color: var(--ink-2); padding: 4px; }
+.ctx b { display: block; color: var(--ink); font-size: 0.9rem; }
+.ctx.on { border-color: var(--accent); background: var(--accent-soft); }
+.ctx.flag b { color: var(--bad); }
+.cell { border-radius: 8px; position: relative; display: grid; place-items: center; text-align: center; font-family: var(--font-mono); transition: background 240ms ease, transform 200ms ease, opacity 200ms ease; aspect-ratio: 1; max-width: 100%; }
+.cell .op { font-size: 1.05rem; font-weight: 500; }
+.cell .vals { font-size: 0.7rem; opacity: 0.85; margin-top: 2px; }
+.cell.dim { opacity: 0.28; }
+.cell.diff::after { content: ""; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: 0.8; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--ink-2); }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+.visitors { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 6px; overflow: hidden; }
+.mini span { aspect-ratio: 1; display: block; }
+.visitor { display: grid; gap: 4px; font-size: 0.72rem; color: var(--ink-2); font-family: var(--font-mono); text-align: center; }
+@media (max-width: 560px) { .visitors { grid-template-columns: repeat(3, minmax(0, 1fr)); } .qgrid { grid-template-columns: 40px repeat(3, minmax(0, 1fr)); grid-template-rows: 44px repeat(3, auto); width: 100%; } .cell .op { font-size: 0.85rem; } }
+
+/* Meter */
+.meter { position: relative; height: 14px; border-radius: 7px; background: var(--field); overflow: visible; }
+.meter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 7px; background: var(--accent); transition: width 300ms ease; }
+.meter .bound { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--ink); }
+.meter-scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.big { font-family: var(--font-display); font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+
+/* Learn */
+.cgrid { display: grid; grid-template-columns: repeat(3, 72px); gap: 8px; }
+.cgrid button { aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--rule); background: var(--panel); font-family: var(--font-mono); font-size: 1.2rem; cursor: pointer; }
+.cgrid button.neg { background: var(--ink); color: var(--paper); }
+.rules { display: grid; gap: 6px; font-family: var(--font-mono); font-size: 0.85rem; }
+.rules div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; border-radius: 6px; background: var(--field); }
+.ok { color: var(--good); } .no { color: var(--bad); }
+
+/* Harmony */
+.wheel-box { position: relative; width: min(320px, 100%); aspect-ratio: 1; }
+.wheel { position: absolute; inset: 0; border-radius: 50%; }
+.wheel-hole { position: absolute; inset: 18%; border-radius: 50%; background: var(--paper); display: grid; place-items: center; text-align: center; }
+.wheel svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.chip { border-radius: 8px; overflow: hidden; border: 1px solid var(--rule); background: var(--panel); }
+.chip .sw { height: 64px; }
+.chip .meta { padding: 6px 8px; font-family: var(--font-mono); font-size: 0.72rem; display: grid; }
+.chip .meta span:last-child { color: var(--ink-2); }
+.stage-split { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 700px) { .stage-split { grid-template-columns: 1fr; } }
+.lib { display: flex; flex-wrap: wrap; gap: 8px; }
+.lib button { display: inline-flex; gap: 2px; border: 1px solid var(--rule); background: var(--panel); border-radius: 6px; padding: 4px; cursor: pointer; }
+.lib button i { width: 14px; height: 22px; display: block; border-radius: 2px; }
+
+/* Mixer */
+.mix { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; }
+.mix .side { display: grid; gap: 10px; }
+.swatch-lg { height: 96px; border-radius: 10px; border: 1px solid var(--rule); }
+.bs { display: grid; place-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); text-align: center; }
+.bs svg { width: 72px; height: 72px; }
+.fringe { height: 40px; border-radius: 8px; position: relative; border: 1px solid var(--rule); }
+.fringe .mk { position: absolute; top: -6px; bottom: -6px; width: 3px; background: var(--ink); border-radius: 2px; }
+input[type="color"] { width: 100%; height: 40px; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); padding: 3px; cursor: pointer; }
+@media (max-width: 560px) { .mix { grid-template-columns: 1fr; } .bs { grid-auto-flow: column; } }
+
+/* Pentagram */
+.penta-box { width: min(380px, 100%); }
+.penta-box svg { width: 100%; height: auto; display: block; }
+
+/* Export + hardware */
+textarea { width: 100%; min-height: 260px; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); padding: 12px; font-size: 0.78rem; line-height: 1.5; resize: vertical; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); }
+th { font-weight: 600; color: var(--ink-2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.table-wrap { overflow-x: auto; }
+.seal { border: 1px dashed var(--accent); border-radius: 10px; padding: 14px; font-family: var(--font-mono); font-size: 0.78rem; display: grid; gap: 4px; word-break: break-all; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 200ms; }
+.toast.show { opacity: 1; }
+footer { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 0 32px; font-size: 0.8rem; color: var(--ink-2); }
+#work.cvd-protan .stage { filter: url(#f-protan); }
+#work.cvd-deutan .stage { filter: url(#f-deutan); }
+#work.cvd-tritan .stage { filter: url(#f-tritan); }
+@media (prefers-reduced-motion: reduce) { .cell, .meter .fill { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="f-protan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0  0.114503 0.786281 0.099216 0 0  -0.003882 -0.048116 1.051998 0 0  0 0 0 1 0"/></filter>
+  <filter id="f-deutan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+  <filter id="f-tritan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="1.255528 -0.076749 -0.178779 0 0  -0.078411 0.930809 0.147602 0 0  0.004733 0.691367 0.303900 0 0  0 0 0 1 0"/></filter>
+</svg>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand-row">
+      <div class="brand">
+        <span class="mark" id="brandMark" aria-hidden="true"></span>
+        <h1>Qontext</h1>
+        <span class="eyebrow">Studio · v0.1</span>
+      </div>
+      <label class="vision" for="vision">Color vision
+        <select id="vision">
+          <option value="none">Typical</option>
+          <option value="protan">Protanopia</option>
+          <option value="deutan">Deuteranopia</option>
+          <option value="tritan">Tritanopia</option>
+        </select>
+      </label>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Modules">
+      <button class="tab" role="tab" data-tab="grid" aria-selected="true">Context Grid</button>
+      <button class="tab" role="tab" data-tab="learn" aria-selected="false">Learn</button>
+      <button class="tab" role="tab" data-tab="harmony" aria-selected="false">Harmony</button>
+      <button class="tab" role="tab" data-tab="mixer" aria-selected="false">Interference Mixer</button>
+      <button class="tab" role="tab" data-tab="penta" aria-selected="false">Pentagram</button>
+      <button class="tab" role="tab" data-tab="hardware" aria-selected="false">Hardware</button>
+      <button class="tab" role="tab" data-tab="export" aria-selected="false">Export</button>
+    </nav>
+  </div>
+</header>
+
+<main id="work">
+
+<!-- CONTEXT GRID -->
+<section class="panel" id="tab-grid">
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Mermin-Peres square · two qubits</span>
+      <h2>One tile, two true colors</h2>
+      <p class="muted">Each tile is a quantum observable. Read it with its row or with its column and you can get a different color, and no fixed coloring could ever satisfy all six rules at once.</p>
+    </div>
+    <div class="qgrid-wrap"><div class="qgrid" id="qgrid" aria-label="Context grid"></div></div>
+    <div class="legend" id="legend"></div>
+    <div class="row">
+      <button class="btn" id="measure">Measure again</button>
+      <span class="muted" style="font-size:0.85rem">or press <kbd>Space</kbd></span>
+      <div class="seg" role="group" aria-label="View">
+        <button data-view="split" aria-pressed="true">Split</button>
+        <button data-view="rows" aria-pressed="false">Rows</button>
+        <button data-view="cols" aria-pressed="false">Columns</button>
+      </div>
+    </div>
+    <div class="head" style="margin-top:8px">
+      <h3>Collapse on view</h3>
+      <p class="muted">Six visitors, six independent measurements of the same design. Every one obeys all six rules, and no two have to match.</p>
+    </div>
+    <div class="visitors" id="visitors"></div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">Impossibility meter</span>
+      <div class="row" style="justify-content:space-between"><span class="big" id="gridScore">6.00</span><span class="pill good" id="gridPill">Beyond classical</span></div>
+      <div class="meter"><div class="fill" id="gridFill"></div><div class="bound" style="left:66.67%"></div></div>
+      <div class="meter-scale"><span>0</span><span>classical max 4</span><span>6</span></div>
+      <p class="muted" style="font-size:0.85rem" id="gridScoreNote">Mermin score: the sum of all six rules. Any fixed coloring tops out at 4.</p>
+    </div>
+    <div class="card">
+      <span class="eyebrow">Quantum state</span>
+      <label class="field" for="stateSel">Prepared state
+        <select class="inp" id="stateSel">
+          <option value="random">Seeded random state</option>
+          <option value="bell">Bell state</option>
+          <option value="zero">Both qubits at zero</option>
+        </select>
+      </label>
+      <p class="muted" style="font-size:0.85rem">The rules hold for every state. The state only changes which colorings show up and how often.</p>
+    </div>
+    <div class="card">
+      <span class="eyebrow">Contrast Guard</span>
+      <label class="field" for="inkSel">Label ink
+        <select class="inp" id="inkSel"><option value="dark">Dark ink</option><option value="light">Light ink</option></select>
+      </label>
+      <div class="row" style="justify-content:space-between"><span>Lowest contrast across all 18 possible colors</span><span class="mono" id="cgMin">-</span></div>
+      <span id="cgPill" class="pill">-</span>
+      <button class="btn ghost small" id="cgFix">Fix lightness automatically</button>
+    </div>
+    <div class="card" id="poolCard">
+      <span class="eyebrow">Measurement source</span>
+      <p id="poolStatus" style="font-size:0.9rem">Exact simulation in your browser.</p>
+      <button class="btn ghost small" data-goto="hardware">Load hardware shots</button>
+    </div>
+  </aside>
+</section>
+
+<!-- LEARN -->
+<section class="panel" id="tab-learn" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Try it yourself</span>
+      <h2>Try to color it classically</h2>
+      <p class="muted">Give every tile a fixed value, +1 or −1. Every row must multiply to +1, columns one and two to +1, and column three to −1. Tap tiles to flip them.</p>
+    </div>
+    <div class="stage-split">
+      <div class="cgrid" id="cgrid"></div>
+      <div class="rules" id="rules"></div>
+    </div>
+    <div class="card">
+      <h3 id="learnVerdict">-</h3>
+      <p class="muted" id="learnNote"></p>
+      <div class="row"><button class="btn" data-goto="grid">See quantum measurement do it</button><button class="btn ghost" id="learnReset">Reset</button></div>
+    </div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">Why it fails</span>
+      <p style="font-size:0.9rem">Multiply all nine values row by row and you get +1. Multiply them column by column and you get −1. Same nine numbers, two answers, so one rule always breaks.</p>
+      <p style="font-size:0.9rem">Quantum measurement escapes this because a tile has no value until it is read, and the value it gets depends on its partners. That is contextuality, and Qontext turns it into color.</p>
+    </div>
+  </aside>
+</section>
+
+<!-- HARMONY -->
+<section class="panel" id="tab-harmony" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Roots of unity on the color wheel</span>
+      <h2>Harmony is quantum phase</h2>
+      <p class="muted">A d-level quantum system has phases spaced evenly around a circle. Put them on the hue wheel and you get complementary, triadic, tetradic and beyond, all perfectly balanced.</p>
+    </div>
+    <div class="stage-split">
+      <div class="wheel-box"><div class="wheel" id="wheel"></div><svg id="wheelSvg" viewBox="0 0 200 200" aria-hidden="true"></svg><div class="wheel-hole"><div><div class="big" id="wheelD">3</div><div class="eyebrow" id="wheelName">Triadic</div></div></div></div>
+      <div class="chips" id="harmChips"></div>
+    </div>
+    <div class="card">
+      <h3>Start from an image</h3>
+      <p class="muted" style="font-size:0.88rem">Pick a photo or artwork. Qontext extracts five colors and sets the base phase from the dominant one.</p>
+      <input type="file" id="imgIn" accept="image/*">
+      <div class="chips" id="imgChips"></div>
+    </div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <label class="field" for="dIn"><span class="field-top"><span>Quantum levels</span><span class="val" id="dVal">3</span></span><input type="range" id="dIn" min="2" max="8" step="1" value="3"></label>
+      <label class="field" for="hIn"><span class="field-top"><span>Base phase (hue)</span><span class="val" id="hVal">200°</span></span><input type="range" id="hIn" min="0" max="359" step="1" value="200"></label>
+      <label class="field" for="lIn"><span class="field-top"><span>Lightness</span><span class="val" id="lVal">0.72</span></span><input type="range" id="lIn" min="0.30" max="0.92" step="0.01" value="0.72"></label>
+      <label class="field" for="cIn"><span class="field-top"><span>Amplitude (chroma)</span><span class="val" id="cVal">0.13</span></span><input type="range" id="cIn" min="0" max="0.26" step="0.005" value="0.13"></label>
+      <div class="row">
+        <button class="btn ghost small" id="motionBtn" aria-pressed="false">Start phase motion</button>
+        <button class="btn ghost small" id="randBtn">Random phase</button>
+      </div>
+      <p class="muted" style="font-size:0.82rem">Everything here drives the Context Grid, the Pentagram and the exports.</p>
+    </div>
+    <div class="card">
+      <span class="eyebrow">Library</span>
+      <div class="row"><button class="btn small" id="saveBtn">Save this harmony</button></div>
+      <div class="lib" id="lib"></div>
+      <p class="muted" style="font-size:0.8rem" id="libNote">Saved in this browser only.</p>
+    </div>
+  </aside>
+</section>
+
+<!-- MIXER -->
+<section class="panel" id="tab-mixer" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Mach-Zehnder for color</span>
+      <h2>Mix colors like waves</h2>
+      <p class="muted">Each color becomes a wave: hue is its phase, chroma its amplitude. Two colors enter an interferometer and leave through a bright port and a dark port. Shift the phase and watch them trade color while the total stays constant.</p>
+    </div>
+    <div class="mix">
+      <div class="side">
+        <label class="field" for="mixA">Input A<input type="color" id="mixA" value="#1fa39a"></label>
+        <label class="field" for="mixB">Input B<input type="color" id="mixB" value="#e0664f"></label>
+      </div>
+      <div class="bs"><svg viewBox="0 0 72 72" aria-hidden="true"><rect x="10" y="10" width="52" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="62" x2="62" y2="10" stroke="currentColor" stroke-width="1.5"/></svg><span>beam splitter</span></div>
+      <div class="side">
+        <div><div class="swatch-lg" id="outA"></div><div class="mono" style="font-size:0.8rem;margin-top:4px" id="outAtxt"></div></div>
+        <div><div class="swatch-lg" id="outB"></div><div class="mono" style="font-size:0.8rem;margin-top:4px" id="outBtxt"></div></div>
+      </div>
+    </div>
+    <label class="field" for="phiIn"><span class="field-top"><span>Relative phase</span><span class="val" id="phiVal">0°</span></span><input type="range" id="phiIn" min="0" max="360" step="1" value="0"></label>
+    <div class="head"><h3>Interference fringe</h3><p class="muted" style="font-size:0.88rem">Bright port color across a full phase sweep. The marker is the current phase.</p></div>
+    <div class="fringe" id="fringe"><div class="mk" id="fringeMk"></div></div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">Energy check</span>
+      <div class="row" style="justify-content:space-between"><span>Chroma energy in</span><span class="mono" id="eIn">-</span></div>
+      <div class="row" style="justify-content:space-between"><span>Chroma energy out</span><span class="mono" id="eOut">-</span></div>
+      <div class="row" style="justify-content:space-between"><span>Port 1 share</span><span class="mono" id="eShare">-</span></div>
+      <p class="muted" style="font-size:0.85rem">Energy is conserved, so color removed from one port appears in the other. Opposite phases cancel to neutral gray in one port and double up in the other.</p>
+    </div>
+    <div class="card">
+      <button class="btn small" id="mixToHarm">Use bright port as base phase</button>
+    </div>
+  </aside>
+</section>
+
+<!-- PENTAGRAM -->
+<section class="panel" id="tab-penta" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">KCBS · one qutrit</span>
+      <h2>The pentagram palette</h2>
+      <p class="muted">Five quantum events where neighbours on the star can never both happen. Any classical model keeps their total chance at 2 or below. The right qutrit state reaches the square root of 5.</p>
+    </div>
+    <div class="stage-split">
+      <div class="penta-box"><svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentagram palette"></svg></div>
+      <div class="chips" id="pentaChips"></div>
+    </div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">KCBS sum</span>
+      <div class="row" style="justify-content:space-between"><span class="big" id="kcbsSum">2.236</span><span class="pill" id="kcbsPill">-</span></div>
+      <div class="meter"><div class="fill" id="kcbsFill"></div><div class="bound" id="kcbsBound"></div></div>
+      <div class="meter-scale"><span>0</span><span>classical max 2</span><span>2.236</span></div>
+    </div>
+    <div class="card">
+      <label class="field" for="tIn"><span class="field-top"><span>State tilt</span><span class="val" id="tVal">0°</span></span><input type="range" id="tIn" min="0" max="90" step="1" value="0"></label>
+      <label class="field" for="pIn"><span class="field-top"><span>State turn</span><span class="val" id="pVal">0°</span></span><input type="range" id="pIn" min="0" max="360" step="1" value="0"></label>
+      <p class="muted" style="font-size:0.85rem">Point size shows each event's chance. Tilt to zero for the maximum. Neighbour hues sit 144 degrees apart, so linked colors never look alike.</p>
+    </div>
+  </aside>
+</section>
+
+<!-- HARDWARE -->
+<section class="panel" id="tab-hardware" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Real quantum hardware</span>
+      <h2>Measured, sealed, verifiable</h2>
+      <p class="muted">Run the companion Qiskit script on IBM Quantum's free tier. It measures all six contexts with ancilla qubits and writes a measurement pool. Load it here and every collapse in the Context Grid draws from real shots.</p>
+    </div>
+    <div class="card">
+      <h3>Load a pool</h3>
+      <div class="row"><input type="file" id="poolFile" accept=".json,application/json"><button class="btn ghost small" id="poolExample">Load example pool (simulated noise)</button></div>
+      <label class="field" for="poolText">Or paste pool JSON<textarea id="poolText" style="min-height:120px" placeholder='{"format": "qontext-pool/1", ...}'></textarea></label>
+      <div class="row"><button class="btn small" id="poolLoad">Load pasted pool</button><label class="row" for="poolUse" style="gap:6px;font-size:0.9rem"><input type="checkbox" id="poolUse"> Use pool for collapses</label></div>
+    </div>
+    <div class="table-wrap"><table id="poolTable"><thead><tr><th>Context</th><th>Rule</th><th>Shots</th><th>Rule held</th><th>Mean signed product</th></tr></thead><tbody><tr><td colspan="5" class="muted">No pool loaded yet.</td></tr></tbody></table></div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">Measured Mermin score</span>
+      <div class="row" style="justify-content:space-between"><span class="big" id="hwScore">-</span><span class="pill" id="hwPill">No data</span></div>
+      <div class="meter"><div class="fill" id="hwFill" style="width:0"></div><div class="bound" style="left:66.67%"></div></div>
+      <div class="meter-scale"><span>0</span><span>classical max 4</span><span>6</span></div>
+    </div>
+    <div class="card">
+      <span class="eyebrow">Provenance seal</span>
+      <div class="seal" id="seal"><span class="muted">Load a pool to issue a seal.</span></div>
+    </div>
+  </aside>
+</section>
+
+<!-- EXPORT -->
+<section class="panel" id="tab-export" hidden>
+  <div class="stage">
+    <div class="head">
+      <span class="eyebrow">Hand-off</span>
+      <h2>Export the system</h2>
+      <p class="muted">Contextual tokens carry both readings of every tile, so your code can resolve the right color by context. Copy a format and paste it into your project.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Format" id="fmtSeg">
+      <button data-fmt="css" aria-pressed="true">CSS variables</button>
+      <button data-fmt="tokens" aria-pressed="false">Design tokens</button>
+      <button data-fmt="tailwind" aria-pressed="false">Tailwind</button>
+      <button data-fmt="svg" aria-pressed="false">SVG grid</button>
+    </div>
+    <textarea id="exportOut" readonly aria-label="Export output"></textarea>
+    <div class="row"><button class="btn" id="copyBtn">Copy</button><span class="muted" style="font-size:0.85rem">Exports use the current measurement. Press Measure again for a new collapse.</span></div>
+  </div>
+  <aside class="rail">
+    <div class="card">
+      <span class="eyebrow">What is inside</span>
+      <p style="font-size:0.9rem">The harmony palette, all 9 grid tiles with their row and column colors, and the 5 pentagram colors. Every color is gamut-mapped to sRGB from OKLCH.</p>
+    </div>
+  </aside>
+</section>
+
+</main>
+<footer>Qontext Studio runs exact quantum simulation in your browser. Hardware shots come from the companion script.</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*MATH-START*/
+// ---------- random ----------
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- color science (OKLCH <-> sRGB) ----------
+function oklchToLinear(L,C,h){const hr=h*Math.PI/180,a=C*Math.cos(hr),b=C*Math.sin(hr);
+  const l_=L+0.3963377774*a+0.2158037573*b,m_=L-0.1055613458*a-0.0638541728*b,s_=L-0.0894841775*a-1.2914855480*b;
+  const l=l_*l_*l_,m=m_*m_*m_,s=s_*s_*s_;
+  return [4.0767416621*l-3.3077115913*m+0.2309699292*s,-1.2684380046*l+2.6097574011*m-0.3413193965*s,-0.0041960863*l-0.7034186147*m+1.7076147010*s];}
+const inGamut=v=>v.every(x=>x>=-1e-4&&x<=1+1e-4);
+const enc=x=>x<=0.0031308?12.92*x:1.055*Math.pow(x,1/2.4)-0.055;
+const dec=x=>x<=0.04045?x/12.92:Math.pow((x+0.055)/1.055,2.4);
+function linToHex(lin){return '#'+lin.map(x=>Math.round(Math.min(1,Math.max(0,enc(x)))*255).toString(16).padStart(2,'0')).join('');}
+function oklch(L,C,h){h=((h%360)+360)%360;let lin=oklchToLinear(L,C,h);
+  if(!inGamut(lin)){let lo=0,hi=C;for(let i=0;i<22;i++){const mid=(lo+hi)/2;if(inGamut(oklchToLinear(L,mid,h)))lo=mid;else hi=mid;}C=lo;lin=oklchToLinear(L,C,h);}
+  lin=lin.map(x=>Math.min(1,Math.max(0,x)));return {L,C,h,lin,hex:linToHex(lin)};}
+function hexToLin(hex){const n=parseInt(hex.slice(1),16);return [(n>>16)&255,(n>>8)&255,n&255].map(v=>dec(v/255));}
+function linToOklab(v){const r=v[0],g=v[1],b=v[2];
+  const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b),m=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b),s=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+  return [0.2104542553*l+0.7936177850*m-0.0040720468*s,1.9779984951*l-2.4285922050*m+0.4505937099*s,0.0259040371*l+0.7827717662*m-0.8086757660*s];}
+function labToLch(lab){return {L:lab[0],C:Math.hypot(lab[1],lab[2]),h:(Math.atan2(lab[2],lab[1])*180/Math.PI+360)%360};}
+function hexToOklch(hex){return labToLch(linToOklab(hexToLin(hex)));}
+const relLum=lin=>0.2126*lin[0]+0.7152*lin[1]+0.0722*lin[2];
+function contrast(l1,l2){const a=relLum(l1),b=relLum(l2);return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05);}
+
+// ---------- complex linear algebra ----------
+const cx=(re,im)=>[re,im||0];
+const cmul=(a,b)=>[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+const cadd=(a,b)=>[a[0]+b[0],a[1]+b[1]];
+const PAULI={I:[[cx(1),cx(0)],[cx(0),cx(1)]],X:[[cx(0),cx(1)],[cx(1),cx(0)]],Y:[[cx(0),cx(0,-1)],[cx(0,1),cx(0)]],Z:[[cx(1),cx(0)],[cx(0),cx(-1)]]};
+function kron(A,B){const n=A.length,m=B.length,R=[];for(let i=0;i<n*m;i++){const row=[];for(let j=0;j<n*m;j++)row.push(cmul(A[Math.floor(i/m)][Math.floor(j/m)],B[i%m][j%m]));R.push(row);}return R;}
+function matmul(A,B){return A.map(row=>B[0].map((_,j)=>row.reduce((s,a,k)=>cadd(s,cmul(a,B[k][j])),cx(0))));}
+function matvec(A,v){return A.map(row=>row.reduce((s,a,j)=>cadd(s,cmul(a,v[j])),cx(0)));}
+const norm2=v=>v.reduce((s,a)=>s+a[0]*a[0]+a[1]*a[1],0);
+const opOf=p=>kron(PAULI[p[0]],PAULI[p[1]]);
+
+// ---------- Mermin-Peres square ----------
+const GRID=[[['X','I'],['I','X'],['X','X']],[['I','Z'],['Z','I'],['Z','Z']],[['X','Z'],['Z','X'],['Y','Y']]];
+function opLabel(p){const sub=['₁','₂'];const parts=[];if(p[0]!=='I')parts.push(p[0]+sub[0]);if(p[1]!=='I')parts.push(p[1]+sub[1]);return parts.join('');}
+const CONTEXTS=(function(){const list=[];
+  for(let r=0;r<3;r++)list.push({id:'R'+(r+1),cells:[[r,0],[r,1],[r,2]]});
+  for(let c=0;c<3;c++)list.push({id:'C'+(c+1),cells:[[0,c],[1,c],[2,c]]});
+  list.forEach(ctx=>{const ops=ctx.cells.map(([r,c])=>opOf(GRID[r][c]));ctx.A=ops[0];ctx.B=ops[1];ctx.Cop=ops[2];
+    const AB=matmul(ops[0],ops[1]);let s=0;
+    for(let i=0;i<4&&!s;i++)for(let j=0;j<4&&!s;j++){const z=AB[i][j];if(Math.hypot(z[0],z[1])>1e-9){const c=ops[2][i][j];s=Math.sign(c[0]*z[0]+c[1]*z[1]);}}
+    ctx.sign=s;});
+  return list;})();
+function makeState(kind,seed){
+  if(kind==='bell'){const k=Math.SQRT1_2;return [cx(k),cx(0),cx(0),cx(k)];}
+  if(kind==='zero')return [cx(1),cx(0),cx(0),cx(0)];
+  const rng=mulberry32(seed*9301+49297);const g=()=>{const u=Math.max(rng(),1e-12),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+  const v=[0,1,2,3].map(()=>cx(g(),g()));const n=Math.sqrt(norm2(v));return v.map(z=>[z[0]/n,z[1]/n]);}
+function halfProj(M,a,v){const Mv=matvec(M,v);return v.map((z,i)=>[(z[0]+a*Mv[i][0])/2,(z[1]+a*Mv[i][1])/2]);}
+function contextProbs(ctx,psi){const out=[];for(const a of [1,-1])for(const b of [1,-1]){const u=halfProj(ctx.A,a,halfProj(ctx.B,b,psi));out.push({a,b,p:norm2(u)});}return out;}
+function sampleContext(ctx,psi,rng){const probs=contextProbs(ctx,psi);let x=rng(),acc=0;
+  for(const o of probs){acc+=o.p;if(x<=acc)return [o.a,o.b,ctx.sign*o.a*o.b];}
+  const o=probs[probs.length-1];return [o.a,o.b,ctx.sign*o.a*o.b];}
+function merminScore(shotsByCtx){let total=0;const per={};
+  for(const ctx of CONTEXTS){const shots=shotsByCtx[ctx.id]||[];if(!shots.length){per[ctx.id]=null;continue;}
+    let s=0,held=0;for(const [a,b,c] of shots){const v=ctx.sign*a*b*c;s+=v;if(v===1)held++;}
+    per[ctx.id]={mean:s/shots.length,held:held/shots.length,n:shots.length};total+=s/shots.length;}
+  return {total,per};}
+
+// ---------- KCBS pentagram ----------
+const KCBS=(function(){const c=Math.cos(Math.PI/5),ct2=c/(1+c),ct=Math.sqrt(ct2),st=Math.sqrt(1-ct2);const v=[];
+  for(let j=0;j<5;j++){const ang=4*Math.PI*j/5;v.push([ct,st*Math.cos(ang),st*Math.sin(ang)]);}return v;})();
+function kcbsProbs(t,p){const tr=t*Math.PI/180,pr=p*Math.PI/180;const psi=[Math.cos(tr),Math.sin(tr)*Math.cos(pr),Math.sin(tr)*Math.sin(pr)];
+  return KCBS.map(v=>{const d=v[0]*psi[0]+v[1]*psi[1]+v[2]*psi[2];return d*d;});}
+
+// ---------- interferometer ----------
+function interfere(hexA,hexB,phiDeg){const A=hexToOklch(hexA),B=hexToOklch(hexB);
+  const za=[A.C*Math.cos(A.h*Math.PI/180),A.C*Math.sin(A.h*Math.PI/180)];
+  const ph=(B.h+phiDeg)*Math.PI/180;const zb=[B.C*Math.cos(ph),B.C*Math.sin(ph)];
+  const k=Math.SQRT1_2;const o1=[(za[0]+zb[0])*k,(za[1]+zb[1])*k],o2=[(za[0]-zb[0])*k,(za[1]-zb[1])*k];
+  const L=(A.L+B.L)/2;const mk=o=>{const C=Math.hypot(o[0],o[1]);const h=(Math.atan2(o[1],o[0])*180/Math.PI+360)%360;return Object.assign(oklch(L,C,h),{amp:C});};
+  const e1=o1[0]**2+o1[1]**2,e2=o2[0]**2+o2[1]**2;
+  return {bright:mk(o1),dark:mk(o2),eIn:A.C**2+B.C**2,eOut:e1+e2,share:(e1+e2)>0?e1/(e1+e2):0.5};}
+/*MATH-END*/
+
+// ---------- app state ----------
+const S={base:200,d:3,L:0.72,Cc:0.13,ink:'dark',view:'split',state:'random',seed:7,count:1,focus:null,usePool:false,pool:null,poolCursor:{},fmt:'css',tab:'grid',motion:false};
+const INK={dark:hexToLin('#14131c'),light:hexToLin('#ffffff')};
+const INKHEX={dark:'#14131c',light:'#ffffff'};
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1600);}
+const HARM_NAMES={2:'Complementary',3:'Triadic',4:'Tetradic',5:'Pentadic',6:'Hexadic',7:'Heptadic',8:'Octadic'};
+
+function harmony(){const out=[];for(let k=0;k<S.d;k++)out.push(oklch(S.L,S.Cc,S.base+k*360/S.d));return out;}
+function cellColor(r,c,v){const off=((r*3+c)%S.d)*360/S.d;return oklch(S.L,S.Cc,S.base+off+(v<0?180:0));}
+
+// ---------- measurement ----------
+let OUT={};
+function measureAll(seed,usePool){const psi=makeState(S.state,S.seed);const rng=mulberry32(seed);const out={};
+  for(const ctx of CONTEXTS){
+    if(usePool&&S.pool&&S.pool.contexts[ctx.id]&&S.pool.contexts[ctx.id].length){
+      const arr=S.pool.contexts[ctx.id];const i=(S.poolCursor[ctx.id]||0)%arr.length;S.poolCursor[ctx.id]=i+1;out[ctx.id]=arr[i].slice();}
+    else out[ctx.id]=sampleContext(ctx,psi,rng);}
+  return out;}
+function rowVal(o,r,c){return o['R'+(r+1)][c];}
+function colVal(o,r,c){return o['C'+(c+1)][r];}
+function remeasure(){S.count++;OUT=measureAll(S.seed*100003+S.count*7919,S.usePool);renderGrid();renderVisitors();if(S.tab==='export')renderExport();}
+
+// ---------- grid render ----------
+let gridBuilt=false;
+function buildGrid(){const g=$('qgrid');g.innerHTML='';
+  const corner=document.createElement('div');g.appendChild(corner);
+  for(let c=0;c<3;c++){const b=document.createElement('button');b.className='ctx';b.id='ctxC'+(c+1);b.dataset.ctx='C'+(c+1);
+    b.innerHTML='<span><b>C'+(c+1)+'</b>× = '+(c===2?'−1':'+1')+'</span>';g.appendChild(b);}
+  for(let r=0;r<3;r++){const b=document.createElement('button');b.className='ctx';b.id='ctxR'+(r+1);b.dataset.ctx='R'+(r+1);
+    b.innerHTML='<span><b>R'+(r+1)+'</b>× = +1</span>';g.appendChild(b);
+    for(let c=0;c<3;c++){const d=document.createElement('div');d.className='cell';d.id='cell'+r+c;
+      d.innerHTML='<div><div class="op">'+opLabel(GRID[r][c])+'</div><div class="vals" id="vals'+r+c+'"></div></div>';g.appendChild(d);}}
+  g.querySelectorAll('.ctx').forEach(b=>{
+    b.addEventListener('mouseenter',()=>{S.focus=b.dataset.ctx;renderGrid();});
+    b.addEventListener('mouseleave',()=>{S.focus=null;renderGrid();});
+    b.addEventListener('click',()=>{S.focus=S.focus===b.dataset.ctx?null:b.dataset.ctx;renderGrid();});});
+  gridBuilt=true;}
+const sgn=v=>v>0?'+1':'−1';
+function renderGrid(){if(!gridBuilt)buildGrid();const ink=INKHEX[S.ink];
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){const el=$('cell'+r+c);const rv=rowVal(OUT,r,c),cv=colVal(OUT,r,c);
+    const rc=cellColor(r,c,rv).hex,cc=cellColor(r,c,cv).hex;let bg;
+    if(S.view==='rows')bg=rc;else if(S.view==='cols')bg=cc;else bg='linear-gradient(135deg,'+rc+' 0 50%,'+cc+' 50% 100%)';
+    el.style.background=bg;el.style.color=ink;
+    $('vals'+r+c).textContent=S.view==='rows'?'row '+sgn(rv):S.view==='cols'?'col '+sgn(cv):'row '+sgn(rv)+' · col '+sgn(cv);
+    el.classList.toggle('diff',rv!==cv&&S.view==='split');
+    let dim=false;if(S.focus){const t=S.focus[0],i=+S.focus[1]-1;dim=t==='R'?r!==i:c!==i;}
+    el.classList.toggle('dim',dim);}
+  for(const ctx of CONTEXTS){const b=$('ctx'+ctx.id);const [a,bb,c]=OUT[ctx.id];b.classList.toggle('on',S.focus===ctx.id);b.classList.toggle('flag',ctx.sign*a*bb*c!==1);}
+  const diffCount=[0,1,2].reduce((n,r)=>n+[0,1,2].filter(c=>rowVal(OUT,r,c)!==colVal(OUT,r,c)).length,0);
+  $('legend').innerHTML='<span><i style="background:linear-gradient(135deg,var(--ink) 0 50%,transparent 50%)"></i>upper left: read with its row</span><span><i style="background:linear-gradient(135deg,transparent 0 50%,var(--ink) 50%)"></i>lower right: read with its column</span><span>Measurement #'+S.count+' · '+diffCount+' of 9 tiles change color with context</span>';
+  renderMeter();renderGuard();renderBrand();}
+function renderMeter(){let score,note;
+  if(S.usePool&&S.pool){const m=merminScore(S.pool.contexts);score=m.total;note='Measured on '+(S.pool.backend||'hardware')+' across '+Object.values(S.pool.contexts).reduce((n,a)=>n+a.length,0)+' shots. Any fixed coloring tops out at 4.';}
+  else{score=6;note='Exact simulation: every rule holds on every shot. Any fixed coloring tops out at 4.';}
+  $('gridScore').textContent=score.toFixed(2);$('gridFill').style.width=Math.max(0,Math.min(100,score/6*100))+'%';
+  const pill=$('gridPill');pill.className='pill '+(score>4?'good':'bad');pill.textContent=score>4?'Beyond classical':'Within classical';$('gridScoreNote').textContent=note;}
+function guardMin(L){let min=99;const save=S.L;S.L=L;for(let r=0;r<3;r++)for(let c=0;c<3;c++)for(const v of [1,-1])min=Math.min(min,contrast(cellColor(r,c,v).lin,INK[S.ink]));S.L=save;return min;}
+function renderGuard(){const m=guardMin(S.L);$('cgMin').textContent=m.toFixed(2)+' : 1';const p=$('cgPill');
+  if(m>=4.5){p.className='pill good';p.textContent='Passes WCAG AA for text';}else if(m>=3){p.className='pill warn';p.textContent='Large text only (AA 3:1)';}else{p.className='pill bad';p.textContent='Fails, export would be blocked';}}
+function fixGuard(){if(guardMin(S.L)>=4.5){toast('Already passing');return;}let best=null;
+  for(let step=1;step<70;step++){for(const dir of [1,-1]){const L=+(S.L+dir*step*0.01).toFixed(2);if(L<0.2||L>0.97)continue;if(guardMin(L)>=4.5){best=L;break;}}if(best!==null)break;}
+  if(best===null){toast('Switch label ink to reach 4.5:1');return;}S.L=best;syncHarmInputs();renderAll();toast('Lightness set to '+best.toFixed(2));}
+function renderVisitors(){const box=$('visitors');let html='';
+  for(let k=0;k<6;k++){const o=measureAll(S.seed*7777+S.count*131+k*17,false);let cells='';
+    for(let r=0;r<3;r++)for(let c=0;c<3;c++){const a=cellColor(r,c,rowVal(o,r,c)).hex,b=cellColor(r,c,colVal(o,r,c)).hex;cells+='<span style="background:linear-gradient(135deg,'+a+' 0 50%,'+b+' 50% 100%)"></span>';}
+    html+='<div class="visitor"><div class="mini">'+cells+'</div>visitor '+(k+1)+'</div>';}
+  box.innerHTML=html;}
+function renderBrand(){const m=$('brandMark');if(!OUT.R1)return;let h='';for(let r=0;r<3;r++)for(let c=0;c<3;c++)h+='<i style="background:'+cellColor(r,c,rowVal(OUT,r,c)).hex+'"></i>';m.innerHTML=h;}
+
+// ---------- learn ----------
+let CL=[[1,1,1],[1,1,1],[1,1,1]];
+function renderLearn(){const g=$('cgrid');g.innerHTML='';
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){const b=document.createElement('button');b.id='cl'+r+c;b.className=CL[r][c]<0?'neg':'';b.textContent=sgn(CL[r][c]);
+    b.setAttribute('aria-label',opLabel(GRID[r][c])+' value '+sgn(CL[r][c]));b.addEventListener('click',()=>{CL[r][c]*=-1;renderLearn();});g.appendChild(b);}
+  let ok=0,html='';
+  for(const ctx of CONTEXTS){const prod=ctx.cells.reduce((p,[r,c])=>p*CL[r][c],1);const pass=prod===ctx.sign;if(pass)ok++;
+    html+='<div><span>'+ctx.id+' needs '+sgn(ctx.sign)+'</span><span class="'+(pass?'ok':'no')+'">'+sgn(prod)+(pass?' ✓':' ✗')+'</span></div>';}
+  $('rules').innerHTML=html;
+  $('learnVerdict').textContent=ok+' of 6 rules satisfied';
+  $('learnNote').textContent=ok===5?'That is the best any fixed coloring can ever do. Try as long as you like: six out of six is impossible classically.':'Keep flipping. The best possible is 5 of 6, never 6.';}
+
+// ---------- harmony ----------
+function syncHarmInputs(){$('dIn').value=S.d;$('hIn').value=Math.round(S.base)%360;$('lIn').value=S.L;$('cIn').value=S.Cc;}
+function renderHarmony(){$('dVal').textContent=S.d;$('hVal').textContent=Math.round(((S.base%360)+360)%360)+'°';$('lVal').textContent=S.L.toFixed(2);$('cVal').textContent=S.Cc.toFixed(3);
+  const stops=[];for(let a=0;a<=360;a+=15)stops.push(oklch(S.L,Math.max(S.Cc,0.08),a).hex+' '+a+'deg');
+  $('wheel').style.background='conic-gradient(from 0deg,'+stops.join(',')+')';
+  const cols=harmony();$('wheelD').textContent=S.d;$('wheelName').textContent=HARM_NAMES[S.d];
+  const pts=cols.map(c=>{const a=c.h*Math.PI/180;return [100+82*Math.sin(a),100-82*Math.cos(a)];});
+  let svg='<polygon points="'+pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ')+'" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-opacity="0.7"/>';
+  pts.forEach((p,i)=>{svg+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="9" fill="'+cols[i].hex+'" stroke="var(--paper)" stroke-width="3"/>';});
+  $('wheelSvg').innerHTML=svg;
+  $('harmChips').innerHTML=cols.map((c,k)=>'<div class="chip"><div class="sw" style="background:'+c.hex+'"></div><div class="meta"><span>'+c.hex+'</span><span>phase '+k+'/'+S.d+' · '+Math.round(c.h)+'°</span></div></div>').join('');}
+function loadLib(){try{return JSON.parse(localStorage.getItem('qontext-lib')||'[]');}catch(e){return [];}}
+function saveLib(list){try{localStorage.setItem('qontext-lib',JSON.stringify(list));return true;}catch(e){return false;}}
+function renderLib(){const list=loadLib();$('lib').innerHTML=list.map((p,i)=>{let s='';for(let k=0;k<p.d;k++)s+='<i style="background:'+oklch(p.L,p.Cc,p.base+k*360/p.d).hex+'"></i>';return '<button data-lib="'+i+'" aria-label="Load saved harmony '+(i+1)+'">'+s+'</button>';}).join('');
+  $('lib').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const p=loadLib()[+b.dataset.lib];Object.assign(S,{base:p.base,d:p.d,L:p.L,Cc:p.Cc});syncHarmInputs();renderAll();toast('Harmony loaded');}));}
+
+// image extraction: k-means in OKLab
+function extractFromImage(file){const img=new Image();const url=URL.createObjectURL(file);
+  img.onload=()=>{const cv=document.createElement('canvas');cv.width=72;cv.height=72;const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,72,72);
+    const d=ctx.getImageData(0,0,72,72).data;const px=[];for(let i=0;i<d.length;i+=4){if(d[i+3]<128)continue;px.push(linToOklab([dec(d[i]/255),dec(d[i+1]/255),dec(d[i+2]/255)]));}
+    URL.revokeObjectURL(url);if(!px.length)return;px.sort((a,b)=>a[0]-b[0]);
+    const K=5;let cen=[];for(let k=0;k<K;k++)cen.push(px[Math.floor((k+0.5)*px.length/K)].slice());let asg=new Array(px.length).fill(0);
+    for(let it=0;it<12;it++){for(let i=0;i<px.length;i++){let bi=0,bd=1e9;for(let k=0;k<K;k++){const e=(px[i][0]-cen[k][0])**2+(px[i][1]-cen[k][1])**2+(px[i][2]-cen[k][2])**2;if(e<bd){bd=e;bi=k;}}asg[i]=bi;}
+      const sum=cen.map(()=>[0,0,0,0]);px.forEach((p,i)=>{const s=sum[asg[i]];s[0]+=p[0];s[1]+=p[1];s[2]+=p[2];s[3]++;});cen=sum.map((s,k)=>s[3]?[s[0]/s[3],s[1]/s[3],s[2]/s[3]]:cen[k]);}
+    const counts=cen.map((_,k)=>asg.filter(a=>a===k).length);const lch=cen.map(labToLch);
+    let best=0;lch.forEach((c,k)=>{if(counts[k]*(c.C+0.01)>counts[best]*(lch[best].C+0.01))best=k;});
+    const dom=lch[best];S.base=Math.round(dom.h);S.L=+Math.min(0.9,Math.max(0.35,dom.L)).toFixed(2);S.Cc=+Math.min(0.25,Math.max(0.04,dom.C)).toFixed(3);
+    $('imgChips').innerHTML=lch.map((c,k)=>{const col=oklch(c.L,c.C,c.h);return '<div class="chip"><div class="sw" style="background:'+col.hex+'"></div><div class="meta"><span>'+col.hex+'</span><span>'+(k===best?'dominant · ':'')+Math.round(100*counts[k]/px.length)+'%</span></div></div>';}).join('');
+    syncHarmInputs();renderAll();toast('Base phase set from image');};
+  img.src=url;}
+
+// ---------- mixer ----------
+function renderMixer(){const a=$('mixA').value,b=$('mixB').value,phi=+$('phiIn').value;$('phiVal').textContent=phi+'°';
+  const r=interfere(a,b,phi);$('outA').style.background=r.bright.hex;$('outB').style.background=r.dark.hex;
+  $('outAtxt').textContent='Port 1 · '+r.bright.hex+' · amp '+r.bright.amp.toFixed(3);$('outBtxt').textContent='Port 2 · '+r.dark.hex+' · amp '+r.dark.amp.toFixed(3);
+  $('eIn').textContent=r.eIn.toFixed(4);$('eOut').textContent=r.eOut.toFixed(4);$('eShare').textContent=Math.round(r.share*100)+'%';
+  const stops=[];for(let p=0;p<=360;p+=10)stops.push(interfere(a,b,p).bright.hex+' '+(p/360*100).toFixed(1)+'%');
+  $('fringe').style.background='linear-gradient(90deg,'+stops.join(',')+')';$('fringeMk').style.left='calc('+(phi/360*100)+'% - 1.5px)';}
+
+// ---------- pentagram ----------
+function pentaColors(probs){return probs.map((p,j)=>oklch(S.L,Math.min(0.26,S.Cc*(0.35+1.4*p)),S.base+144*j));}
+function renderPenta(){const t=+$('tIn').value,p=+$('pIn').value;$('tVal').textContent=t+'°';$('pVal').textContent=p+'°';
+  const probs=kcbsProbs(t,p);const sum=probs.reduce((a,b)=>a+b,0);const cols=pentaColors(probs);
+  const pos=[0,1,2,3,4].map(j=>{const a=(-90+144*j)*Math.PI/180;return [150+108*Math.cos(a),152+108*Math.sin(a)];});
+  let svg='<circle cx="150" cy="152" r="108" fill="none" stroke="var(--rule)" stroke-width="1"/>';
+  for(let j=0;j<5;j++){const a=pos[j],b=pos[(j+1)%5];svg+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="var(--ink)" stroke-opacity="0.55" stroke-width="1.2"/>';}
+  for(let j=0;j<5;j++){const a=pos[j];svg+='<circle cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="'+(10+30*probs[j]).toFixed(1)+'" fill="'+cols[j].hex+'" stroke="var(--paper)" stroke-width="3"/>';
+    svg+='<text x="'+a[0].toFixed(1)+'" y="'+(a[1]+4).toFixed(1)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="'+(relLum(cols[j].lin)>0.35?'#14131c':'#ffffff')+'">'+probs[j].toFixed(2)+'</text>';}
+  $('pentaSvg').innerHTML=svg;
+  $('kcbsSum').textContent=sum.toFixed(3);const max=Math.sqrt(5);$('kcbsFill').style.width=(sum/max*100)+'%';$('kcbsBound').style.left=(2/max*100)+'%';
+  const pill=$('kcbsPill');pill.className='pill '+(sum>2+1e-9?'good':'bad');pill.textContent=sum>2+1e-9?'Beyond classical':'Within classical';
+  $('pentaChips').innerHTML=cols.map((c,j)=>'<div class="chip"><div class="sw" style="background:'+c.hex+'"></div><div class="meta"><span>'+c.hex+'</span><span>event '+(j+1)+' · p '+probs[j].toFixed(3)+'</span></div></div>').join('');}
+
+// ---------- hardware pool ----------
+function validatePool(o){if(!o||typeof o!=='object'||!o.contexts)throw new Error('Missing "contexts". Use the file written by qontext_hardware.py.');
+  for(const ctx of CONTEXTS){const a=o.contexts[ctx.id];if(!Array.isArray(a)||!a.length)throw new Error('Context '+ctx.id+' has no shots.');
+    for(const s of a)if(!Array.isArray(s)||s.length!==3||s.some(v=>v!==1&&v!==-1))throw new Error('Each shot in '+ctx.id+' must be three values of 1 or -1.');}
+  return o;}
+function examplePool(){const psi=makeState('random',S.seed);const rng=mulberry32(424242);const contexts={};
+  for(const ctx of CONTEXTS){const arr=[];for(let i=0;i<512;i++){const s=sampleContext(ctx,psi,rng).map(v=>rng()<0.035?-v:v);arr.push(s);}contexts[ctx.id]=arr;}
+  return {format:'qontext-pool/1',backend:'example (simulated noise)',simulated:true,job_ids:['example-local'],created:new Date().toISOString(),shots:512,state_seed:S.seed,contexts};}
+async function sha256(text){try{const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}catch(e){return 'unavailable in this browser';}}
+async function setPool(o){S.pool=o;S.poolCursor={};$('poolUse').checked=true;S.usePool=true;renderHardware();remeasure();
+  const hash=await sha256(JSON.stringify(o.contexts));const m=merminScore(o.contexts);
+  $('seal').innerHTML='<strong>Qontext provenance seal</strong><span>backend: '+esc(o.backend||'unknown')+(o.simulated?' (simulated, not hardware)':'')+'</span><span>jobs: '+esc((o.job_ids||[]).join(', ')||'-')+'</span><span>created: '+esc(o.created||'-')+'</span><span>measured score: '+m.total.toFixed(3)+' (classical max 4)</span><span>pool sha-256: '+hash+'</span>';
+  toast('Pool loaded');}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function renderHardware(){const st=$('poolStatus');
+  if(!S.pool){st.textContent='Exact simulation in your browser.';return;}
+  st.textContent=(S.usePool?'Drawing collapses from ':'Loaded but not in use: ')+(S.pool.backend||'pool')+(S.pool.simulated?' (simulated example)':'')+'.';
+  const m=merminScore(S.pool.contexts);
+  $('poolTable').querySelector('tbody').innerHTML=CONTEXTS.map(ctx=>{const p=m.per[ctx.id];return '<tr><td class="mono">'+ctx.id+'</td><td class="mono">'+sgn(ctx.sign)+'</td><td>'+p.n+'</td><td>'+(p.held*100).toFixed(1)+'%</td><td>'+p.mean.toFixed(3)+'</td></tr>';}).join('');
+  $('hwScore').textContent=m.total.toFixed(2);$('hwFill').style.width=Math.max(0,Math.min(100,m.total/6*100))+'%';
+  const pill=$('hwPill');pill.className='pill '+(m.total>4?'good':'bad');pill.textContent=m.total>4?'Beyond classical':'Within classical';}
+
+// ---------- export ----------
+function exportData(){const harm=harmony();const tiles=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++)tiles.push({id:'r'+(r+1)+'c'+(c+1),op:GRID[r][c].join(''),row:cellColor(r,c,rowVal(OUT,r,c)).hex,col:cellColor(r,c,colVal(OUT,r,c)).hex});
+  const penta=pentaColors(kcbsProbs(+$('tIn').value,+$('pIn').value)).map(c=>c.hex);return {harm,tiles,penta};}
+function renderExport(){const {harm,tiles,penta}=exportData();let out='';
+  if(S.fmt==='css'){out=':root {\n  /* Harmony: '+HARM_NAMES[S.d]+', base phase '+Math.round(S.base)+' deg */\n'+harm.map((c,i)=>'  --q-harmony-'+(i+1)+': '+c.hex+';').join('\n')+'\n\n  /* Context Grid: each tile has a row reading and a column reading */\n'+tiles.map(t=>'  --q-'+t.id+'-row: '+t.row+';\n  --q-'+t.id+'-col: '+t.col+';').join('\n')+'\n\n  /* Pentagram: neighbours are exclusive */\n'+penta.map((h,i)=>'  --q-penta-'+(i+1)+': '+h+';').join('\n')+'\n}\n\n/* Resolve a tile by context */\n[data-q-context="row"] .q-r1c1 { background: var(--q-r1c1-row); }\n[data-q-context="col"] .q-r1c1 { background: var(--q-r1c1-col); }\n';}
+  else if(S.fmt==='tokens'){const o={qontext:{harmony:{},grid:{},pentagram:{}}};harm.forEach((c,i)=>o.qontext.harmony[String(i+1)]={$type:'color',$value:c.hex});
+    tiles.forEach(t=>o.qontext.grid[t.id]={row:{$type:'color',$value:t.row},col:{$type:'color',$value:t.col},$description:'Observable '+t.op});penta.forEach((h,i)=>o.qontext.pentagram[String(i+1)]={$type:'color',$value:h});
+    out=JSON.stringify(o,null,2);}
+  else if(S.fmt==='tailwind'){const colors={harmony:{},grid:{},penta:{}};harm.forEach((c,i)=>colors.harmony[i+1]=c.hex);tiles.forEach(t=>{colors.grid[t.id+'-row']=t.row;colors.grid[t.id+'-col']=t.col;});penta.forEach((h,i)=>colors.penta[i+1]=h);
+    out='// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: { q: '+JSON.stringify(colors,null,2).replace(/\n/g,'\n      ')+' }\n    }\n  }\n};\n';}
+  else{let s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">\n';tiles.forEach((t,i)=>{const x=(i%3)*100,y=Math.floor(i/3)*100;
+      s+='  <polygon points="'+x+','+y+' '+(x+100)+','+y+' '+x+','+(y+100)+'" fill="'+t.row+'"/>\n  <polygon points="'+(x+100)+','+y+' '+(x+100)+','+(y+100)+' '+x+','+(y+100)+'" fill="'+t.col+'"/>\n';});
+    out=s+'</svg>\n';}
+  $('exportOut').value=out;}
+
+// ---------- tabs + wiring ----------
+function showTab(name){S.tab=name;document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab===name)));
+  document.querySelectorAll('main > section').forEach(s=>{s.hidden=s.id!=='tab-'+name;});
+  try{localStorage.setItem('qontext-tab',name);}catch(e){}
+  if(name==='export')renderExport();if(name==='learn')renderLearn();if(name==='mixer')renderMixer();if(name==='penta')renderPenta();if(name==='hardware')renderHardware();if(name==='harmony')renderHarmony();}
+function renderAll(){renderGrid();renderVisitors();renderHarmony();if(S.tab==='penta')renderPenta();if(S.tab==='export')renderExport();}
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{showTab(b.dataset.goto);window.scrollTo({top:0});}));
+$('measure').addEventListener('click',remeasure);
+document.addEventListener('keydown',e=>{if(e.code!=='Space')return;const tag=(e.target.tagName||'').toLowerCase();if(['input','textarea','select','button'].includes(tag))return;if(S.tab!=='grid')return;e.preventDefault();remeasure();});
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{S.view=b.dataset.view;document.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderGrid();}));
+$('stateSel').addEventListener('change',e=>{S.state=e.target.value;remeasure();});
+$('inkSel').addEventListener('change',e=>{S.ink=e.target.value;renderGrid();});
+$('cgFix').addEventListener('click',fixGuard);
+$('vision').addEventListener('change',e=>{const w=$('work');w.className=e.target.value==='none'?'':'cvd-'+e.target.value;});
+$('learnReset').addEventListener('click',()=>{CL=[[1,1,1],[1,1,1],[1,1,1]];renderLearn();});
+[['dIn','d',v=>parseInt(v,10)],['hIn','base',parseFloat],['lIn','L',parseFloat],['cIn','Cc',parseFloat]].forEach(([id,k,f])=>$(id).addEventListener('input',e=>{S[k]=f(e.target.value);renderAll();}));
+$('randBtn').addEventListener('click',()=>{S.base=Math.floor(Math.random()*360);syncHarmInputs();renderAll();});
+let rafId=null,lastT=0;
+function tick(t){if(!S.motion)return;const dt=lastT?(t-lastT)/1000:0;lastT=t;S.base=(S.base+dt*24)%360;$('hIn').value=Math.round(S.base);renderHarmony();if(S.tab==='grid'){renderGrid();}rafId=requestAnimationFrame(tick);}
+$('motionBtn').addEventListener('click',e=>{S.motion=!S.motion;e.target.setAttribute('aria-pressed',String(S.motion));e.target.textContent=S.motion?'Stop phase motion':'Start phase motion';lastT=0;if(S.motion)rafId=requestAnimationFrame(tick);else{cancelAnimationFrame(rafId);renderAll();}});
+$('saveBtn').addEventListener('click',()=>{const list=loadLib();list.unshift({base:Math.round(S.base),d:S.d,L:S.L,Cc:S.Cc});if(saveLib(list.slice(0,12))){renderLib();toast('Saved to library');}else toast('This browser blocks saving');});
+$('imgIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)extractFromImage(f);});
+['mixA','mixB','phiIn'].forEach(id=>$(id).addEventListener('input',renderMixer));
+$('mixToHarm').addEventListener('click',()=>{const r=interfere($('mixA').value,$('mixB').value,+$('phiIn').value);S.base=Math.round(r.bright.h);syncHarmInputs();renderAll();toast('Base phase set to '+Math.round(r.bright.h)+'°');});
+['tIn','pIn'].forEach(id=>$(id).addEventListener('input',renderPenta));
+$('poolExample').addEventListener('click',()=>setPool(examplePool()));
+$('poolLoad').addEventListener('click',()=>{try{setPool(validatePool(JSON.parse($('poolText').value)));}catch(e){toast(e.message||'That is not valid JSON');}});
+$('poolFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{setPool(validatePool(JSON.parse(rd.result)));}catch(err){toast(err.message||'That file is not a Qontext pool');}};rd.readAsText(f);});
+$('poolUse').addEventListener('change',e=>{S.usePool=e.target.checked&&!!S.pool;if(e.target.checked&&!S.pool){e.target.checked=false;toast('Load a pool first');}renderHardware();remeasure();});
+document.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('click',()=>{S.fmt=b.dataset.fmt;document.querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderExport();}));
+$('copyBtn').addEventListener('click',()=>{const ta=$('exportOut');const p=navigator.clipboard?navigator.clipboard.writeText(ta.value):Promise.reject();p.then(()=>toast('Copied')).catch(()=>{ta.focus();ta.select();toast('Selected, press copy');});});
+
+// boot
+OUT=measureAll(S.seed*100003+S.count*7919,false);
+buildGrid();renderAll();renderLib();
+let startTab='grid';try{const t=localStorage.getItem('qontext-tab');if(t&&document.getElementById('tab-'+t))startTab=t;}catch(e){}
+showTab(startTab);
+</script>

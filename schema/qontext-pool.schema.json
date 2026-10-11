@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qontext.dev/schema/qontext-pool-1.json",
+  "title": "Qontext measurement pool",
+  "description": "Recorded measurement shots that Qontext Studio and the theme runtime draw collapses from. Written by the qontext-hw runner.",
+  "type": "object",
+  "required": ["contexts"],
+  "properties": {
+    "format": { "const": "qontext-pool/1" },
+    "backend": { "type": "string", "description": "Device or simulator name." },
+    "simulated": { "type": "boolean", "description": "True when the shots did not come from quantum hardware." },
+    "job_ids": { "type": "array", "items": { "type": "string" } },
+    "created": { "type": "string", "description": "ISO 8601 timestamp." },
+    "shots": { "type": "integer", "minimum": 1 },
+    "state_seed": { "type": "integer", "minimum": 0 },
+    "contexts": {
+      "type": "object",
+      "description": "Mermin-Peres contexts. Each shot is the three measured values of the context, in cell order.",
+      "required": ["R1", "R2", "R3", "C1", "C2", "C3"],
+      "properties": {
+        "R1": { "$ref": "#/$defs/triples" },
+        "R2": { "$ref": "#/$defs/triples" },
+        "R3": { "$ref": "#/$defs/triples" },
+        "C1": { "$ref": "#/$defs/triples" },
+        "C2": { "$ref": "#/$defs/triples" },
+        "C3": { "$ref": "#/$defs/triples" }
+      }
+    },
+    "chsh": {
+      "type": "object",
+      "description": "CHSH settings. Each shot is [outcome A, outcome B].",
+      "required": ["a0b0", "a0b1", "a1b0", "a1b1"],
+      "properties": {
+        "a0b0": { "$ref": "#/$defs/pairs" },
+        "a0b1": { "$ref": "#/$defs/pairs" },
+        "a1b0": { "$ref": "#/$defs/pairs" },
+        "a1b1": { "$ref": "#/$defs/pairs" }
+      }
+    }
+  },
+  "$defs": {
+    "pm1": { "enum": [1, -1] },
+    "triples": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200000,
+      "items": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/pm1" } }
+    },
+    "pairs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/pm1" } }
+    }
+  }
+}

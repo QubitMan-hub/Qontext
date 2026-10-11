@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qontext Runtime Demo</title>
+<style>
+  :root { --paper: #f6f6f9; --ink: #16151e; --muted: #5a596b; --rule: #dad9e5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  .wrap { max-width: 960px; margin: 0 auto; padding-inline: 16px; padding-block: 40px; display: grid; gap: 32px; }
+  h1 { font-size: 2.2rem; margin: 0; line-height: 1.1; }
+  p { margin: 0; max-width: 60ch; color: var(--muted); }
+  .hero { display: grid; gap: 14px; }
+  .hero .bar { height: 10px; border-radius: 5px; background: var(--q-harmony-1, #ccc); }
+  .cta { justify-self: start; border: 0; border-radius: 10px; padding: 12px 18px; font: 600 1rem system-ui, sans-serif; color: #fff; background: var(--q-r1c1-row, #333); cursor: pointer; }
+  .grids { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .panel { background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+  .panel h2 { font-size: 1rem; margin: 0; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tiles div { aspect-ratio: 1; border-radius: 8px; background: #eee; }
+  code { font: 0.85rem ui-monospace, monospace; background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 2px 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero" data-q-context="row">
+    <div class="bar"></div>
+    <h1>Every visitor sees their own collapse</h1>
+    <p>This page uses the Qontext runtime. The two panels below hold the same nine tiles: one reads them with their rows, the other with their columns. Tiles can differ between panels, and every collapse obeys all six quantum rules.</p>
+    <button class="cta" id="again" type="button">New visitor</button>
+  </section>
+  <div class="grids">
+    <div class="panel" data-q-context="row">
+      <h2>Row context</h2>
+      <div class="tiles">
+        <div data-q-tile="r1c1"></div><div data-q-tile="r1c2"></div><div data-q-tile="r1c3"></div>
+        <div data-q-tile="r2c1"></div><div data-q-tile="r2c2"></div><div data-q-tile="r2c3"></div>
+        <div data-q-tile="r3c1"></div><div data-q-tile="r3c2"></div><div data-q-tile="r3c3"></div>
+      </div>
+    </div>
+    <div class="panel" data-q-context="col">
+      <h2>Column context</h2>
+      <div class="tiles">
+        <div data-q-tile="r1c1"></div><div data-q-tile="r1c2"></div><div data-q-tile="r1c3"></div>
+        <div data-q-tile="r2c1"></div><div data-q-tile="r2c2"></div><div data-q-tile="r2c3"></div>
+        <div data-q-tile="r3c1"></div><div data-q-tile="r3c2"></div><div data-q-tile="r3c3"></div>
+      </div>
+    </div>
+  </div>
+  <p id="seed">Seed: <code>-</code></p>
+</div>
+<script src="../dist/qontext-runtime.min.js" data-qontext='{"base":200,"d":3,"L":0.72,"C":0.13}'></script>
+<script>
+  document.addEventListener('qontext:collapse', (e) => {
+    document.querySelector('#seed code').textContent = String(e.detail.seed);
+  });
+  document.getElementById('again').addEventListener('click', () => {
+    const r = window.Qontext.start({ base: 200, d: 3, L: 0.72, C: 0.13, seed: Math.floor(Math.random() * 4294967296) });
+    document.querySelector('#seed code').textContent = String(r.seed);
+  });
+</script>
+</body>
+</html>

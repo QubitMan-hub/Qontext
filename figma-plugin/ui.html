@@ -1,0 +1,64 @@
+<style>
+  body { font: 12px/1.45 Inter, system-ui, sans-serif; margin: 0; padding: 16px; color: var(--figma-color-text, #1e1e1e); background: var(--figma-color-bg, #fff); }
+  h1 { font-size: 14px; margin: 0 0 4px; }
+  p { margin: 0 0 12px; color: var(--figma-color-text-secondary, #666); }
+  label { display: grid; gap: 4px; margin-bottom: 10px; }
+  input, select, textarea { font: inherit; padding: 6px 8px; border: 1px solid var(--figma-color-border, #ddd); border-radius: 4px; background: var(--figma-color-bg, #fff); color: inherit; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .checks label { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+  button { width: 100%; padding: 8px; border: 0; border-radius: 6px; background: var(--figma-color-bg-brand, #0d99ff); color: var(--figma-color-text-onbrand, #fff); font-weight: 600; cursor: pointer; }
+  #status { margin-top: 10px; min-height: 16px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 52px; }
+</style>
+<h1>Qontext</h1>
+<p>Contextual color from quantum contextuality. Paste a project code from Qontext Studio, or set the palette here.</p>
+<label for="code">Project code (optional)<textarea id="code" placeholder="QX1..."></textarea></label>
+<label for="name">Name<input id="name" value="Untitled system"></label>
+<div class="two">
+  <label for="base">Base phase<input id="base" type="number" min="0" max="359" value="200"></label>
+  <label for="d">Levels<input id="d" type="number" min="2" max="8" value="3"></label>
+  <label for="L">Lightness<input id="L" type="number" min="0.2" max="0.97" step="0.01" value="0.72"></label>
+  <label for="C">Chroma<input id="C" type="number" min="0" max="0.32" step="0.005" value="0.13"></label>
+</div>
+<label for="seed">Collapse seed (blank for a fresh one)<input id="seed" type="number" min="0" step="1"></label>
+<div class="checks">
+  <label for="optGrid"><input id="optGrid" type="checkbox" checked> Grid frame</label>
+  <label for="optVars"><input id="optVars" type="checkbox" checked> Variables with Row and Column modes</label>
+  <label for="optStyles"><input id="optStyles" type="checkbox"> Harmony paint styles</label>
+</div>
+<button id="go">Create</button>
+<div id="status"></div>
+<script>
+  function decode(code) {
+    const s = code.trim();
+    if (!s) return null;
+    if (s.startsWith('{')) return JSON.parse(s);
+    if (!s.startsWith('QX1.')) throw new Error('Codes start with QX1.');
+    const b64 = s.slice(4).replace(/-/g, '+').replace(/_/g, '/');
+    const bin = atob(b64 + '==='.slice((b64.length + 3) % 4));
+    return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
+  }
+  const $ = (id) => document.getElementById(id);
+  $('go').onclick = () => {
+    let project;
+    try {
+      project = decode($('code').value) || {
+        name: $('name').value, base: +$('base').value, d: +$('d').value, L: +$('L').value, C: +$('C').value,
+      };
+    } catch (e) {
+      $('status').textContent = e.message;
+      return;
+    }
+    const seedText = $('seed').value.trim();
+    parent.postMessage({ pluginMessage: {
+      type: 'create', project, seed: seedText === '' ? null : Number(seedText),
+      grid: $('optGrid').checked, variables: $('optVars').checked, styles: $('optStyles').checked,
+    } }, '*');
+    $('status').textContent = 'Creating...';
+  };
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (!m) return;
+    $('status').textContent = m.type === 'done' ? `Done. Seed ${m.seed}.` : `Error: ${m.message}`;
+  };
+</script>
