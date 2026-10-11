@@ -219,3 +219,68 @@ def test_content_security_policy_blocks_injected_scripts(site, errors):
     refused = [e for e in errors if "Content Security Policy" in e]
     assert refused
     errors[:] = [e for e in errors if e not in refused]
+
+
+def phase_of(page):
+    return page.evaluate("document.documentElement.dataset.phase")
+
+
+def open_site(browser, errors, scheme="light", init=None):
+    ctx, page = _new_page(browser, {"width": 1280, "height": 800}, errors)
+    page.emulate_media(color_scheme=scheme)
+    if init:
+        page.add_init_script(init)
+    page.goto(SITE)
+    page.wait_for_selector("#plan .cellwrap")
+    return ctx, page
+
+
+def test_phase_defaults_to_the_system_and_remembers_a_turn(browser):
+    errors = []
+    ctx, page = open_site(browser, errors)
+    assert phase_of(page) == "0"
+    assert css_var(page, "--paper") == "#eef0f4"
+    page.evaluate("localStorage.setItem('qontext:phase', '90')")
+    page.reload()
+    page.wait_for_selector("#plan .cellwrap")
+    assert phase_of(page) == "90"
+    assert css_var(page, "--paper") != "#eef0f4"
+    ctx.close()
+    ctx, page = open_site(browser, errors, scheme="dark")
+    assert phase_of(page) == "180"
+    ctx.close()
+    assert errors == []
+
+
+def test_phase_ignores_bad_stored_values(browser):
+    errors = []
+    for stored, want in [("abc", "0"), ("999", "279"), ("-5", "355")]:
+        ctx, page = open_site(browser, errors, init=f"localStorage.setItem('qontext:phase', '{stored}')")
+        assert phase_of(page) == want, stored
+        assert css_var(page, "--paper").startswith("#")
+        ctx.close()
+    assert errors == []
+
+
+def test_phase_survives_storage_that_throws(browser):
+    errors = []
+    blocked = "Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });"
+    ctx, page = open_site(browser, errors, init=blocked)
+    assert phase_of(page) == "0"
+    ctx.close()
+    assert errors == []
+
+
+def test_phase_follows_the_system_until_turned(browser):
+    errors = []
+    ctx, page = open_site(browser, errors)
+    page.emulate_media(color_scheme="dark")
+    page.wait_for_function("() => document.documentElement.dataset.phase === '180'")
+    page.evaluate("localStorage.setItem('qontext:phase', '90')")
+    page.reload()
+    page.wait_for_selector("#plan .cellwrap")
+    page.emulate_media(color_scheme="light")
+    page.wait_for_timeout(200)
+    assert phase_of(page) == "90"
+    ctx.close()
+    assert errors == []

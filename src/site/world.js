@@ -153,28 +153,15 @@ export function resuperpose() {
 
 /* ---------- world ---------- */
 
-// The two papers, as in site.css. Known here so boot never has to force a style calculation to read them.
-const PAPER = { light: '#eef0f4', dark: '#121433' };
-
-function theme() {
-  const forced = document.documentElement.dataset.theme;
-  if (forced === 'light' || forced === 'dark') return forced;
-  try {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  } catch {
-    return 'light';
-  }
-}
-
-function readPaper() {
-  site.paper = PAPER[theme()];
-  paperL = hexToOklch(site.paper).L;
+/** The paper the Phase Dial has put on the walls. Washed tile tones lean toward it, so changing it clears them. */
+export function setPaper(hex) {
+  site.paper = hex;
+  paperL = hexToOklch(hex).L;
   toneCache.clear();
 }
 
 /** Starts (or replaces) the world and tells every listener. */
 export function setWorld(seed) {
-  readPaper();
   site.seed = seed;
   site.palette = paletteFor(seed);
   site.result = collapse({ ...site.palette, state: 'random', stateSeed: 7, seed });
@@ -187,7 +174,6 @@ export function setWorld(seed) {
 
 /** Re-tints for a theme change (washed outcomes depend on the paper color). */
 export function retheme() {
-  readPaper();
   for (const el of document.querySelectorAll('.q[data-q]')) tone(el);
   emit('theme');
 }
