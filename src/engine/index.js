@@ -1,6 +1,7 @@
 // Qontext engine: pure, dependency-free modules shared by the Studio, the theme runtime and the Figma plugin.
 
 export * from './random.js';
+export * from './text.js';
 export * from './color.js';
 export * from './cvd.js';
 export * from './linalg.js';
@@ -16,4 +17,4 @@ export * from './project.js';
 export * from './exporters.js';
 export * from './guard.js';
 
-export const ENGINE_VERSION = '1.1.0';
+export const ENGINE_VERSION = '1.2.0';

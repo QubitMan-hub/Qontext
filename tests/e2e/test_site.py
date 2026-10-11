@@ -2,9 +2,15 @@
 
 import re
 
-from conftest import _new_page
+from conftest import SITE, _new_page
 
 HEX = r"#[0-9a-f]{6}"
+
+
+def enter(page, room, block="start"):
+    """Walks into a room. Rooms are built only when a visitor gets near, so wait until this one is."""
+    page.evaluate(f"document.getElementById('room-{room}').scrollIntoView({{block: '{block}', behavior: 'instant'}})")
+    page.wait_for_selector(f"#room-{room}[data-ready]", state="attached")
 
 
 def css_var(page, name):
@@ -19,7 +25,7 @@ def test_every_visitor_gets_a_world(site):
     assert re.fullmatch(r"[\d,]+", world(site))
     assert re.fullmatch(HEX, css_var(site, "--q-r1c1-row"))
     assert site.inner_text("#heroWorld") == world(site)
-    assert site.inner_text("#f6") == "6 of 6"
+    assert site.text_content("#f6") == "6 of 6"  # off screen, so read the text, not the rendering
 
 
 def test_floor_plan_is_a_mermin_square_and_navigates(site):
@@ -28,7 +34,7 @@ def test_floor_plan_is_a_mermin_square_and_navigates(site):
     assert site.locator("#plan .cellwrap.dim").count() == 6
     assert site.locator("#plan .cellwrap.full-row").count() == 3
     site.click('#plan a[href="#room-spooky"]')
-    site.wait_for_function("location.hash === '#room-spooky'")
+    site.wait_for_function("() => location.hash === '#room-spooky'")
 
 
 def test_swatches_wait_until_seen(site):
@@ -45,12 +51,11 @@ def test_swatches_wait_until_seen(site):
 
 def test_many_worlds_switches_and_persists(site):
     before = world(site)
-    color_before = css_var(site, "--q-harmony-1")
     site.click("#worldBtn")
-    site.wait_for_function(f"document.getElementById('worldNum').innerText !== '{before}'")
+    site.wait_for_function(f"() => document.getElementById('worldNum').innerText !== '{before}'")
     after = world(site)
     assert after != before
-    assert css_var(site, "--q-harmony-1") != color_before or True  # hue can coincide; the number cannot
+    assert re.fullmatch(HEX, css_var(site, "--q-harmony-1"))
     site.wait_for_timeout(1300)
     site.reload()
     site.wait_for_selector("#plan .cellwrap")
@@ -59,7 +64,7 @@ def test_many_worlds_switches_and_persists(site):
 
 def test_janus_flips_reading_with_scroll(site):
     # The reading flips halfway through the room: rows while it is entering, columns once you are deep in it.
-    site.evaluate("document.getElementById('room-janus').scrollIntoView({block: 'start', behavior: 'instant'})")
+    enter(site, "janus")
     site.evaluate("window.scrollBy({top: -650, behavior: 'instant'})")
     site.wait_for_timeout(700)
     assert "rows" in site.inner_text("#jCap")
@@ -71,7 +76,7 @@ def test_janus_flips_reading_with_scroll(site):
 
 
 def test_mermins_dare(site):
-    site.evaluate("document.getElementById('room-dare').scrollIntoView()")
+    enter(site, "dare")
     assert site.inner_text("#dVerdict") == "5 of 6. That is the ceiling."
     site.locator("#dgrid button").first.click()
     assert site.inner_text("#dVerdict") == "3 of 6 rules hold"
@@ -80,7 +85,7 @@ def test_mermins_dare(site):
 
 
 def test_spooky_pair_beats_classical(site):
-    site.evaluate("document.getElementById('room-spooky').scrollIntoView()")
+    enter(site, "spooky")
     for _ in range(4):
         site.click("#pairMany")
     chsh = float(site.locator("#tally div").nth(2).locator("b").inner_text())
@@ -88,12 +93,12 @@ def test_spooky_pair_beats_classical(site):
 
 
 def test_unpaintables_and_notary(site):
-    site.evaluate("document.getElementById('room-unpaintables').scrollIntoView()")
+    enter(site, "unpaintables")
     assert "impossible" in site.inner_text("#uFacts")
     site.click('[data-uset="yuoh13"]')
     assert "exists" in site.inner_text("#uFacts")
-    site.evaluate("document.getElementById('seal').scrollIntoView({block: 'center'})")
-    site.wait_for_function("document.getElementById('seal').innerText.includes('sha-256')", timeout=8000)
+    enter(site, "notary", "center")
+    site.wait_for_function("() => document.getElementById('seal').innerText.includes('sha-256')", timeout=8000)
     assert "simulated example" in site.inner_text("#seal")
 
 
@@ -103,7 +108,7 @@ def test_edit_this_world_opens_the_same_world_in_the_atelier(site):
     assert re.fullmatch(r"studio\.html#QX1\.[A-Za-z0-9_-]+", href)
     site.click("#editWorld")
     site.wait_for_selector("#cell00")
-    site.wait_for_function("document.getElementById('toast').innerText.startsWith('Opened World')")
+    site.wait_for_function("() => document.getElementById('toast').innerText.startsWith('Opened World')")
     site.click("#tabbtn-export")
     assert f"--q-r1c1-row: {tile};" in site.input_value("#exportOut")
 
@@ -111,6 +116,10 @@ def test_edit_this_world_opens_the_same_world_in_the_atelier(site):
 def test_film_section(site):
     assert site.locator("#chapters button").count() == 8
     assert site.get_attribute("#video source", "src") == "media/qontext-film.mp4"
+    # Nothing of the film is fetched until the visitor gets near it.
+    assert site.evaluate("document.getElementById('video').getAttribute('poster')") is None
+    site.evaluate("document.getElementById('film').scrollIntoView({behavior: 'instant'})")
+    site.wait_for_function("() => document.getElementById('video').poster.endsWith('media/qontext-film-poster.jpg')")
 
 
 def test_phone_menu_and_layout(site_phone):
@@ -138,15 +147,74 @@ def test_wall_labels_fit_on_phone(site_phone):
               .map((w) => w.textContent)"""
     )
     assert too_wide == []
+    clipped = page.evaluate(
+        """() => Array.from(document.querySelectorAll('#plan .cell .name'))
+              .filter((n) => n.scrollWidth > n.clientWidth + 1)
+              .map((n) => n.textContent)"""
+    )
+    assert clipped == []
 
 
 def test_reduced_motion_still_works(browser):
     errors = []
     ctx, page = _new_page(browser, {"width": 1280, "height": 800}, errors)
     page.emulate_media(reduced_motion="reduce")
-    page.goto(page.context.pages[0].url if False else __import__("conftest").SITE)
+    page.goto(SITE)
     page.wait_for_selector("#plan .cellwrap")
+    # At rest nothing moves: no shimmer, no collapse canvas, and wall labels are plain text.
+    assert page.evaluate("document.querySelector('.field-measure').hidden")
+    assert not page.evaluate("document.documentElement.classList.contains('thresholds')")
+    enter(page, "pentacle")
+    assert page.inner_text("#pentaSum") == "2.236"
     page.click("#worldBtn")
-    page.wait_for_function("document.getElementById('toast').innerText.startsWith('Welcome to world')")
+    page.wait_for_function("() => document.getElementById('toast').innerText.startsWith('Welcome to world')")
     ctx.close()
     assert errors == []
+
+
+def test_rooms_sleep_until_a_visitor_gets_near(site):
+    assert site.evaluate("document.querySelectorAll('.room[data-ready]').length") < 3
+    assert site.text_content("#obsVars") == ""
+    enter(site, "observer")
+    assert site.locator("#obsVars div").count() == 6
+    assert re.search(HEX, site.inner_text("#obsVars"))
+
+
+def test_traversal_compass_wash_and_thresholds(site):
+    assert not site.locator("#compass").is_visible()
+    enter(site, "fringe")
+    site.wait_for_function("() => document.querySelector('#compass.on')")
+    assert site.get_attribute('#compass .cmp[aria-current="location"]', "aria-label") == "Fringe"
+    assert site.inner_text("#compass .cmp-name") == "Fringe"
+    assert site.evaluate("document.getElementById('navMark').classList.contains('rooms')")
+    site.wait_for_function("() => document.querySelectorAll('.wash i.on').length === 1")
+    tone = site.evaluate("document.querySelector('.wash i.on').style.getPropertyValue('--c')")
+    assert tone == css_var(site, "--q-r2c1-col")  # Fringe is tile r2c1, read by columns
+    # Thresholds: the wall label entered, and screen readers still get the plain name.
+    site.wait_for_function("() => document.getElementById('room-fringe').classList.contains('in')")
+    assert site.get_attribute("#t-fringe", "data-threshold") == "wave"
+    assert site.inner_text("#t-fringe .sr-only") == "Fringe"
+    # The Compass is a way around: jump to Observer.
+    site.click('#compass a[href="#room-observer"]')
+    site.wait_for_function(
+        "() => document.querySelector('#compass .cmp[aria-current]')?.getAttribute('aria-label') === 'Observer'"
+    )
+    assert site.locator("#compass .cmp.seen").count() >= 2
+
+
+def test_content_security_policy_blocks_injected_scripts(site, errors):
+    policy = site.get_attribute('meta[http-equiv="Content-Security-Policy"]', "content")
+    assert "script-src 'sha256-" in policy and "default-src 'none'" in policy
+    site.evaluate(
+        """() => {
+          const s = document.createElement('script');
+          s.textContent = 'window.__injected = true';
+          document.body.append(s);
+        }"""
+    )
+    site.wait_for_timeout(100)
+    assert site.evaluate("window.__injected === undefined")
+    # The refusal is reported on the console; that report is the expected outcome here.
+    refused = [e for e in errors if "Content Security Policy" in e]
+    assert refused
+    errors[:] = [e for e in errors if e not in refused]

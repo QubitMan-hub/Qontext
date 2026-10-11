@@ -24,12 +24,14 @@ if "PLAYWRIGHT_BROWSERS_PATH" not in os.environ and pathlib.Path("/opt/pw-browse
 
 from localfonts import install as install_fonts  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
+from server import base_url, serve  # noqa: E402
 
 W, H = 1280, 720
-SITE = (ROOT / "dist" / "index.html").as_uri()
 MEDIA = ROOT / "dist" / "media"
 
-# A visible cursor and a caption bar, injected into every page during recording only.
+# A visible cursor and a caption bar, added to every page during recording only. They are evaluated through
+# the DevTools protocol rather than added as a script tag, because the pages' Content Security Policy
+# (rightly) refuses inline scripts it does not know.
 OVERLAY = """
 (() => {
   if (document.getElementById('film-cursor')) return;
@@ -78,7 +80,9 @@ class Recorder:
             pass
 
     def start(self):
-        self.cdp.send("Page.startScreencast", {"format": "jpeg", "quality": 92, "maxWidth": W, "maxHeight": H, "everyNthFrame": 1})
+        self.cdp.send(
+            "Page.startScreencast", {"format": "jpeg", "quality": 92, "maxWidth": W, "maxHeight": H, "everyNthFrame": 1}
+        )
 
     def stop(self):
         self.cdp.send("Page.stopScreencast")
@@ -99,16 +103,17 @@ def glide(page, x, y, steps=30):
 
 
 def scroll_to(page, element_id, block="start", offset=0, duration=900):
-    """Smooth scroll so the motion is visible in the film."""
+    """Smooth scroll so the motion is visible in the film. The target is re-read every frame, because rooms
+    take their real height only as they come near (content-visibility)."""
     page.evaluate(
         """([id, block, offset, duration]) => new Promise((done) => {
           const el = document.getElementById(id);
-          const r = el.getBoundingClientRect();
-          const target = window.scrollY + (block === 'center' ? r.top - (innerHeight - r.height) / 2 : r.top - 72) + offset;
+          const target = () => { const r = el.getBoundingClientRect();
+            return window.scrollY + (block === 'center' ? r.top - (innerHeight - r.height) / 2 : r.top - 72) + offset; };
           const from = window.scrollY, t0 = performance.now();
           const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
           const step = (now) => { const p = Math.min(1, (now - t0) / duration);
-            window.scrollTo({ top: from + (target - from) * ease(p), behavior: 'instant' });
+            window.scrollTo({ top: from + (target() - from) * ease(p), behavior: 'instant' });
             p < 1 ? requestAnimationFrame(step) : done(); };
           requestAnimationFrame(step);
         })""",
@@ -141,9 +146,9 @@ def click(page, selector, steps=25):
     page.mouse.up()
 
 
-def film(page, rec):
-    page.goto(SITE)
-    page.add_script_tag(content=OVERLAY)
+def film(page, rec, site):
+    page.goto(site)
+    page.evaluate(OVERLAY)
     page.wait_for_timeout(300)
     page.mouse.move(W * 0.62, H * 0.2)
     rec.start()
@@ -172,7 +177,9 @@ def film(page, rec):
     scroll_by(page, 640, duration=2600)
     rec.hold(900)
     scroll_by(page, -260, duration=1200)
-    rec.hold(800)
+    rec.hold(500)
+    rec.caption("Walk on: each room's name arrives the way its physics behaves, and the walls take its color.")
+    rec.hold(300)
 
     rec.chapter("Mermin's Dare", "Mermin's Dare: fixed colors top out at 5 of 6 rules.")
     scroll_to(page, "room-dare", offset=380, duration=1200)
@@ -224,7 +231,7 @@ def film(page, rec):
     rec.stop()
 
     page.wait_for_selector("#cell00")
-    page.add_script_tag(content=OVERLAY)
+    page.evaluate(OVERLAY)
     page.mouse.move(W * 0.5, H * 0.5)
     rec.start()
     rec.chapter("Inside the Atelier", "The Atelier opens the exact same world.")
@@ -259,12 +266,49 @@ def encode(rec, out_mp4, poster):
     lines.append(f"file '{tmp / f'f{len(frames) - 1:05d}.jpg'}'")
     (tmp / "list.txt").write_text("\n".join(lines))
     subprocess.run(
-        ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(tmp / "list.txt"),
-         "-vf", f"fps=30,scale={W}:{H}:flags=lanczos,format=yuv420p", "-c:v", "libx264", "-preset", "slow",
-         "-crf", "23", "-movflags", "+faststart", str(out_mp4)],
+        [
+            "ffmpeg",
+            "-y",
+            "-loglevel",
+            "error",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(tmp / "list.txt"),
+            "-vf",
+            f"fps=30,scale={W}:{H}:flags=lanczos,format=yuv420p",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "slow",
+            "-crf",
+            "23",
+            "-movflags",
+            "+faststart",
+            str(out_mp4),
+        ],
         check=True,
     )
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "2.5", "-i", str(out_mp4), "-frames:v", "1", "-q:v", "3", str(poster)], check=True)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-loglevel",
+            "error",
+            "-ss",
+            "2.5",
+            "-i",
+            str(out_mp4),
+            "-frames:v",
+            "1",
+            "-q:v",
+            "3",
+            str(poster),
+        ],
+        check=True,
+    )
     shutil.rmtree(tmp)
     return frames[0][0]
 
@@ -277,11 +321,14 @@ def main():
         install_fonts(ctx)
         page = ctx.new_page()
         rec = Recorder(page)
-        film(page, rec)
+        httpd = serve(ROOT / "dist")
+        film(page, rec, f"{base_url(httpd)}/index.html")
         browser.close()
+        httpd.shutdown()
     t0 = encode(rec, MEDIA / "qontext-film.mp4", MEDIA / "qontext-film-poster.jpg")
     # Chapter times on the film's own clock. Gaps while the Atelier loads are not in the film.
     frames = sorted(f[0] for f in rec.frames)
+
     def film_time(wall):
         before = [f for f in frames if f <= wall]
         if not before:
@@ -294,11 +341,26 @@ def main():
             total += max(0.001, min(2.0, f - prev))
             prev = f
         return round(total)
+
     chapters = [[film_time(t), title] for t, title in rec.chapters]
     (MEDIA / "chapters.json").write_text(json.dumps(chapters, indent=2))
     # The site's chapter list is built from this file, so its timestamps always match the film.
     (ROOT / "src" / "site" / "film-chapters.json").write_text(json.dumps(chapters, indent=2) + "\n")
-    dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(MEDIA / "qontext-film.mp4")], check=True, capture_output=True, text=True).stdout.strip()
+    dur = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "csv=p=0",
+            str(MEDIA / "qontext-film.mp4"),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
     size = (MEDIA / "qontext-film.mp4").stat().st_size / 1e6
     print(f"Film: {float(dur):.1f} s, {size:.1f} MB, {len(rec.frames)} frames, starts {t0}")
     print(json.dumps(chapters))

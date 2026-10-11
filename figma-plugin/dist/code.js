@@ -39,6 +39,12 @@
     }
   }
 
+  // src/engine/text.js
+  var CONTROL = (c) => c < 32 || c >= 127 && c < 160 || c === 8232 || c === 8233;
+  function oneLine(s) {
+    return Array.from(String(s != null ? s : ""), (ch) => CONTROL(ch.codePointAt(0)) ? " " : ch).join("").replace(/\s+/g, " ").trim();
+  }
+
   // src/engine/color.js
   var clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
   var wrapHue = (h) => (h % 360 + 360) % 360;
@@ -385,7 +391,7 @@
     const D = DEFAULT_PROJECT;
     return {
       version: PROJECT_VERSION,
-      name: typeof p.name === "string" && p.name.trim() ? p.name.trim().slice(0, 80) : D.name,
+      name: typeof p.name === "string" && oneLine(p.name) ? Array.from(oneLine(p.name)).slice(0, 80).join("") : D.name,
       base: num(p.base, 0, 359.999, D.base),
       d: num(p.d, 2, 8, D.d, 1),
       L: num(p.L, 0.2, 0.97, D.L),

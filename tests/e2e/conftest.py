@@ -1,20 +1,23 @@
-"""Browser fixtures for the Studio end-to-end tests (Playwright, Chromium)."""
+"""Browser fixtures for the website and Atelier end-to-end tests (Playwright, Chromium)."""
 
 import os
 import pathlib
 
 import pytest
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
-STUDIO = (ROOT / "dist" / "studio.html").as_uri()
-SITE = (ROOT / "dist" / "index.html").as_uri()
-DEMO = (ROOT / "examples" / "runtime-demo.html").as_uri()
-
 if "PLAYWRIGHT_BROWSERS_PATH" not in os.environ and pathlib.Path("/opt/pw-browsers").exists():
     os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/opt/pw-browsers"
 
 from localfonts import install as install_fonts  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
+from server import base_url, serve  # noqa: E402
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+# Served over HTTP, as in production, so the Content Security Policy applies exactly as it will for visitors.
+_SERVER = serve(ROOT)
+STUDIO = f"{base_url(_SERVER)}/dist/studio.html"
+SITE = f"{base_url(_SERVER)}/dist/index.html"
+DEMO = f"{base_url(_SERVER)}/examples/runtime-demo.html"
 
 
 @pytest.fixture(scope="session")

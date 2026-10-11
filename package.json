@@ -1,6 +1,6 @@
 {
   "name": "qontext",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Qontext: the website, the Atelier and the engine for contextual color built on quantum contextuality.",
   "type": "module",
@@ -13,6 +13,7 @@
     "test": "node --test \"tests/engine/*.test.js\"",
     "test:e2e": "python3 -m pytest tests/e2e -q",
     "film": "python3 scripts/record-film.py",
+    "perf": "python3 scripts/perf.py",
     "lint": "eslint .",
     "check": "npm run lint && npm test && npm run build"
   },

@@ -98,7 +98,7 @@ def test_shapes(page):
 def test_example_pool_and_seal(page):
     open_tab(page, "hardware")
     page.click("#poolExample")
-    page.wait_for_function("document.querySelector('#seal').innerText.includes('sha-256')")
+    page.wait_for_function("() => document.querySelector('#seal').innerText.includes('sha-256')")
     assert float(page.inner_text("#hwScore")) > 4
     assert re.search(r"[0-9a-f]{64}", page.inner_text("#seal"))
     assert page.locator("#poolTable tr").count() == 6
@@ -110,7 +110,7 @@ def test_bad_pool_shows_message(page):
     open_tab(page, "hardware")
     page.fill("#poolText", '{"contexts": {"R1": [[1, 0, 1]]}}')
     page.click("#poolLoad")
-    page.wait_for_function("document.querySelector('#toast').innerText.length > 0")
+    page.wait_for_function("() => document.querySelector('#toast').innerText.length > 0")
     assert "R1" in page.inner_text("#toast")
 
 
@@ -170,7 +170,7 @@ def test_runtime_demo(browser):
     page = ctx.new_page()
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(DEMO)
-    page.wait_for_function("document.querySelector('[data-q-tile]').hasAttribute('data-q-value')")
+    page.wait_for_function("() => document.querySelector('[data-q-tile]').hasAttribute('data-q-value')")
     assert page.locator("[data-q-value]").count() == 18
     seed = page.inner_text("#seed code")
     assert seed.isdigit()
@@ -180,7 +180,7 @@ def test_runtime_demo(browser):
     col = page.get_attribute('[data-q-context="col"] .tiles [data-q-tile="r1c1"]', "data-q-value")
     assert row == css.strip() and re.fullmatch(r"#[0-9a-f]{6}", col)
     page.reload()
-    page.wait_for_function("document.querySelector('[data-q-tile]').hasAttribute('data-q-value')")
+    page.wait_for_function("() => document.querySelector('[data-q-tile]').hasAttribute('data-q-value')")
     assert page.inner_text("#seed code") == seed, "seed should be stable for the session"
     page.click("#again")
     assert page.inner_text("#seed code") != seed
@@ -193,7 +193,7 @@ def test_loads_pool_written_by_python_runner(page):
 
     open_tab(page, "hardware")
     page.set_input_files("#poolFile", str(ROOT / "examples" / "sample-pool-noisy.json"))
-    page.wait_for_function("document.querySelector('#seal').innerText.includes('aer simulator')")
+    page.wait_for_function("() => document.querySelector('#seal').innerText.includes('aer simulator')")
     assert float(page.inner_text("#hwScore")) > 4
     assert float(page.inner_text("#hwChsh")) > 2
     open_tab(page, "entangle")

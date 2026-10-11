@@ -2,6 +2,7 @@
 
 import { isHex, normalizeHex, clamp } from './color.js';
 import { STATE_KINDS } from './mermin.js';
+import { oneLine } from './text.js';
 
 export const PROJECT_VERSION = 1;
 
@@ -42,7 +43,7 @@ export function sanitizeProject(input = {}) {
   const D = DEFAULT_PROJECT;
   return {
     version: PROJECT_VERSION,
-    name: typeof p.name === 'string' && p.name.trim() ? p.name.trim().slice(0, 80) : D.name,
+    name: typeof p.name === 'string' && oneLine(p.name) ? Array.from(oneLine(p.name)).slice(0, 80).join('') : D.name,
     base: num(p.base, 0, 359.999, D.base),
     d: num(p.d, 2, 8, D.d, 1),
     L: num(p.L, 0.2, 0.97, D.L),

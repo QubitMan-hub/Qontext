@@ -9,6 +9,7 @@
 
 import { build, transform } from 'esbuild';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { watch } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,10 +18,32 @@ import { cvdFilterValues } from '../src/engine/cvd.js';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const p = (...parts) => join(root, ...parts);
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
+// QONTEXT_DEV=1 keeps names readable for profiling. Never commit a dev build.
+const DEV = process.env.QONTEXT_DEV === '1';
+
+/**
+ * Content Security Policy for the standalone pages. Scripts run only if they are the exact inline bundle
+ * (pinned by hash), nothing can be fetched or framed, and the only third parties are Google Fonts.
+ * Inline styles stay allowed: the pages set colors through style attributes, and styles cannot run code.
+ */
+function csp(html) {
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
+  if (scripts.length !== 1) throw new Error(`expected exactly one inline script, found ${scripts.length}`);
+  return [
+    "default-src 'none'",
+    `script-src ${scripts.join(' ')}`,
+    "style-src 'unsafe-inline' https://fonts.googleapis.com",
+    'font-src https://fonts.gstatic.com',
+    "img-src 'self' data: blob:",
+    "media-src 'self'",
+    "base-uri 'none'",
+    "form-action 'none'",
+  ].join('; ');
+}
 
 /** Bundles a page: template + CSS + JS entry. Returns { full, fragment }. */
 async function buildPage({ entry, css, template, version }) {
-  const js = await build({ entryPoints: [p(entry)], bundle: true, format: 'iife', target: ['es2020'], minify: true, write: false, legalComments: 'none' });
+  const js = await build({ entryPoints: [p(entry)], bundle: true, format: 'iife', target: ['es2020'], minify: !DEV, write: false, legalComments: 'none' });
   const style = await transform(await readFile(p(css), 'utf8'), { loader: 'css', minify: true });
   let html = await readFile(p(template), 'utf8');
   const replacements = {
@@ -38,7 +61,8 @@ async function buildPage({ entry, css, template, version }) {
   const split = Math.min(...['<a class="skip"', '<svg width="0"'].map((m) => html.indexOf(m)).filter((i) => i >= 0));
   const head = html.slice(0, split).trim();
   const body = html.slice(split).trim();
-  const full = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
+  const full = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${csp(body)}">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
+  // The fragment is for hosts that wrap pages in their own document, and their own policy.
   return { full, fragment: html.trim() + '\n' };
 }
 

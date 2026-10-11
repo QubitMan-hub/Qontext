@@ -2,7 +2,7 @@
 <meta name="description" content="Qontext is a design engine built on quantum contextuality: color that depends on how it is read, and a website that collapses into its own world for every visitor.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"></noscript>
 <style>/*__CSS__*/</style>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -48,7 +48,7 @@
 <main id="main">
 
 <section class="hero" id="hero" data-q-context="row" aria-labelledby="heroTitle">
-  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="field" id="field" aria-hidden="true"></div>
   <div class="wrap">
     <div class="frame q" data-q="r1c1">
       <div class="frame q" data-q="r2c2">
@@ -142,7 +142,7 @@
       <div class="exhibit">
         <div class="dare">
           <div class="dgrid" id="dgrid" role="group" aria-label="Your fixed values"></div>
-          <div style="display:grid;gap:12px">
+          <div class="stack">
             <p class="verdict" id="dVerdict" aria-live="polite">-</p>
             <div class="rules" id="dRules"></div>
           </div>
@@ -172,7 +172,7 @@
       <div class="exhibit">
         <div class="wheel-wrap">
           <svg id="wheelSvg" viewBox="-110 -110 220 220" role="img" aria-label="Color wheel with harmony points"></svg>
-          <div style="display:grid;gap:14px">
+          <div class="stack">
             <label class="range" for="wheelD"><span class="top"><span>Quantum levels</span><b id="wheelDVal">3</b></span><input type="range" id="wheelD" min="2" max="8" step="1" value="3"></label>
             <p class="cap" id="wheelCap"></p>
             <div class="chips" id="wheelChips"></div>
@@ -224,7 +224,7 @@
       <div class="exhibit">
         <div class="penta">
           <svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentacle palette"></svg>
-          <div style="display:grid;gap:14px">
+          <div class="stack">
             <div><span class="big" id="pentaSum">2.236</span></div>
             <div class="meter"><div class="fill" id="pentaFill"></div><div class="bound" id="pentaBound"></div></div>
             <div class="meter-scale"><span>0</span><span>classical limit 2</span><span>2.236</span></div>
@@ -254,9 +254,9 @@
       <div class="exhibit">
         <div class="spooky" id="spooky">
           <svg class="thread" id="thread" aria-hidden="true"><path d=""/></svg>
-          <div class="asset a" id="assetA"><div class="state"><strong>Light asset</strong><span id="aOut">-</span></div><div class="bar" id="aBar"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:55%"></div><span class="cta" id="aCta">Get started</span>
+          <div class="asset a" id="assetA"><div class="state"><strong>Light asset</strong><span id="aOut">-</span></div><div class="bar" id="aBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="aCta">Get started</span>
             <label class="small" for="aStyle">Style <select id="aStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div>
-          <div class="asset b" id="assetB"><div class="state"><strong>Dark asset</strong><span id="bOut">-</span></div><div class="bar" id="bBar"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:55%"></div><span class="cta" id="bCta">Get started</span>
+          <div class="asset b" id="assetB"><div class="state"><strong>Dark asset</strong><span id="bOut">-</span></div><div class="bar" id="bBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="bCta">Get started</span>
             <label class="small" for="bStyle">Style <select id="bStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div>
         </div>
         <div class="actions"><button class="btn small" type="button" id="pairBtn">Measure the pair</button><button class="btn small ghost" type="button" id="pairMany">Measure 500 pairs</button></div>
@@ -353,7 +353,7 @@
       <div class="first"><h3>Colors wait until you look</h3><p>Swatches you have not reached yet shimmer between both possible outcomes. Scrolling to them collapses them.</p><span class="live" id="f2">-</span></div>
       <div class="first"><h3>One token, two truths</h3><p>Rooms alternate between reading the grid by rows and by columns, so one token can be two colors on the same page.</p><span class="pair-sw" id="f3"></span></div>
       <div class="first"><h3>A pointer that measures</h3><p>In the field at the top, tiles settle into a color where your pointer passes and drift back into superposition when it leaves.</p><a class="btn small ghost" href="#hero">Try it</a></div>
-      <div class="first"><h3>Linked by entanglement, not by code</h3><p>The two cards in Spooky Pair take their accents from one entangled pair, so they answer each other however far apart they sit.</p><span class="live" id="f5">-</span></div>
+      <div class="first"><h3>Linked by entanglement, not by code</h3><p>The two cards in Spooky Pair take their accents from one entangled pair, so they answer each other however far apart they sit.</p><span class="live" id="f5">Measure some pairs</span></div>
       <div class="first"><h3>Every view is a proof</h3><p>This page's colors obey all six Mermin-Peres rules. A website with fixed colors can satisfy five at most.</p><span class="live" id="f6">6 of 6</span></div>
     </div>
   </div>
@@ -362,10 +362,10 @@
 <section class="section" id="frame" data-q-context="row" aria-labelledby="frameTitle">
   <div class="wrap framed">
     <img id="poster" alt="A poster of your world" width="1080" height="1350">
-    <div style="display:grid;gap:20px;align-content:start">
-      <div class="section-head" style="margin:0"><h2 id="frameTitle">Your world, framed</h2><p>A poster of the exact world you are in. Keep it with a long press or right click, or open it in the Atelier and keep designing.</p></div>
+    <div class="stack wide">
+      <div class="section-head flush"><h2 id="frameTitle">Your world, framed</h2><p>A poster of the exact world you are in. Keep it with a long press or right click, or open it in the Atelier and keep designing.</p></div>
       <div class="actions"><a class="btn" id="editWorld" href="studio.html">Edit this world in the Atelier</a><button class="btn ghost" type="button" data-many>Frame another world</button></div>
-      <div><p class="small muted" style="margin-bottom:6px">Your Wavefunction (the code for this world)</p><div class="wf" id="wf">-</div></div>
+      <div><p class="small muted label">Your Wavefunction (the code for this world)</p><div class="wf" id="wf">-</div></div>
       <button class="btn small ghost" type="button" id="wfCopy">Copy Wavefunction</button>
     </div>
   </div>
@@ -381,7 +381,7 @@
       <div class="tool"><span class="kind">For Figma</span><h3>Superpose</h3><p>Creates a grid and a variable collection with Row and Column modes, so contextual color works in your Figma files.</p></div>
       <div class="tool"><span class="kind">For sharing</span><h3>Wavefunction</h3><p>Every design is one short code. Paste it into the Atelier or Superpose and get the exact same world.</p></div>
       <div class="tool wide"><span class="kind">For print</span><h3>Walk-By</h3><p>Interlaced print files for lenticular sheets, so a printed grid changes color as people walk past. Move across the preview.</p><div class="walkby" id="walkby" role="img" aria-label="Lenticular preview"><div class="view rows" id="wbRows"></div><div class="view cols" id="wbCols"></div></div></div>
-      <div class="tool wide"><span class="kind">Inside the Atelier</span><h3>Bouncer</h3><p>A tile can take two colors, so its text has to be readable on both. Bouncer checks WCAG and APCA contrast against every color a tile can take and blocks exports that fail.</p><p class="live" id="bouncerLive" style="font-weight:600"></p></div>
+      <div class="tool wide"><span class="kind">Inside the Atelier</span><h3>Bouncer</h3><p>A tile can take two colors, so its text has to be readable on both. Bouncer checks WCAG and APCA contrast against every color a tile can take and blocks exports that fail.</p><p class="live strong" id="bouncerLive"></p></div>
     </div>
   </div>
 </section>
@@ -390,8 +390,8 @@
   <div class="wrap">
     <div class="section-head"><h2 id="filmTitle">The film</h2><p>One minute through the site and the Atelier, recorded from the real thing.</p></div>
     <div class="film">
-      <video id="video" controls playsinline preload="metadata" poster="media/qontext-film-poster.jpg"><source src="media/qontext-film.mp4" type="video/mp4">Your browser cannot play this video.</video>
-      <div style="display:grid;gap:12px">
+      <video id="video" controls playsinline preload="none" data-poster="media/qontext-film-poster.jpg"><source src="media/qontext-film.mp4" type="video/mp4">Your browser cannot play this video.</video>
+      <div class="stack">
         <ol class="chapters" id="chapters"></ol>
         <p class="small muted" id="filmNote"></p>
       </div>

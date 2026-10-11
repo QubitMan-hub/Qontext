@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.2.0 (2026-10-12)
+
+Faster
+- Rooms sleep until a visitor is about to reach them; off-screen sections skip rendering.
+- The hero field is a repeating SVG tile with compositor-run shimmer. Its collapse canvas exists only while
+  something is collapsed, is sized from a ResizeObserver (no forced layouts) and stops when the hero is off
+  screen or the pointer rests.
+- Swatches shimmer with an opacity animation, only near the viewport.
+- Scroll-linked exhibits read layout once per frame and change only transforms and attributes.
+- Fonts no longer block the first paint; the film and the poster load only when near.
+- Phone profile against 1.1.0: ready in about 330 ms instead of 1,297 ms, about 150 ms of load blocking
+  instead of 1,508 ms, the hero at rest under 1% of the main thread instead of 100%, scrolling at 59 fps with
+  no long tasks instead of 26 fps with 34.
+
+New
+- Wall Wash, Compass and Thresholds: every room now feels like walking into a new room.
+- `npm run perf` and performance budget tests.
+
+Safer
+- Content Security Policy on the standalone pages, with the script pinned by hash.
+- Project names are reduced to one printable line, and exports escape them for CSS, JavaScript and SVG.
+- The website builds its DOM from text nodes only.
+- Browser tests run over HTTP so the policy applies as it does for visitors; security tests for hostile names.
+- Dev dependencies updated past a low-severity ESLint advisory.
+
+Cleaner
+- The site is split into one module per room (`src/site/rooms/`) and per feature (`src/site/features/`).
+- Python helpers (perf, film, browser tests) are linted and formatted in CI.
+
 ## 1.1.0 (2026-10-11)
 
 Added

@@ -35,13 +35,30 @@ Figma plugin import the same modules, so a palette looks the same everywhere.
 
 ## Website
 
-`src/site/world.js` owns the visitor's world: an Observer collapse whose seed (1 to 9,999,999) is the world
-number, kept for the browser session. It writes the tile tokens as CSS variables and tints every `.q[data-q]`
-swatch from its context (`data-q-context` on the nearest room, or `data-q-ctx` on the swatch). An
-IntersectionObserver collapses swatches from superposition the first time they are seen. `hero.js` draws the
-observable field on a canvas, `rooms.js` runs the nine exhibits, `scroll.js` drives every scroll-linked
-exhibit from one requestAnimationFrame loop, and `extras.js` handles navigation, the floor plan, Many Worlds,
-the poster, tools and the film. All continuous motion stops under `prefers-reduced-motion`.
+| File | Job |
+| --- | --- |
+| `main.js` | Boot: the world, the badge, the hero and the observers. Nothing else runs until it is needed. |
+| `world.js` | The visitor's world (an Observer collapse whose seed, 1 to 9,999,999, is the world number, kept for the session), the tile tokens as CSS variables, and observation: swatches (`.q[data-q]`) shimmer only near the viewport and collapse the first time they are seen. |
+| `hero.js` | The observable field. Superposition is a repeating SVG tile (the field repeats every six tiles) with two shimmer layers run by the compositor; collapse is one canvas that exists only while something is collapsed. |
+| `scroll.js` | One requestAnimationFrame loop for every scroll-linked exhibit. Only exhibits near the viewport are measured, and all reads happen before any writes. |
+| `lib.js` | `h()` and `svg()` build DOM from text nodes, never markup; `whenNear()` wakes code just before it is seen. |
+| `rooms/index.js` | Room metadata (`ROOMS`), strips, and lazy start: a room's module runs `init()` and `paint()` when a visitor is 600 px away. |
+| `rooms/<id>.js` | One module per room: `{ id, init(article), paint(), theme?() }`. |
+| `features/` | Nav, floor plan, idea, firsts, framed poster (drawn when near, encoded with `toBlob`), tools, film (fetched when near), Many Worlds, and `traverse.js`: Wall Wash, Compass and Thresholds, all driven by IntersectionObserver. |
+
+Off-screen rooms and later sections use `content-visibility: auto`, so the browser skips their rendering until
+they come near. Wall labels are sized in CSS from each name's measured width (`--em`), with no script reads.
+Only `opacity` and `transform` animate, and all continuous motion stops under `prefers-reduced-motion`.
+
+`scripts/perf.py` measures boot, load blocking, the hero at rest and under a pointer, and scrolling, on a
+throttled phone profile and a desktop profile; `tests/e2e/test_performance.py` holds the site to a budget.
+
+## Security
+
+`scripts/build.mjs` writes a Content Security Policy into each standalone page, with the inline bundle pinned
+by SHA-256. The artifact fragment (`dist/artifact.html`) leaves the policy to its host. Untrusted text (project
+names from Wavefunction codes, files, storage) goes through `sanitizeProject` and the helpers in
+`src/engine/text.js` before any export writes it into CSS, JavaScript or SVG.
 
 ## Atelier
 

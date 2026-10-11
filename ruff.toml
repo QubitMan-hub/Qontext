@@ -1,0 +1,11 @@
+# Python outside the hardware package (python/ has its own settings): build helpers, the film recorder and
+# the browser tests.
+line-length = 120
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[lint.per-file-ignores]
+# The film recorder drives the browser with JavaScript snippets whose lines follow JavaScript style.
+"scripts/record-film.py" = ["E501"]

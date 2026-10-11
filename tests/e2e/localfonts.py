@@ -49,7 +49,9 @@ def install(target) -> None:
         if not path:
             route.abort()
             return
-        route.fulfill(status=200, content_type="font/woff2", body=path.read_bytes(), headers={"Access-Control-Allow-Origin": "*"})
+        route.fulfill(
+            status=200, content_type="font/woff2", body=path.read_bytes(), headers={"Access-Control-Allow-Origin": "*"}
+        )
 
     target.route("**/fonts.googleapis.com/**", css)
     target.route("**/fonts.gstatic.com/**", font)

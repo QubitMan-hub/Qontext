@@ -29,6 +29,9 @@ Every product and feature has one name, used the same way in the website, the At
 | **Many Worlds** | Per-visitor collapses of one design | Janus, the site's world switcher |
 | **Wavefunction** | A portable code (`QX1.`) for one exact design | Handoff, the site, Superpose |
 | **Walk-By** | Interlaced lenticular print files | Handoff |
+| **Wall Wash** | The site's walls take on a little of each room's own tile color as you walk in | The website |
+| **Compass** | A pocket floor plan: unvisited rooms are still split, visited rooms have collapsed | The website |
+| **Thresholds** | Each room's name enters the way its physics behaves | The website |
 | **Observer** | The 12 KB theme runtime for websites | `src/runtime/` → `dist/qontext-runtime.min.js` |
 | **Superpose** | The Figma plugin (Row and Column variable modes) | `figma-plugin/` |
 | **Probe** | The hardware runner CLI, `qontext-probe` | `python/` |
@@ -60,8 +63,27 @@ The site is an exhibit in itself. Things it does:
 - **A pointer that measures.** The hero field collapses under your pointer and drifts back into superposition.
 - **Linked by entanglement.** Spooky Pair's two cards take their accents from one entangled pair.
 - **Every view is a proof.** The footer shows that all six Mermin-Peres rules hold for your page.
-- **The floor plan is a Mermin-Peres square**, and each room's wall label stretches as you scroll.
+- **The floor plan is a Mermin-Peres square**, and the brand mark in the bar is the same map in miniature.
+- **Every room feels like a new room.** Wall Wash tints the walls with the room's own tile color, Compass shows
+  where you are and where you have been, and Thresholds bring each name in the way its physics behaves: Janus
+  flips, Mermin's Dare lands on plus and minus, Unity Wheel turns, Fringe ripples, Pentacle draws in star order,
+  Spooky Pair arrives from both ends at once, Unpaintables never settles the same way twice, Notary stamps and
+  Observer collapses.
 - **Your world, framed**: a poster of your world, plus a Wavefunction that opens it in the Atelier.
+
+It is built to be fast on an ordinary phone. Rooms sleep until you are about to reach them, off-screen sections
+skip rendering, the hero field is a repeating SVG tile with compositor-run shimmer, and nothing animates on the
+main thread while the page is still. Measured with `npm run perf` (phone profile: 4x CPU slowdown, touch
+scrolling), against v1.1.0:
+
+| | v1.1.0 | v1.2.0 |
+| --- | --- | --- |
+| Ready to use | 1,297 ms | about 330 ms |
+| Main thread blocked while loading | 1,508 ms | about 150 ms |
+| Main thread used by the hero at rest | 100% | under 1% |
+| Scrolling | 26 fps, 34 long tasks | 59 fps, no long tasks |
+
+The browser tests hold the site to a performance budget (`tests/e2e/test_performance.py`).
 
 ## Quick start
 
@@ -75,6 +97,7 @@ npm test            # engine and runtime unit tests (node:test)
 npm run lint        # ESLint
 npm run test:e2e    # browser tests (pip install pytest playwright && playwright install chromium)
 npm run film        # re-records the film (needs ffmpeg)
+npm run perf        # measures load, hero and scrolling on a phone and a desktop profile
 npm run check       # lint + test + build
 ```
 
@@ -112,8 +135,18 @@ qontext-probe --dry-run --ibm least_busy
 ## Privacy and network use
 
 The site, the Atelier and Observer make no network requests of their own. The pages load fonts from Google
-Fonts and fall back to system fonts when that is blocked. Images used for palette extraction never leave the
-device. Settings and your world number are stored in the browser only. No tracking.
+Fonts without blocking the first paint, and fall back to system fonts when that is blocked. Images used for
+palette extraction never leave the device. Settings and your world number are stored in the browser only. No
+tracking.
+
+## Security
+
+- The standalone pages carry a Content Security Policy: the only script that runs is the page's own bundle,
+  pinned by its SHA-256 hash; nothing can be fetched, framed or posted; the only third party is Google Fonts.
+- A Wavefunction code can come from anyone, so everything in it is sanitized on the way in (numbers clamped,
+  names reduced to one printable line) and escaped on the way out: a project name cannot break out of a CSS
+  comment, add a line to a Tailwind config or add markup to an SVG. `tests/engine/security.test.js` tries.
+- The website builds its DOM from text nodes, never from markup strings.
 
 ## License
 

@@ -2,6 +2,7 @@
 
 import { GRID, colValue, opAscii, rowValue } from './mermin.js';
 import { HARMONY_NAMES, harmony, pentaColors, tileColor } from './harmony.js';
+import { oneLine, xmlEscape, commentSafe } from './text.js';
 
 /** Everything an export needs, from a palette, one measurement round and pentagram probabilities. */
 export function buildExportData(palette, out, pentaProbs, meta = {}) {
@@ -30,11 +31,13 @@ export function buildExportData(palette, out, pentaProbs, meta = {}) {
   };
 }
 
-const header = (data) =>
-  `Qontext · ${data.meta.name} · ${data.meta.harmony} harmony, base phase ${Math.round(data.meta.base)} deg`;
+// The header carries the project name, which a shared Wavefunction code can set to anything. It is always
+// reduced to one printable line, then escaped for wherever it is written.
+const header = (data) => oneLine(`Qontext · ${data.meta.name} · ${data.meta.harmony} harmony, base phase ${Math.round(data.meta.base)} deg`);
 
 export function toCss(data, prefix = 'q') {
-  const lines = [`/* ${header(data)} */`, ':root {'];
+  if (!/^[a-z][a-z0-9-]*$/i.test(prefix)) prefix = 'q';
+  const lines = [`/* ${commentSafe(header(data))} */`, ':root {'];
   data.harmony.forEach((h, i) => lines.push(`  --${prefix}-harmony-${i + 1}: ${h};`));
   lines.push('', '  /* Context Grid: every tile carries a row reading and a column reading */');
   for (const t of data.tiles) {
@@ -82,7 +85,7 @@ export function toTailwind(data) {
   }
   data.penta.forEach((h, i) => (colors.penta[i + 1] = h));
   const body = JSON.stringify({ q: colors }, null, 2).split('\n').join('\n      ');
-  return `// ${header(data)}\n// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: ${body},\n    },\n  },\n};\n`;
+  return `// ${commentSafe(header(data))}\n// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: ${body},\n    },\n  },\n};\n`;
 }
 
 /** SVG of the split grid: upper-left triangle = row reading, lower-right = column reading. */
@@ -90,7 +93,7 @@ export function toSvgGrid(data, size = 300) {
   const s = size / 3;
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">`,
-    `  <title>${header(data)}</title>`,
+    `  <title>${xmlEscape(header(data))}</title>`,
   ];
   for (const t of data.tiles) {
     const x = t.c * s;

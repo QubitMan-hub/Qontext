@@ -2,7 +2,15 @@
 
 __version__ = "1.1.0"
 
-from .circuits import CHSH_ANGLES, CONTEXTS, GRID, SETTING_KEYS, bits_to_values, chsh_circuit, context_circuit  # noqa: E402
+from .circuits import (  # noqa: E402
+    CHSH_ANGLES,
+    CONTEXTS,
+    GRID,
+    SETTING_KEYS,
+    bits_to_values,
+    chsh_circuit,
+    context_circuit,
+)
 from .pool import POOL_FORMAT, PoolError, build_pool, chsh_value, mermin_score, validate_pool  # noqa: E402
 
 __all__ = [
