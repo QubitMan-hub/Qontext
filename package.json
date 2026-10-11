@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "watch": "node scripts/build.mjs --watch",
-    "test": "node --test \"tests/engine/*.test.js\"",
+    "test": "node --test \"tests/engine/*.test.js\" \"tests/film/*.test.js\"",
     "test:e2e": "python3 -m pytest tests/e2e -q",
     "film": "python3 scripts/record-film.py",
     "perf": "python3 scripts/perf.py",

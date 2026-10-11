@@ -6,3 +6,7 @@ __pycache__/
 qontext_pool.json
 .DS_Store
 .impeccable/live/
+film/node_modules/
+film/out/
+film/public/fonts/
+film/public/clips/

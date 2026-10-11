@@ -1,0 +1,341 @@
+{
+  "source": "estimate",
+  "durationMs": 154000,
+  "scenes": [
+    {
+      "id": "hook",
+      "startMs": 0,
+      "endMs": 11286,
+      "sentences": [
+        {
+          "text": "Okay, quick question.",
+          "startMs": 0,
+          "endMs": 926
+        },
+        {
+          "text": "Can one square be two colors at the same time?",
+          "startMs": 1146,
+          "endMs": 4232
+        },
+        {
+          "text": "Not a trick of the light.",
+          "startMs": 4453,
+          "endMs": 6304
+        },
+        {
+          "text": "Actually two colors, and both of them true.",
+          "startMs": 6525,
+          "endMs": 8993
+        },
+        {
+          "text": "Sounds fake, right?",
+          "startMs": 9214,
+          "endMs": 10140
+        },
+        {
+          "text": "Stick with me.",
+          "startMs": 10360,
+          "endMs": 11286
+        }
+      ]
+    },
+    {
+      "id": "idea",
+      "startMs": 11286,
+      "endMs": 35818,
+      "sentences": [
+        {
+          "text": "Back in the sixties, the artist Josef Albers showed that a color can look different depending on what's next to it.",
+          "startMs": 11880,
+          "endMs": 18360
+        },
+        {
+          "text": "But that's just your eyes.",
+          "startMs": 18581,
+          "endMs": 20124
+        },
+        {
+          "text": "Qontext goes way further.",
+          "startMs": 20344,
+          "endMs": 21579
+        },
+        {
+          "text": "In quantum physics, some things don't have one fixed answer.",
+          "startMs": 21799,
+          "endMs": 24885
+        },
+        {
+          "text": "What you get depends on how you check.",
+          "startMs": 25106,
+          "endMs": 27574
+        },
+        {
+          "text": "So here, a tile really is one color when you read it along its row, and a different color when you read it down its column.",
+          "startMs": 27795,
+          "endMs": 35818
+        }
+      ]
+    },
+    {
+      "id": "dare",
+      "startMs": 35818,
+      "endMs": 51842,
+      "sentences": [
+        {
+          "text": "Don't buy it?",
+          "startMs": 36412,
+          "endMs": 37337
+        },
+        {
+          "text": "Try Mermin's Dare.",
+          "startMs": 37558,
+          "endMs": 38484
+        },
+        {
+          "text": "Nine tiles, six rules.",
+          "startMs": 38704,
+          "endMs": 39939
+        },
+        {
+          "text": "Give every tile a plus or a minus and make all six rules happy.",
+          "startMs": 40159,
+          "endMs": 44479
+        },
+        {
+          "text": "You'll get five.",
+          "startMs": 44700,
+          "endMs": 45626
+        },
+        {
+          "text": "Everyone gets five.",
+          "startMs": 45846,
+          "endMs": 46772
+        },
+        {
+          "text": "A computer tried all five hundred and twelve ways.",
+          "startMs": 46993,
+          "endMs": 49770
+        },
+        {
+          "text": "Quantum gets six, every single time.",
+          "startMs": 49991,
+          "endMs": 51842
+        }
+      ]
+    },
+    {
+      "id": "world",
+      "startMs": 51842,
+      "endMs": 67734,
+      "sentences": [
+        {
+          "text": "That's what the Qontext website runs on.",
+          "startMs": 52436,
+          "endMs": 54596
+        },
+        {
+          "text": "The second you open it, it rolls the dice and picks colors just for you.",
+          "startMs": 54817,
+          "endMs": 59445
+        },
+        {
+          "text": "That's your world.",
+          "startMs": 59666,
+          "endMs": 60592
+        },
+        {
+          "text": "Your friend gets a different one.",
+          "startMs": 60812,
+          "endMs": 62664
+        },
+        {
+          "text": "And colors you haven't scrolled to yet aren't decided.",
+          "startMs": 62884,
+          "endMs": 65661
+        },
+        {
+          "text": "They settle the moment you look.",
+          "startMs": 65882,
+          "endMs": 67734
+        }
+      ]
+    },
+    {
+      "id": "rooms",
+      "startMs": 67734,
+      "endMs": 86711,
+      "sentences": [
+        {
+          "text": "Each room shows off a different trick.",
+          "startMs": 68328,
+          "endMs": 70488
+        },
+        {
+          "text": "Unity Wheel turns quantum math into perfect color combos.",
+          "startMs": 70708,
+          "endMs": 73485
+        },
+        {
+          "text": "Fringe mixes colors like waves of light.",
+          "startMs": 73706,
+          "endMs": 75866
+        },
+        {
+          "text": "Pentacle gives you five colors that never clash.",
+          "startMs": 76087,
+          "endMs": 78555
+        },
+        {
+          "text": "Spooky Pair links a light design and a dark one, so they react together.",
+          "startMs": 78776,
+          "endMs": 83096
+        },
+        {
+          "text": "And Unpaintables shows shapes you literally can't color by the rules.",
+          "startMs": 83317,
+          "endMs": 86711
+        }
+      ]
+    },
+    {
+      "id": "phase",
+      "startMs": 86711,
+      "endMs": 98458,
+      "sentences": [
+        {
+          "text": "Oh, and light mode versus dark mode?",
+          "startMs": 87305,
+          "endMs": 89465
+        },
+        {
+          "text": "Tap the moon.",
+          "startMs": 89685,
+          "endMs": 90611
+        },
+        {
+          "text": "You get a whole dial: light, dark, and every kind of dusk in between.",
+          "startMs": 90832,
+          "endMs": 95152
+        },
+        {
+          "text": "The text stays easy to read the whole way round.",
+          "startMs": 95372,
+          "endMs": 98458
+        }
+      ]
+    },
+    {
+      "id": "atelier",
+      "startMs": 98458,
+      "endMs": 121226,
+      "sentences": [
+        {
+          "text": "Want to make something?",
+          "startMs": 99052,
+          "endMs": 100287
+        },
+        {
+          "text": "Open the Atelier, the studio.",
+          "startMs": 100507,
+          "endMs": 102050
+        },
+        {
+          "text": "Play with every room, pick your colors, and save your design as one short code you can share.",
+          "startMs": 102271,
+          "endMs": 107825
+        },
+        {
+          "text": "Bouncer works like a bouncer at a club: if your text is hard to read on any color, it's not getting in.",
+          "startMs": 108046,
+          "endMs": 114834
+        },
+        {
+          "text": "Handoff sends your colors to code and design tools, and Walk-By makes prints that change color as you walk past.",
+          "startMs": 115055,
+          "endMs": 121226
+        }
+      ]
+    },
+    {
+      "id": "observer",
+      "startMs": 121226,
+      "endMs": 135266,
+      "sentences": [
+        {
+          "text": "Got a website?",
+          "startMs": 121820,
+          "endMs": 122746
+        },
+        {
+          "text": "Drop in Observer.",
+          "startMs": 122967,
+          "endMs": 123892
+        },
+        {
+          "text": "It's one tiny file, and every visitor gets their own world.",
+          "startMs": 124113,
+          "endMs": 127507
+        },
+        {
+          "text": "No server, no tracking.",
+          "startMs": 127728,
+          "endMs": 128962
+        },
+        {
+          "text": "Designer?",
+          "startMs": 129183,
+          "endMs": 129492
+        },
+        {
+          "text": "Superpose puts the same grid in Figma, with a row version and a column version of every color.",
+          "startMs": 129712,
+          "endMs": 135266
+        }
+      ]
+    },
+    {
+      "id": "probe",
+      "startMs": 135266,
+      "endMs": 147102,
+      "sentences": [
+        {
+          "text": "Want the real deal?",
+          "startMs": 135860,
+          "endMs": 137095
+        },
+        {
+          "text": "Probe runs it all on an actual IBM quantum computer.",
+          "startMs": 137315,
+          "endMs": 140401
+        },
+        {
+          "text": "Then Notary checks the results and stamps them with a seal, so anyone can see exactly where your colors came from.",
+          "startMs": 140622,
+          "endMs": 147102
+        }
+      ]
+    },
+    {
+      "id": "outro",
+      "startMs": 147102,
+      "endMs": 154000,
+      "sentences": [
+        {
+          "text": "That's Qontext.",
+          "startMs": 147696,
+          "endMs": 148313
+        },
+        {
+          "text": "Colors that depend on how you look at them.",
+          "startMs": 148534,
+          "endMs": 151311
+        },
+        {
+          "text": "Open the Atelier and make your own world.",
+          "startMs": 151531,
+          "endMs": 154000
+        }
+      ]
+    }
+  ]
+}

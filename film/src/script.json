@@ -1,0 +1,117 @@
+{
+  "scenes": [
+    {
+      "id": "hook",
+      "chapter": "One square, two colors",
+      "sentences": [
+        "Okay, quick question.",
+        "Can one square be two colors at the same time?",
+        "Not a trick of the light.",
+        "Actually two colors, and both of them true.",
+        "Sounds fake, right?",
+        "Stick with me."
+      ]
+    },
+    {
+      "id": "idea",
+      "chapter": "The big idea",
+      "sentences": [
+        "Back in the sixties, the artist Josef Albers showed that a color can look different depending on what's next to it.",
+        "But that's just your eyes.",
+        "Qontext goes way further.",
+        "In quantum physics, some things don't have one fixed answer.",
+        "What you get depends on how you check.",
+        "So here, a tile really is one color when you read it along its row, and a different color when you read it down its column."
+      ]
+    },
+    {
+      "id": "dare",
+      "chapter": "Mermin's Dare",
+      "sentences": [
+        "Don't buy it?",
+        "Try Mermin's Dare.",
+        "Nine tiles, six rules.",
+        "Give every tile a plus or a minus and make all six rules happy.",
+        "You'll get five.",
+        "Everyone gets five.",
+        "A computer tried all five hundred and twelve ways.",
+        "Quantum gets six, every single time."
+      ]
+    },
+    {
+      "id": "world",
+      "chapter": "Your own world",
+      "sentences": [
+        "That's what the Qontext website runs on.",
+        "The second you open it, it rolls the dice and picks colors just for you.",
+        "That's your world.",
+        "Your friend gets a different one.",
+        "And colors you haven't scrolled to yet aren't decided.",
+        "They settle the moment you look."
+      ]
+    },
+    {
+      "id": "rooms",
+      "chapter": "The rooms",
+      "sentences": [
+        "Each room shows off a different trick.",
+        "Unity Wheel turns quantum math into perfect color combos.",
+        "Fringe mixes colors like waves of light.",
+        "Pentacle gives you five colors that never clash.",
+        "Spooky Pair links a light design and a dark one, so they react together.",
+        "And Unpaintables shows shapes you literally can't color by the rules."
+      ]
+    },
+    {
+      "id": "phase",
+      "chapter": "Phase Dial",
+      "sentences": [
+        "Oh, and light mode versus dark mode?",
+        "Tap the moon.",
+        "You get a whole dial: light, dark, and every kind of dusk in between.",
+        "The text stays easy to read the whole way round."
+      ]
+    },
+    {
+      "id": "atelier",
+      "chapter": "The Atelier",
+      "sentences": [
+        "Want to make something?",
+        "Open the Atelier, the studio.",
+        "Play with every room, pick your colors, and save your design as one short code you can share.",
+        "Bouncer works like a bouncer at a club: if your text is hard to read on any color, it's not getting in.",
+        "Handoff sends your colors to code and design tools, and Walk-By makes prints that change color as you walk past."
+      ]
+    },
+    {
+      "id": "observer",
+      "chapter": "Observer and Superpose",
+      "sentences": [
+        "Got a website?",
+        "Drop in Observer.",
+        "It's one tiny file, and every visitor gets their own world.",
+        "No server, no tracking.",
+        "Designer?",
+        "Superpose puts the same grid in Figma, with a row version and a column version of every color."
+      ]
+    },
+    {
+      "id": "probe",
+      "chapter": "Probe and Notary",
+      "sentences": [
+        "Want the real deal?",
+        "Probe runs it all on an actual IBM quantum computer.",
+        "Then Notary checks the results and stamps them with a seal, so anyone can see exactly where your colors came from."
+      ]
+    },
+    {
+      "id": "outro",
+      "chapter": "Make your own world",
+      "sentences": [
+        "That's Qontext.",
+        "Colors that depend on how you look at them.",
+        "Open the Atelier and make your own world."
+      ]
+    }
+  ]
+}
