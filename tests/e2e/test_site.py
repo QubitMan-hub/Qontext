@@ -284,3 +284,35 @@ def test_phase_follows_the_system_until_turned(browser):
     assert phase_of(page) == "90"
     ctx.close()
     assert errors == []
+
+
+def test_phase_dial_by_keyboard(site):
+    site.focus("#phaseBtn")
+    site.keyboard.press("Enter")
+    assert site.locator("#phase").is_visible()
+    assert site.evaluate("document.activeElement.id") == "phaseRing"
+    ring = "#phaseRing"
+    for key, want in [("ArrowRight", "1"), ("Shift+ArrowRight", "16"), ("PageUp", "61"), ("End", "180"), ("Home", "0")]:
+        site.keyboard.press(key)
+        assert site.get_attribute(ring, "aria-valuenow") == want, key
+        assert phase_of(site) == want
+    site.keyboard.press("ArrowLeft")
+    assert site.get_attribute(ring, "aria-valuenow") == "359"
+    assert "°" in site.get_attribute(ring, "aria-valuetext")
+    site.keyboard.press("Escape")
+    assert site.locator("#phase").is_hidden()
+    assert site.evaluate("document.activeElement.id") == "phaseBtn"
+
+
+def test_phase_dial_buttons_and_line(site):
+    site.click("#phaseBtn")
+    site.click('#phase [data-phase-to="180"]')
+    assert phase_of(site) == "180"
+    line = site.inner_text("#phaseLine")
+    m = re.fullmatch(r"Phase 180°\. All text reads at (\d+\.\d) : 1 or better\. Bouncer checked all 360 angles\.", line)
+    assert m, line
+    assert float(m.group(1)) >= 4.5
+    assert site.evaluate("localStorage.getItem('qontext:phase')") == "180"
+    site.click("#phaseSystem")
+    assert site.evaluate("localStorage.getItem('qontext:phase')") is None
+    assert phase_of(site) == "0"

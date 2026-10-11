@@ -18,10 +18,21 @@
       <li><a href="#film">Film</a></li>
     </ul>
     <button class="world" type="button" id="worldBtn" title="Visit another world"><span class="dot" aria-hidden="true"></span><span><span class="lbl">World </span><span class="num" id="worldNum">-</span></span></button>
+    <button class="moon" type="button" id="phaseBtn" aria-expanded="false" aria-controls="phase" title="Phase Dial: light, dark and every angle between"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11"/><path id="moonLit" d="M0 -11A11 11 0 0 0 0 11A11 11 0 0 0 0 -11Z"/></svg><span class="sr-only">Phase Dial</span></button>
     <a class="btn small open-atelier" href="studio.html">Open the Atelier</a>
     <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
   </div>
 </header>
+
+<div class="phase" id="phase" role="dialog" aria-labelledby="phaseTitle" hidden>
+  <p class="phase-title" id="phaseTitle">Phase Dial <span>light, dark and every angle between</span></p>
+  <div class="phase-ring" id="phaseRing" role="slider" tabindex="0" aria-label="Phase angle" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-valuetext="0°, light">
+    <span class="phase-mark top" aria-hidden="true">Light</span><span class="phase-deg" id="phaseDeg" aria-hidden="true">0°</span><span class="phase-mark bottom" aria-hidden="true">Dark</span>
+    <span class="phase-handle" aria-hidden="true"></span>
+  </div>
+  <p class="phase-line" id="phaseLine" aria-live="polite"></p>
+  <div class="actions"><button class="btn small ghost" type="button" data-phase-to="0">Light</button><button class="btn small ghost" type="button" data-phase-to="180">Dark</button><button class="btn small ghost" type="button" id="phaseSystem">Follow system</button></div>
+</div>
 
 <div class="menu" id="menu" hidden>
   <div class="menu-top"><span class="brand">Qontext</span><button class="btn small ghost" type="button" id="menuClose">Close</button></div>

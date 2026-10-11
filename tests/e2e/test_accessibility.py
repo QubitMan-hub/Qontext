@@ -66,6 +66,33 @@ def test_site_has_no_axe_violations(browser, size, scheme):
     assert errors == []
 
 
+@pytest.mark.parametrize("phase", [90, 270])
+@pytest.mark.parametrize("size", list(VIEWPORTS))
+def test_site_reads_at_dusk(browser, size, phase):
+    """90 and 270 degrees are the Phase Dial's hardest angles: the walls sit near the band where no ink reads."""
+    errors = []
+    ctx, page = _new_page(browser, VIEWPORTS[size], errors)
+    page.add_init_script(f"localStorage.setItem('qontext:phase', '{phase}')")
+    page.goto(SITE)
+    page.wait_for_selector("#plan .cellwrap")
+    assert page.evaluate("document.documentElement.dataset.phase") == str(phase)
+    wake_every_room(page)
+    violations = scan(page)
+    # The dial itself, open.
+    page.click("#phaseBtn")
+    violations += scan(page)
+    page.keyboard.press("Escape")
+    # A new world brings new tiles to the Wall Wash, and Bouncer checks again.
+    page.click("#worldBtn")
+    page.wait_for_function("() => document.getElementById('toast').innerText.startsWith('Welcome')")
+    page.wait_for_timeout(1300)
+    wake_every_room(page)
+    violations += scan(page)
+    ctx.close()
+    assert violations == [], report(violations)
+    assert errors == []
+
+
 @pytest.mark.parametrize("scheme", ["light", "dark"])
 @pytest.mark.parametrize("size", list(VIEWPORTS))
 def test_atelier_has_no_axe_violations(browser, size, scheme):
