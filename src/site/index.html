@@ -2,7 +2,7 @@
 <meta name="description" content="Qontext is a design engine built on quantum contextuality: color that depends on how it is read, and a website that collapses into its own world for every visitor.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"></noscript>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Literata:opsz,wght@7..72,300..700&display=swap"></noscript>
 <style>/*__CSS__*/</style>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -14,7 +14,6 @@
       <li><a href="#idea">Idea</a></li>
       <li><a href="#floor">Floor plan</a></li>
       <li><a href="#room-janus">Rooms</a></li>
-      <li><a href="#firsts">Firsts</a></li>
       <li><a href="#tools">Tools</a></li>
       <li><a href="#film">Film</a></li>
     </ul>
@@ -38,7 +37,6 @@
     <li><a href="#room-unpaintables">Unpaintables <span>impossible shapes</span></a></li>
     <li><a href="#room-notary">Notary <span>hardware provenance</span></a></li>
     <li><a href="#room-observer">Observer <span>this site runs on it</span></a></li>
-    <li><a href="#firsts">Firsts <span>what this page does</span></a></li>
     <li><a href="#tools">Tools <span>take it home</span></a></li>
     <li><a href="#film">Film <span>one minute</span></a></li>
     <li><a href="studio.html">Open the Atelier <span>the studio</span></a></li>
@@ -54,7 +52,7 @@
       <div class="frame q" data-q="r2c2">
         <div class="sheet">
           <h1 id="heroTitle"><span class="w">Every</span> <span class="w">color</span> <span class="w">on</span> <span class="w">this</span> <span class="w">page</span> <span class="w">was</span> <span class="w">decided</span> <span class="w">when</span> <span class="w">you</span> <span class="w">looked</span> <span class="w">at</span> <span class="w">it.</span></h1>
-          <p class="lead">Qontext is a design engine built on quantum contextuality. One tile can hold two true colors, depending on how you read it. No ordinary palette can do that.</p>
+          <p class="lead">Qontext is a design engine built on quantum contextuality: a tile can hold two true colors, one for each way you read it, and the mathematics shows a fixed palette never could.</p>
           <div class="actions">
             <a class="btn" href="studio.html"><span class="sw" aria-hidden="true"></span>Open the Atelier</a>
             <a class="btn ghost" href="#film">Watch the film</a>
@@ -76,11 +74,11 @@
     <div class="idea">
       <figure>
         <div class="albers" id="albers" role="img" aria-label="Two identical small squares on different backgrounds"><div><div class="core"></div></div><div><div class="core"></div></div></div>
-        <figcaption>The two small squares are exactly the same color, <code id="albersHex">-</code>. Your eye disagrees because the grounds differ. That is Albers.</figcaption>
+        <figcaption>The two small squares are exactly the same color, <code id="albersHex">-</code>. Your eye disagrees only because the grounds differ.</figcaption>
       </figure>
       <figure>
         <div class="janus-big" id="janusBig" role="img" aria-label="One tile shown with its row reading and its column reading"><div class="half q" data-q="r1c1" data-q-ctx="row"><span>read with its row</span></div><div class="half q" data-q="r1c1" data-q-ctx="col"><span>read with its column</span></div></div>
-        <figcaption>This is one tile, X<sub>1</sub>, measured in two contexts. The colors really differ, and both readings obey the rules. That is Qontext.</figcaption>
+        <figcaption>This is one tile, X<sub>1</sub>, measured in two contexts. Here the colors really differ, and both readings obey the rules.</figcaption>
       </figure>
     </div>
   </div>
@@ -93,248 +91,173 @@
       <p>The map of this site is a Mermin-Peres square. Each room is one quantum observable, and every row and column is a context. Pick a room, or press a row or column to read it.</p>
     </div>
     <div class="plan" id="plan"></div>
-    <div class="plan-foot"><span>Rules this map obeys in your world: <strong id="planRules">6 of 6</strong></span><span>Best possible with fixed colors: <strong>5 of 6</strong></span><span>Rooms that change color with context: <strong id="planDiff">-</strong></span></div>
+    <div class="plan-foot"><span>Rules this map obeys in your world: <strong id="planRules">6 of 6</strong></span><span>Best possible with fixed colors: <strong>5 of 6</strong></span><span>Rooms that change color with context: <strong id="planDiff">-</strong></span><span>Swatches on this page you have not looked at yet: <strong id="planWaiting">-</strong></span></div>
   </div>
 </section>
 
 <article class="room" id="room-janus" data-q-context="row" aria-labelledby="t-janus">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-janus">Janus</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Nine tiles, each a quantum observable. Read a tile with its row and it takes one color; read it with its column and it can take another. Both readings obey their rules. No fixed palette can.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Brand systems that change with context (a page, a season, a partner) and stay mathematically coherent.</li>
-          <li>Interface states where one element really is different in each place it appears.</li>
-          <li>Posters and patterns that change as people look along rows or down columns.</li>
-        </ul>
+    <div class="wall-text">
+      <p class="source">Mermin-Peres square, 1990</p>
+      <p>Nine tiles, each a quantum observable. Read a tile along its row and it takes one color; read it down its column and it can take another, and both readings keep their rules. That lets a brand system change with the page, the season or the partner and still hold together.</p>
+    </div>
+    <div class="exhibit">
+      <div class="jgrid" id="jgrid"></div>
+      <div class="actions">
+        <div class="seg" role="group" aria-label="Reading"><button type="button" data-jread="auto" aria-pressed="true">Follow scroll</button><button type="button" data-jread="rows" aria-pressed="false">Rows</button><button type="button" data-jread="cols" aria-pressed="false">Columns</button></div>
+        <button class="btn small ghost" type="button" id="jMeasure">Measure again</button>
       </div>
-      <div class="exhibit">
-        <div class="jgrid" id="jgrid"></div>
-        <div class="actions">
-          <div class="seg" role="group" aria-label="Reading"><button type="button" data-jread="auto" aria-pressed="true">Follow scroll</button><button type="button" data-jread="rows" aria-pressed="false">Rows</button><button type="button" data-jread="cols" aria-pressed="false">Columns</button></div>
-          <button class="btn small ghost" type="button" id="jMeasure">Measure again</button>
-        </div>
-        <p class="cap" id="jCap" aria-live="polite"></p>
-      </div>
+      <p class="cap" id="jCap" aria-live="polite"></p>
     </div>
   </div>
 </article>
 
-<article class="room flip" id="room-dare" data-q-context="col" aria-labelledby="t-dare">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+<article class="room" id="room-dare" data-q-context="col" aria-labelledby="t-dare">
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-dare">Mermin's Dare</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Give each tile a fixed value, +1 or −1, and try to satisfy all six rules. Five is the most anyone gets. A computer checked all 512 options; quantum measurement gets six, every time.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>A two-minute way to feel why a Qontext palette cannot be faked.</li>
-          <li>Onboarding for designers who have never heard of contextuality.</li>
-          <li>A classroom demonstration of quantum physics with nothing to install.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <div class="dare">
-          <div class="dgrid" id="dgrid" role="group" aria-label="Your fixed values"></div>
-          <div class="stack">
-            <p class="verdict" id="dVerdict" aria-live="polite">-</p>
-            <div class="rules" id="dRules"></div>
-          </div>
+    <div class="exhibit">
+      <div class="dare">
+        <div class="dgrid" id="dgrid" role="group" aria-label="Your fixed values"></div>
+        <div class="stack">
+          <p class="verdict" id="dVerdict" aria-live="polite">-</p>
+          <div class="rules" id="dRules"></div>
+          <p class="cap">Rows must multiply to +1. Columns one and two to +1. Column three to −1.</p>
         </div>
-        <div class="actions"><button class="btn small" type="button" id="dQuantum">Let quantum measure it</button><button class="btn small ghost" type="button" id="dReset">Start over</button></div>
-        <p class="cap">Rows must multiply to +1. Columns one and two to +1. Column three to −1.</p>
       </div>
+      <div class="actions"><button class="btn small" type="button" id="dQuantum">Let quantum measure it</button><button class="btn small ghost" type="button" id="dReset">Start over</button></div>
+    </div>
+    <div class="wall-text">
+      <p class="source">After N. David Mermin, 1990</p>
+      <p>Give each tile a fixed value, +1 or −1, and try to satisfy all six rules. Five is the best anyone gets; a computer checked all 512 ways. Quantum measurement gets six every time, which is why a Qontext palette can't be faked.</p>
     </div>
   </div>
 </article>
 
 <article class="room" id="room-wheel" data-q-context="row" aria-labelledby="t-wheel">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-wheel">Unity Wheel</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">A system with d quantum levels has d phases spaced evenly around a circle. On the color wheel those are the classic harmonies: two levels make a complementary pair, three a triad, four a square.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Perfectly balanced palettes from a single number.</li>
-          <li>Rotating a whole harmony at once, so brand colors can drift over time without falling out of balance.</li>
-          <li>Scroll through this room and the phase turns with you.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <div class="wheel-wrap">
-          <svg id="wheelSvg" viewBox="-110 -110 220 220" role="img" aria-label="Color wheel with harmony points"></svg>
-          <div class="stack">
-            <label class="range" for="wheelD"><span class="top"><span>Quantum levels</span><b id="wheelDVal">3</b></span><input type="range" id="wheelD" min="2" max="8" step="1" value="3"></label>
-            <p class="cap" id="wheelCap"></p>
-            <div class="chips" id="wheelChips"></div>
-          </div>
+    <div class="wall-text">
+      <p class="source">Roots of unity</p>
+      <p>A system with d quantum levels has d phases spread evenly around a circle. On a color wheel those are the classic harmonies: two levels give a complementary pair, three a triad, four a square. Scroll, and the whole harmony turns at once.</p>
+    </div>
+    <div class="exhibit">
+      <div class="wheel-wrap">
+        <svg id="wheelSvg" viewBox="-110 -110 220 220" role="img" aria-label="Color wheel with harmony points"></svg>
+        <div class="stack">
+          <label class="range" for="wheelD"><span class="top"><span>Quantum levels</span><b id="wheelDVal">3</b></span><input type="range" id="wheelD" min="2" max="8" step="1" value="3"></label>
+          <p class="cap" id="wheelCap"></p>
+          <div class="chips" id="wheelChips"></div>
         </div>
       </div>
     </div>
   </div>
 </article>
 
-<article class="room flip" id="room-fringe" data-q-context="col" aria-labelledby="t-fringe">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+<article class="room" id="room-fringe" data-q-context="col" aria-labelledby="t-fringe">
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-fringe">Fringe</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Each color becomes a wave: hue is its phase, chroma its amplitude. Two colors meet at a beam splitter and leave through two ports. Shift the phase and the ports trade color while the total stays exactly the same.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Paired gradients for light and dark modes that always balance each other.</li>
-          <li>Blends that cancel to gray in one place and double up in another.</li>
-          <li>Drag across the band to move the phase.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
+    <div class="wall-text">
+      <p class="source">After Mach and Zehnder, 1892</p>
+      <p>Each color becomes a wave: hue is its phase, chroma its height. Two colors meet at a beam splitter and leave by two ports. Drag across the band to shift the phase, and the ports trade color while their total stays exactly the same. It gives light and dark gradients that always balance.</p>
+    </div>
+    <div class="exhibit">
+      <div class="bleed">
         <div class="band" id="band" role="slider" tabindex="0" aria-label="Relative phase" aria-valuemin="0" aria-valuemax="360" aria-valuenow="0"><div class="needle" id="needle"></div></div>
         <div class="ports"><div class="port" id="port1"><span id="port1t">-</span></div><div class="port" id="port2"><span id="port2t">-</span></div></div>
-        <div class="inputs"><label for="fA">Wave A <input type="color" id="fA"></label><label for="fB">Wave B <input type="color" id="fB"></label><span class="muted" id="fEnergy"></span></div>
       </div>
+      <div class="inputs"><label for="fA">Wave A <input type="color" id="fA"></label><label for="fB">Wave B <input type="color" id="fB"></label><span class="cap" id="fEnergy"></span></div>
     </div>
   </div>
 </article>
 
 <article class="room" id="room-pentacle" data-q-context="row" aria-labelledby="t-pentacle">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-pentacle">Pentacle</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Five quantum events on a star where linked events exclude each other. Classical models cap their total chance at 2. One qutrit reaches the square root of 5, and the palette follows that geometry.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Five-category palettes for charts and maps where neighbours must never look alike.</li>
-          <li>Star layouts and badges with color rules built in.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <div class="penta">
-          <svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentacle palette"></svg>
-          <div class="stack">
-            <div><span class="big" id="pentaSum">2.236</span></div>
-            <div class="meter"><div class="fill" id="pentaFill"></div><div class="bound" id="pentaBound"></div></div>
-            <div class="meter-scale"><span>0</span><span>classical limit 2</span><span>2.236</span></div>
-            <label class="range" for="pentaTilt"><span class="top"><span>Tilt the qutrit</span><b id="pentaTiltVal">0°</b></span><input type="range" id="pentaTilt" min="0" max="80" step="1" value="0"></label>
-          </div>
+    <div class="wall-text">
+      <p class="source">Klyachko, Can, Binicioğlu and Shumovsky, 2008</p>
+      <p>Five events on a star, where linked events exclude each other. Any classical model keeps their total chance at 2 or less. One qutrit reaches the square root of 5, and the palette follows that geometry: five colors for charts and maps where neighbours never look alike.</p>
+    </div>
+    <div class="exhibit">
+      <div class="penta">
+        <svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentacle palette"></svg>
+        <div class="stack">
+          <div><span class="big" id="pentaSum">2.236</span></div>
+          <div class="meter"><div class="fill" id="pentaFill"></div><div class="bound" id="pentaBound"></div></div>
+          <div class="meter-scale"><span>0</span><span>classical limit 2</span><span>2.236</span></div>
+          <label class="range" for="pentaTilt"><span class="top"><span>Tilt the qutrit</span><b id="pentaTiltVal">0°</b></span><input type="range" id="pentaTilt" min="0" max="80" step="1" value="0"></label>
         </div>
       </div>
     </div>
   </div>
 </article>
 
-<article class="room flip" id="room-spooky" data-q-context="col" aria-labelledby="t-spooky">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+<article class="room" id="room-spooky" data-q-context="col" aria-labelledby="t-spooky">
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-spooky">Spooky Pair</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">A light asset and a dark asset share an entangled pair. Each picks a style, and its accent is the measurement outcome. Their accents match and clash more reliably than any two independent rules could.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Light and dark themes that stay linked without anyone matching them by hand.</li>
-          <li>Co-branded pairs that always answer each other.</li>
-          <li>Press measure and both cards change at once, however far apart they sit.</li>
-        </ul>
+    <div class="wall-text">
+      <p class="source">Clauser, Horne, Shimony and Holt, 1969</p>
+      <p>The light half and the dark half of this wall share one entangled pair. Each side picks a style, and its accent is the measurement outcome. Over many pairs they agree more often than any two independent rules could, so light and dark themes stay linked without anyone matching them by hand.</p>
+    </div>
+    <div class="exhibit">
+      <div class="spooky bleed" id="spooky">
+        <svg class="thread" id="thread" aria-hidden="true"><path d=""/></svg>
+        <div class="asset a" id="assetA"><div class="asset-in"><div class="state"><strong>Light asset</strong><span id="aOut">-</span></div><div class="bar" id="aBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="aCta">Get started</span>
+          <label class="small" for="aStyle">Style <select id="aStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div></div>
+        <div class="asset b" id="assetB"><div class="asset-in"><div class="state"><strong>Dark asset</strong><span id="bOut">-</span></div><div class="bar" id="bBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="bCta">Get started</span>
+          <label class="small" for="bStyle">Style <select id="bStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div></div>
       </div>
-      <div class="exhibit">
-        <div class="spooky" id="spooky">
-          <svg class="thread" id="thread" aria-hidden="true"><path d=""/></svg>
-          <div class="asset a" id="assetA"><div class="state"><strong>Light asset</strong><span id="aOut">-</span></div><div class="bar" id="aBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="aCta">Get started</span>
-            <label class="small" for="aStyle">Style <select id="aStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div>
-          <div class="asset b" id="assetB"><div class="state"><strong>Dark asset</strong><span id="bOut">-</span></div><div class="bar" id="bBar"></div><div class="ln"></div><div class="ln short"></div><span class="cta" id="bCta">Get started</span>
-            <label class="small" for="bStyle">Style <select id="bStyle"><option value="0">Calm</option><option value="1">Bold</option></select></label></div>
-        </div>
-        <div class="actions"><button class="btn small" type="button" id="pairBtn">Measure the pair</button><button class="btn small ghost" type="button" id="pairMany">Measure 500 pairs</button></div>
-        <div class="tally" id="tally"></div>
-      </div>
+      <div class="actions"><button class="btn small" type="button" id="pairBtn">Measure the pair</button><button class="btn small ghost" type="button" id="pairMany">Measure 500 pairs</button></div>
+      <div class="tally" id="tally"></div>
     </div>
   </div>
 </article>
 
 <article class="room" id="room-unpaintables" data-q-context="row" aria-labelledby="t-unpaintables">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-unpaintables">Unpaintables</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Each shape is a set of directions in space. A classical coloring must light exactly one direction in every perpendicular set, and never two perpendicular ones. For Peres 33 and Cabello 18 that is impossible, so one set always breaks, and it glows.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Generative art and 3D prints that carry a mathematical certificate of impossibility.</li>
-          <li>Star tilings and sculptures, exported from the Atelier as SVG and OBJ.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <div class="seg" role="group" aria-label="Shape"><button type="button" data-uset="peres33" aria-pressed="true">Peres 33</button><button type="button" data-uset="cabello18" aria-pressed="false">Cabello 18</button><button type="button" data-uset="yuoh13" aria-pressed="false">Yu-Oh 13</button></div>
-        <div class="shape-wrap">
-          <canvas id="uCanvas" width="640" height="640" role="img" aria-label="Rotating impossible shape. Scroll or drag to turn it."></canvas>
-          <div class="facts" id="uFacts"></div>
-        </div>
-        <p class="cap" id="uCap"></p>
-      </div>
+    <div class="wall-text">
+      <p class="source">After Kochen and Specker, 1967</p>
+      <p>Each shape is a set of directions in space. A classical coloring has to light exactly one direction in every perpendicular set, and never two perpendicular ones. For Peres 33 and Cabello 18 that can't be done, so one set always breaks, and it glows. The Atelier exports them as SVG and OBJ for prints and sculpture.</p>
+      <div class="facts" id="uFacts"></div>
+    </div>
+    <div class="exhibit">
+      <div class="seg" role="group" aria-label="Shape"><button type="button" data-uset="peres33" aria-pressed="true">Peres 33</button><button type="button" data-uset="cabello18" aria-pressed="false">Cabello 18</button><button type="button" data-uset="yuoh13" aria-pressed="false">Yu-Oh 13</button></div>
+      <canvas id="uCanvas" width="640" height="640" role="img" aria-label="Rotating impossible shape. Scroll or drag to turn it."></canvas>
+      <p class="cap" id="uCap"></p>
     </div>
   </div>
 </article>
 
-<article class="room flip" id="room-notary" data-q-context="col" aria-labelledby="t-notary">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+<article class="room" id="room-notary" data-q-context="col" aria-labelledby="t-notary">
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-notary">Notary</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Run the circuits on IBM Quantum with Probe and load the results. Notary scores them against classical limits and seals the shots with a SHA-256 hash, the device name and the job record.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Numbered editions with real provenance, and no blockchain.</li>
-          <li>Showing a client that a design came from a quantum computer, with the numbers to prove it.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <div class="seal" id="seal" aria-live="polite"></div>
-        <p class="cap">This seal is sealed from the example pool that ships with Qontext, measured on a noisy simulator, and it says so. Seals from IBM hardware name the device.</p>
-      </div>
+    <div class="wall-text">
+      <p class="source">SHA-256 seal on IBM Quantum shots</p>
+      <p>Run the circuits on IBM Quantum with Probe and load the results here. Notary scores them against the classical limits and seals the shots with a SHA-256 hash, the device name and the job record, so a print edition carries provenance anyone can check.</p>
+    </div>
+    <div class="exhibit">
+      <div class="seal" id="seal" aria-live="polite"></div>
+      <p class="cap">This seal comes from the example pool that ships with Qontext, measured on a noisy simulator, and it says so. Seals from IBM hardware name the device.</p>
     </div>
   </div>
 </article>
 
 <article class="room" id="room-observer" data-q-context="row" aria-labelledby="t-observer">
-  <div class="wrap">
-    <div class="strip" data-strip></div>
-    <p class="room-meta" data-meta></p>
+  <div class="wrap room-in">
     <h2 class="room-name" id="t-observer">Observer</h2>
-    <div class="room-body">
-      <div class="room-copy">
-        <p class="what">Observer is a 12 KB script. It gives every visitor their own collapse, keeps it for their session, and exposes the colors as CSS variables. This page is running on it right now.</p>
-        <h3>What it's for</h3>
-        <ul class="uses">
-          <li>Websites where every visitor gets a unique color system that is still on brand.</li>
-          <li>No server, no tracking, no network calls.</li>
-        </ul>
-      </div>
-      <div class="exhibit">
-        <pre class="code" tabindex="0" role="region" aria-label="Observer setup code"><code>&lt;script src="qontext-runtime.min.js"
+    <div class="wall-text">
+      <p class="source">12 KB of JavaScript</p>
+      <p>Observer gives each visitor their own collapse, keeps it for the session, and exposes the colors as CSS variables. It needs no server and makes no network calls. This page runs on it.</p>
+    </div>
+    <div class="exhibit">
+      <pre class="code" tabindex="0" role="region" aria-label="Observer setup code"><code>&lt;script src="qontext-runtime.min.js"
   data-qontext='{"base":<span id="obsBase">200</span>,"d":3}'&gt;&lt;/script&gt;
 
 &lt;section data-q-context="row"&gt;
   &lt;div data-q-tile="r1c1"&gt;&lt;/div&gt;
 &lt;/section&gt;</code></pre>
+      <div class="stack">
         <p class="cap">Your world's live variables:</p>
         <div class="vars" id="obsVars"></div>
       </div>
@@ -342,30 +265,13 @@
   </div>
 </article>
 
-<section class="section" id="firsts" data-q-context="col" aria-labelledby="firstsTitle">
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id="firstsTitle">Things this page does that we have not seen any website do</h2>
-      <p>Each one is running now, on this page, in your world.</p>
-    </div>
-    <div class="firsts">
-      <div class="first"><h3>Your copy is a measurement</h3><p>The palette you see was drawn from a quantum state when you arrived. Another visitor sees another world.</p><span class="live" id="f1">World -</span><button class="btn small ghost" type="button" data-many>Visit another world</button></div>
-      <div class="first"><h3>Colors wait until you look</h3><p>Swatches you have not reached yet shimmer between both possible outcomes. Scrolling to them collapses them.</p><span class="live" id="f2">-</span></div>
-      <div class="first"><h3>One token, two truths</h3><p>Rooms alternate between reading the grid by rows and by columns, so one token can be two colors on the same page.</p><span class="pair-sw" id="f3"></span></div>
-      <div class="first"><h3>A pointer that measures</h3><p>In the field at the top, tiles settle into a color where your pointer passes and drift back into superposition when it leaves.</p><a class="btn small ghost" href="#hero">Try it</a></div>
-      <div class="first"><h3>Linked by entanglement, not by code</h3><p>The two cards in Spooky Pair take their accents from one entangled pair, so they answer each other however far apart they sit.</p><span class="live" id="f5">Measure some pairs</span></div>
-      <div class="first"><h3>Every view is a proof</h3><p>This page's colors obey all six Mermin-Peres rules. A website with fixed colors can satisfy five at most.</p><span class="live" id="f6">6 of 6</span></div>
-    </div>
-  </div>
-</section>
-
 <section class="section" id="frame" data-q-context="row" aria-labelledby="frameTitle">
   <div class="wrap framed">
-    <img id="poster" alt="A poster of your world" width="1080" height="1350">
+    <div class="poster"><img id="poster" alt="A poster of your world" width="1080" height="1350" hidden></div>
     <div class="stack wide">
       <div class="section-head flush"><h2 id="frameTitle">Your world, framed</h2><p>A poster of the exact world you are in. Keep it with a long press or right click, or open it in the Atelier and keep designing.</p></div>
       <div class="actions"><a class="btn" id="editWorld" href="studio.html">Edit this world in the Atelier</a><button class="btn ghost" type="button" data-many>Frame another world</button></div>
-      <div><p class="small muted label">Your Wavefunction (the code for this world)</p><div class="wf" id="wf" tabindex="0" role="region" aria-label="Wavefunction code">-</div></div>
+      <div><p class="small muted label">Your Wavefunction, the code for this world</p><div class="wf" id="wf" tabindex="0" role="region" aria-label="Wavefunction code">-</div></div>
       <button class="btn small ghost" type="button" id="wfCopy">Copy Wavefunction</button>
     </div>
   </div>
@@ -374,15 +280,13 @@
 <section class="section" id="tools" data-q-context="col" aria-labelledby="toolsTitle">
   <div class="wrap">
     <div class="section-head"><h2 id="toolsTitle">Take it home</h2><p>Every room above runs on one engine. These are the ways to use it in your own work.</p></div>
-    <div class="tools">
-      <div class="tool wide"><span class="kind">The studio</span><h3>Atelier</h3><p>All nine rooms as a working design tool, plus Bouncer, which checks text against every color a tile can take, Handoff for CSS, design tokens, Tailwind and SVG, and Walk-By print files.</p><a class="btn small" href="studio.html">Open the Atelier</a></div>
-      <div class="tool wide"><span class="kind">For quantum hardware</span><h3>Probe</h3><p>A command-line tool that runs the circuits on IBM Quantum and writes the results Notary seals.</p><div class="term" id="term" role="group" aria-label="Example Probe session"></div></div>
-      <div class="tool"><span class="kind">For websites</span><h3>Observer</h3><p>A 12 KB script that gives each visitor their own world, with CSS variables for every tile.</p></div>
-      <div class="tool"><span class="kind">For Figma</span><h3>Superpose</h3><p>Creates a grid and a variable collection with Row and Column modes, so contextual color works in your Figma files.</p></div>
-      <div class="tool"><span class="kind">For sharing</span><h3>Wavefunction</h3><p>Every design is one short code. Paste it into the Atelier or Superpose and get the exact same world.</p></div>
-      <div class="tool wide"><span class="kind">For print</span><h3>Walk-By</h3><p>Interlaced print files for lenticular sheets, so a printed grid changes color as people walk past. Move across the preview.</p><div class="walkby" id="walkby" role="img" aria-label="Lenticular preview"><div class="view rows" id="wbRows"></div><div class="view cols" id="wbCols"></div></div></div>
-      <div class="tool wide"><span class="kind">Inside the Atelier</span><h3>Bouncer</h3><p>A tile can take two colors, so its text has to be readable on both. Bouncer checks WCAG and APCA contrast against every color a tile can take and blocks exports that fail.</p><p class="live strong" id="bouncerLive"></p></div>
-    </div>
+    <ul class="index">
+      <li><h3>Atelier</h3><p>The studio: all nine rooms as a working tool. Bouncer checks text against every color a tile can take, Handoff exports CSS, design tokens, Tailwind and SVG, and Walk-By makes lenticular print files.</p><a class="go" href="studio.html">Open the Atelier</a></li>
+      <li><h3>Observer</h3><p>The 12 KB script this page runs on. Add it to any website and every visitor gets their own world.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/src/runtime">Get the script</a></li>
+      <li><h3>Superpose</h3><p>A Figma plugin that builds the grid as a variable collection with Row and Column modes.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/figma-plugin">Get the plugin</a></li>
+      <li><h3>Probe</h3><p>A command-line tool that runs the circuits on IBM Quantum and writes the results Notary seals.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/python">Get Probe</a></li>
+      <li><h3>Source</h3><p>The engine, this site and every tool above, with the tests that check each classical limit.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext">Read the code</a></li>
+    </ul>
   </div>
 </section>
 
@@ -404,10 +308,10 @@
 <footer class="wrap foot">
   <div class="foot-top">
     <span class="foot-big" aria-hidden="true">Qontext</span>
-    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#firsts">Firsts</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a></nav>
+    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a></nav>
   </div>
   <p class="proof" id="proof">-</p>
-  <p class="small muted">Qontext v/*__VERSION__*/. Exact quantum simulation on your device. No tracking.</p>
+  <p class="small muted">Qontext v/*__VERSION__*/ runs an exact quantum simulation on your device and tracks nobody.</p>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

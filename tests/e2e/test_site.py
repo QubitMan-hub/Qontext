@@ -25,7 +25,8 @@ def test_every_visitor_gets_a_world(site):
     assert re.fullmatch(r"[\d,]+", world(site))
     assert re.fullmatch(HEX, css_var(site, "--q-r1c1-row"))
     assert site.inner_text("#heroWorld") == world(site)
-    assert site.text_content("#f6") == "6 of 6"  # off screen, so read the text, not the rendering
+    assert site.inner_text("#planRules") == "6 of 6"
+    assert int(site.inner_text("#planWaiting")) > 0
 
 
 def test_floor_plan_is_a_mermin_square_and_navigates(site):
@@ -39,7 +40,7 @@ def test_floor_plan_is_a_mermin_square_and_navigates(site):
 
 def test_swatches_wait_until_seen(site):
     waiting_at_top = site.evaluate("document.querySelectorAll('.q.sup').length")
-    assert waiting_at_top > 20
+    assert waiting_at_top > 10
     for _ in range(40):
         site.mouse.wheel(0, 900)
         site.wait_for_timeout(60)

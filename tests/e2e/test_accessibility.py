@@ -16,17 +16,19 @@ VIEWPORTS = {"desktop": {"width": 1440, "height": 900}, "phone": {"width": 390, 
 
 
 def wake_every_room(page):
-    """Walks the whole page so lazily built rooms and sections exist before the scan."""
+    """Walks the whole page so lazily built rooms and sections exist before the scan. Jumps are instant: the
+    page scrolls smoothly by default, and a scan taken mid-glide would catch the Compass half faded."""
     height = page.evaluate("document.documentElement.scrollHeight")
     y = 0
     while y < height:
-        page.evaluate(f"window.scrollTo(0, {y})")
+        page.evaluate(f"window.scrollTo({{top: {y}, behavior: 'instant'}})")
         page.wait_for_timeout(40)
         y += 500
         height = page.evaluate("document.documentElement.scrollHeight")
     page.wait_for_timeout(400)
-    page.evaluate("window.scrollTo(0, 0)")
-    page.wait_for_timeout(200)
+    page.evaluate("window.scrollTo({top: 0, behavior: 'instant'})")
+    page.wait_for_function("() => !document.getElementById('compass')?.classList.contains('on')")
+    page.wait_for_timeout(400)
 
 
 def scan(page):

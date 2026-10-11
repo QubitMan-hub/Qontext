@@ -11,4 +11,4 @@ Index of Qontext's memory. One line per entry; open only the files that match th
 - [project-roadmap.md](project-roadmap.md): released versions and the approved next steps, in order
 
 ## Reference
-- [reference-surfaces.md](reference-surfaces.md): live page, product doc, skill, Figma, GitHub and Axe status
+- [reference-surfaces.md](reference-surfaces.md): live page, product doc, skill, Figma, the GitHub repo and Axe status

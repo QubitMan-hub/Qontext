@@ -1,10 +1,9 @@
 // The nine rooms, in floor-plan order. A room sleeps until a visitor is about to reach it: only then is its
-// exhibit built, wired and painted. Strips and labels are cheap, so they exist from the start.
+// exhibit built, wired and painted.
 
-import { GRID, opLabel } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
-import { h, whenNear } from '../lib.js';
-import { onWorld, tileOf } from '../world.js';
+import { whenNear } from '../lib.js';
+import { onWorld } from '../world.js';
 import janus from './janus.js';
 import dare from './dare.js';
 import wheel from './wheel.js';
@@ -30,21 +29,9 @@ export const ROOMS = [
 
 const awake = new Set();
 
-function strip(article) {
-  const el = article.querySelector('[data-strip]');
-  const cells = [];
-  for (let r = 1; r <= 3; r++) for (let c = 1; c <= 3; c++) cells.push(h('i', { class: 'q', 'data-q': `r${r}c${c}` }));
-  el.replaceChildren(...cells);
-  el.setAttribute('aria-hidden', 'true');
-}
-
 export function initRooms() {
   for (const room of ROOMS) {
     const article = $(`room-${room.id}`);
-    const [r, c] = tileOf(room.tile);
-    strip(article);
-    const reading = article.dataset.qContext === 'col' ? 'columns' : 'rows';
-    article.querySelector('[data-meta]').textContent = `Room ${opLabel(GRID[r][c])} on the floor plan. This room reads the grid by ${reading}; the strip above shows all nine tiles as it sees them.`;
     whenNear(
       article,
       () => {

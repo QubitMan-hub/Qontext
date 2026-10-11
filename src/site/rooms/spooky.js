@@ -1,5 +1,5 @@
-// Spooky Pair: a light and a dark asset share one entangled pair. Their accents are measurement outcomes,
-// and the running CHSH value shows they agree more often than any two independent rules could.
+// Spooky Pair: the light and dark halves of the wall share one entangled pair. Their accents are measurement
+// outcomes, and the running CHSH value shows they agree more often than any two independent rules could.
 
 import { samplePair, assetAccent, legibleOn, SETTING_KEYS, chshValue, winRate, mulberry32, freshSeed } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
@@ -8,17 +8,17 @@ import { site } from '../world.js';
 
 const state = { rng: mulberry32(freshSeed()), shots: { a0b0: [], a0b1: [], a1b0: [], a1b1: [] }, last: null };
 
-/** The thread between the cards. Measured only when the layout changes, never on scroll. */
+/** The thread joins the two accent bars across the seam. Measured only when the layout changes, never on scroll. */
 function thread() {
   const box = $('spooky').getBoundingClientRect();
-  const a = $('assetA').getBoundingClientRect();
-  const b = $('assetB').getBoundingClientRect();
-  const x1 = a.left + a.width / 2 - box.left;
+  const a = $('aBar').getBoundingClientRect();
+  const b = $('bBar').getBoundingClientRect();
+  const x1 = a.right - box.left;
   const y1 = a.top + a.height / 2 - box.top;
-  const x2 = b.left + b.width / 2 - box.left;
+  const x2 = b.left - box.left;
   const y2 = b.top + b.height / 2 - box.top;
   const mx = (x1 + x2) / 2;
-  $('thread').firstElementChild.setAttribute('d', `M${x1} ${y1} C ${mx} ${y1 - 60}, ${mx} ${y2 + 60}, ${x2} ${y2}`);
+  $('thread').firstElementChild.setAttribute('d', `M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
 }
 
 function paintAsset(prefix, outcome, style, dark) {
@@ -54,9 +54,6 @@ function tally() {
     cell('CHSH so far', S === null ? '-' : S.toFixed(2)),
     cell('Game win rate', S === null ? '-' : `${Math.round(winRate(S) * 100)}%`),
   );
-  // The matching line in Firsts reports this room's live result.
-  const f5 = document.getElementById('f5');
-  if (f5) f5.textContent = S === null ? 'Measure some pairs' : `CHSH ${S.toFixed(2)} vs classical 2`;
 }
 
 function measure(animate = true) {
@@ -67,12 +64,11 @@ function measure(animate = true) {
   state.last = { x, y, out };
   paint();
   if (animate && !reduced()) {
-    for (const id of ['assetA', 'assetB']) {
-      const el = $(id);
-      el.classList.remove('zap');
-      void el.offsetWidth; // restart the animation
-      el.classList.add('zap');
-    }
+    // One pulse runs along the thread: both bars changed in the same instant.
+    const el = $('spooky');
+    el.classList.remove('zap');
+    void el.offsetWidth; // restart the animation
+    el.classList.add('zap');
   }
 }
 

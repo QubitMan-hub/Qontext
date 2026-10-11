@@ -48,7 +48,7 @@ function draw() {
   g.fillStyle = '#1d1f52';
   g.font = '850 86px Anybody, "Arial Narrow", Arial, sans-serif';
   g.fillText(`World ${worldNumber()}`, 90, 1150);
-  g.font = '500 30px "Instrument Sans", Arial, sans-serif';
+  g.font = '400 30px Literata, Georgia, serif';
   g.fillText(`Collapsed ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}. ${proof().rules} of 6 rules hold.`, 90, 1205);
   g.fillText('Qontext, color that depends on how you read it.', 90, 1250);
   return cv;
@@ -63,9 +63,11 @@ function paintPoster() {
       if (url) URL.revokeObjectURL(url);
       url = URL.createObjectURL(blob);
       img.src = url;
+      img.hidden = false; // the frame holds its space until the first poster arrives
     }, 'image/png');
   } catch {
     img.alt = 'This browser could not draw the poster.';
+    img.hidden = false;
   }
 }
 

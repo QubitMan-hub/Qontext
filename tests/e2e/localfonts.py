@@ -12,6 +12,7 @@ NM = ROOT / "node_modules"
 FILES = {
     "anybody.woff2": NM / "@fontsource-variable/anybody/files/anybody-latin-wdth-normal.woff2",
     "instrument.woff2": NM / "@fontsource-variable/instrument-sans/files/instrument-sans-latin-wdth-normal.woff2",
+    "literata.woff2": NM / "@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2",
     "plexmono-400.woff2": NM / "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2",
     "plexmono-500.woff2": NM / "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2",
 }
@@ -22,6 +23,8 @@ CSS = f"""
   src: url({BASE}anybody.woff2) format('woff2'); }}
 @font-face {{ font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 700; font-stretch: 75% 100%;
   src: url({BASE}instrument.woff2) format('woff2'); }}
+@font-face {{ font-family: 'Literata'; font-style: normal; font-weight: 200 900;
+  src: url({BASE}literata.woff2) format('woff2'); }}
 @font-face {{ font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400;
   src: url({BASE}plexmono-400.woff2) format('woff2'); }}
 @font-face {{ font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500;

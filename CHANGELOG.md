@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased
+
+Quieter
+- The site is hung like a gallery. Each room is one wall: its name in tall vinyl lettering, a short wall text
+  that credits where the idea comes from, and the exhibit straight on the wall instead of in a card.
+  Compositions follow the physics: Fringe and Spooky Pair run edge to edge (the Spooky Pair wall splits into
+  a light half and a dark half), Mermin's Dare is a board in the middle.
+- Reading text is set in Literata; Anybody carries names and controls, wide and heavy in the hero, tall and
+  light on the walls. Instrument Sans stays in the Atelier.
+- The Firsts cards are gone: each one already happened in a room, and the waiting count moved to the floor
+  plan. Take it home is a short index with links to the code instead of seven cards.
+- Unmeasured tiles are split on the diagonal everywhere instead of blended, and a collapse snaps into place
+  instead of bouncing. The Many Worlds badge and the Notary seal show the three harmony colors as three
+  equal phases.
+- Copy rewritten without slogans; tile labels are at least 12 px; the poster frame holds its space until the
+  poster arrives.
+
+Accessible
+- axe-core scans the site and every Atelier tab, on a phone and a desktop, in light and dark, against WCAG 2.2
+  A and AA; every violation it found is fixed. Bouncer now also guards single accent fills (`inkFor`,
+  `legibleOn`), so button text reads at 4.5 : 1 whatever a collapse produces.
+- Wall-name letters no longer catch clicks while they fly in over an exhibit.
+
+Sturdier
+- Probe's pool validator agrees with the Atelier on the size limit per context; duplicate helpers and dead
+  exports removed.
+
 ## 1.2.0 (2026-10-12)
 
 Faster

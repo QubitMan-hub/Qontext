@@ -10,5 +10,6 @@ type: reference
 - Build, test and publish steps: the qontext-builder skill in the owner's account, and README.md.
 - Figma: connected through the Figma plugin, account handle QubitMan, Starter team with a View seat, which
   may block writing to files.
-- GitHub: no remote yet. Pushing needs an empty repo created by the owner first.
+- GitHub: public repo https://github.com/QubitMan-hub/Qontext (remote `origin`, branch `main`). The site's
+  Take it home index links into it, so keep those paths (src/runtime, figma-plugin, python) valid.
 - Axe: the free axe-core checker runs in the browser tests; Deque's hosted Axe service is not connected.

@@ -13,9 +13,15 @@ Approved on 2026-10-12, in this order:
 3. Security and lean audit: Ponytail audit plus a security review; fix only findings with a concrete case.
 4. Phase dial: light and dark become two points on a 360 degree dial; every angle is a real interference blend
    (Fringe maths) and Bouncer proves text contrast at all 360 angles. Needs a written spec approved first.
-5. The film rebuilt in Remotion, after the Phase dial ships. Needs a written spec approved first.
+5. The film rebuilt in Remotion, after the Phase dial ships. Needs a written spec approved first. It gets an
+   ElevenLabs voice-over (the owner connected ElevenLabs): the script is shown before any audio is generated,
+   because generation spends the owner's credits.
+
+Items 1 to 3 shipped on 2026-10-12. Added the same day: an Impeccable design pass so the site stops looking
+generic. The critique comes first, the owner picks the direction, then changes land before the Phase dial.
 
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
-Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe).
+Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the
+Impeccable pass.
 
 **How to apply:** pick up the first unfinished item; keep this file current when items ship or change.

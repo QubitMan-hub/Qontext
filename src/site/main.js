@@ -1,7 +1,7 @@
 // Qontext website entry point.
 //
 // Boot does only what the first screen needs: the world, the badge, the hero and the observers. Every room and
-// every heavy feature (poster, terminal, film) wakes up when the visitor is about to reach it.
+// every heavy feature (poster, film) wakes up when the visitor is about to reach it.
 
 import { setWorld, initialSeed, adopt, retheme } from './world.js';
 import { initHero } from './hero.js';
@@ -9,16 +9,15 @@ import { initRooms } from './rooms/index.js';
 import { initNav } from './features/nav.js';
 import { initPlan } from './features/plan.js';
 import { initIdea } from './features/idea.js';
-import { initFirsts } from './features/firsts.js';
+import { initTallies } from './features/tallies.js';
 import { initFrame } from './features/frame.js';
-import { initTools } from './features/tools.js';
 import { initFilm } from './features/film.js';
 import { initWorlds } from './features/worlds.js';
 import { initTraverse } from './features/traverse.js';
 import { h } from './lib.js';
 
 const FONTS =
-  'https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap';
+  'https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Literata:opsz,wght@7..72,300..700&display=swap';
 
 /** Typefaces load without blocking the first paint; until they arrive the fallback stack is used. */
 function loadFonts() {
@@ -33,9 +32,8 @@ function boot() {
   initNav();
   initPlan();
   initIdea();
-  initFirsts();
+  initTallies();
   initFrame();
-  initTools();
   initFilm();
   initWorlds();
   initTraverse();

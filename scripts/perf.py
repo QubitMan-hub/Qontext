@@ -139,17 +139,22 @@ def measure(browser, url, name, prof, dist):
     }
 
 
-def run(dist=ROOT / "dist"):
+def run(dist=ROOT / "dist", browser=None):
+    """Measures both profiles. Pass a browser to reuse one that is already running (Playwright allows only one
+    sync session per thread, so the test suite hands over its own)."""
     httpd = serve(dist)
     url = f"{base_url(httpd)}/index.html"
-    results = []
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        for name, prof in PROFILES.items():
-            results.append(measure(browser, url, name, prof, dist))
-        browser.close()
-    httpd.shutdown()
-    return results
+    try:
+        if browser is not None:
+            return [measure(browser, url, name, prof, dist) for name, prof in PROFILES.items()]
+        with sync_playwright() as p:
+            own = p.chromium.launch()
+            try:
+                return [measure(own, url, name, prof, dist) for name, prof in PROFILES.items()]
+            finally:
+                own.close()
+    finally:
+        httpd.shutdown()
 
 
 def main():
