@@ -10,7 +10,7 @@
   --rule: #c8ccdc;
   --accent: #1d1f52;
   --accent-soft: #dde0f2;
-  --good: #1f7a52;
+  --good: #1a6e49; /* 4.9 : 1 on --field */
   --bad: #b4232c;
   --warn: #8a5a00;
   --font-display: "Anybody", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;

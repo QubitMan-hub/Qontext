@@ -1,6 +1,6 @@
 import {
   samplePair, chshFromShots, idealCorrelations, chshValue, winRate, assetAccent, mulberry32, hashSeed, freshSeed,
-  SETTING_KEYS, STYLE_NAMES, TSIRELSON, CHSH_CLASSICAL_MAX, relativeLuminance,
+  SETTING_KEYS, STYLE_NAMES, TSIRELSON, CHSH_CLASSICAL_MAX, legibleOn,
 } from '../../engine/index.js';
 import { $, sign } from '../dom.js';
 import { store, palette, setProject } from '../store.js';
@@ -59,8 +59,9 @@ function paintAsset(prefix, outcome, style, dark) {
   const acc = assetAccent(palette(), outcome, style, dark);
   $(`${prefix}Bar`).style.background = acc.hex;
   const cta = $(`${prefix}Cta`);
-  cta.style.background = acc.hex;
-  cta.style.color = relativeLuminance(acc.lin) > 0.3 ? '#14131c' : '#ffffff';
+  const fill = legibleOn(acc.hex); // Bouncer: the button text reads at 4.5 : 1 or better
+  cta.style.background = fill.fill;
+  cta.style.color = fill.ink;
   $(`${prefix}Out`).textContent = `${STYLE_NAMES[style]}, ${sign(outcome)}, ${acc.hex}`;
 }
 

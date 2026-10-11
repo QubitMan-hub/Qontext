@@ -1,4 +1,4 @@
-import { kcbsProbs, kcbsSum, pentaColors, relativeLuminance, KCBS_QUANTUM_MAX, KCBS_CLASSICAL_MAX } from '../../engine/index.js';
+import { kcbsProbs, kcbsSum, pentaColors, inkFor, KCBS_QUANTUM_MAX, KCBS_CLASSICAL_MAX } from '../../engine/index.js';
 import { $ } from '../dom.js';
 import { store, palette, setProject } from '../store.js';
 
@@ -29,7 +29,7 @@ export function render() {
   }
   for (let j = 0; j < 5; j++) {
     const a = pos[j];
-    const ink = relativeLuminance(cols[j].lin) > 0.3 ? '#14131c' : '#ffffff';
+    const ink = inkFor(cols[j].hex);
     svg += `<circle cx="${a[0].toFixed(1)}" cy="${a[1].toFixed(1)}" r="${(12 + 28 * probs[j]).toFixed(1)}" fill="${cols[j].hex}" stroke="var(--paper)" stroke-width="3"/>`;
     svg += `<text x="${a[0].toFixed(1)}" y="${(a[1] + 4).toFixed(1)}" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11" fill="${ink}">${probs[j].toFixed(2)}</text>`;
   }

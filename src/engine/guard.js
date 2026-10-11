@@ -1,6 +1,6 @@
 // Contrast Guard: a contextual tile can show either of two colors, so text on it must pass against all of them.
 
-import { apcaContrast, hexToLin, wcagContrast } from './color.js';
+import { apcaContrast, bestInk, hexToLin, hexToOklch, oklch, wcagContrast } from './color.js';
 import { allTileColors } from './harmony.js';
 
 export const INKS = { dark: '#14131c', light: '#ffffff' };
@@ -41,4 +41,33 @@ export function fixLightness(palette, inkHex, target = WCAG_AA) {
     }
   }
   return null;
+}
+
+/** The ink (from INKS) that reads best on one fill. */
+export function inkFor(fillHex) {
+  return bestInk([hexToLin(fillHex)], hexToLin(INKS.dark), hexToLin(INKS.light)).ink === 'dark' ? INKS.dark : INKS.light;
+}
+
+/**
+ * A fill that text can sit on. Fills that already reach `target` with one of the two inks come back unchanged;
+ * mid-tones, where neither ink reaches it, move in OKLCH lightness (hue kept) by the smallest step that does.
+ * Returns { fill, ink, ratio }.
+ */
+export function legibleOn(fillHex, target = WCAG_AA) {
+  const rate = (hex) => {
+    const ink = inkFor(hex);
+    return { fill: hex, ink, ratio: wcagContrast(hexToLin(ink), hexToLin(hex)) };
+  };
+  const start = rate(fillHex);
+  if (start.ratio >= target) return start;
+  const { L, C, h } = hexToOklch(fillHex);
+  for (let step = 0.01; step <= 1; step += 0.01) {
+    for (const dir of [1, -1]) {
+      const next = L + dir * step;
+      if (next < 0 || next > 1) continue;
+      const r = rate(oklch(next, C, h).hex);
+      if (r.ratio >= target) return r;
+    }
+  }
+  return start;
 }

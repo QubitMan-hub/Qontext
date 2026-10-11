@@ -1,9 +1,9 @@
 // Spooky Pair: a light and a dark asset share one entangled pair. Their accents are measurement outcomes,
 // and the running CHSH value shows they agree more often than any two independent rules could.
 
-import { samplePair, assetAccent, SETTING_KEYS, chshValue, winRate, mulberry32, freshSeed } from '../../engine/index.js';
+import { samplePair, assetAccent, legibleOn, SETTING_KEYS, chshValue, winRate, mulberry32, freshSeed } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
-import { h, inkOn, reduced, sgn } from '../lib.js';
+import { h, reduced, sgn } from '../lib.js';
 import { site } from '../world.js';
 
 const state = { rng: mulberry32(freshSeed()), shots: { a0b0: [], a0b1: [], a1b0: [], a1b1: [] }, last: null };
@@ -23,9 +23,11 @@ function thread() {
 
 function paintAsset(prefix, outcome, style, dark) {
   const acc = assetAccent(site.palette, outcome, style, dark);
+  // The bar shows the raw outcome; the button behind text is nudged by Bouncer until it reads at 4.5 : 1.
+  const cta = legibleOn(acc.hex);
   $(`${prefix}Bar`).style.background = acc.hex;
-  $(`${prefix}Cta`).style.background = acc.hex;
-  $(`${prefix}Cta`).style.color = inkOn(acc);
+  $(`${prefix}Cta`).style.background = cta.fill;
+  $(`${prefix}Cta`).style.color = cta.ink;
   $(`${prefix}Out`).textContent = `${style ? 'Bold' : 'Calm'}, ${sgn(outcome)}`;
 }
 

@@ -19,14 +19,13 @@ function paint() {
       const cv = colValue(out, r, c);
       b.className = 'q-split';
       b.style.background = `linear-gradient(135deg, ${tileColor(site.palette, r, c, rv).hex} 0 50%, ${tileColor(site.palette, r, c, cv).hex} 50% 100%)`;
-      b.replaceChildren(`${sgn(rv)}/${sgn(cv)}`, h('small', {}, label));
-      b.setAttribute('aria-label', `${label}: row reading ${sgn(rv)}, column reading ${sgn(cv)}`);
+      // The visible text is the name (so voice control can say it); the hidden part explains it.
+      b.replaceChildren(`${sgn(rv)}/${sgn(cv)}`, h('small', {}, label), h('span', { class: 'sr-only' }, ': row reading, then column reading'));
     } else {
       const v = state.values[r][c];
       b.className = v < 0 ? 'neg' : '';
       b.style.background = '';
-      b.replaceChildren(sgn(v), h('small', {}, label));
-      b.setAttribute('aria-label', `${label}, value ${v > 0 ? 'plus one' : 'minus one'}. Press to flip.`);
+      b.replaceChildren(sgn(v), h('small', {}, label), h('span', { class: 'sr-only' }, ', press to flip'));
     }
   });
   let rules;

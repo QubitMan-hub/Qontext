@@ -1,4 +1,4 @@
-import { GRID, opLabel, opAscii, classicalCheck, classicalOptimum } from '../../engine/index.js';
+import { GRID, opLabel, classicalCheck, classicalOptimum } from '../../engine/index.js';
 import { $, esc, sign } from '../dom.js';
 
 let values = [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
@@ -34,7 +34,7 @@ export function render() {
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {
       const v = values[r][c];
-      html += `<button type="button" id="cl${r}${c}" data-r="${r}" data-c="${c}" class="${v < 0 ? 'neg' : ''}" aria-label="${esc(opAscii(GRID[r][c]))}, value ${v > 0 ? 'plus one' : 'minus one'}"><span>${sign(v)}<small>${esc(opLabel(GRID[r][c]))}</small></span></button>`;
+      html += `<button type="button" id="cl${r}${c}" data-r="${r}" data-c="${c}" class="${v < 0 ? 'neg' : ''}"><span>${sign(v)}<small>${esc(opLabel(GRID[r][c]))}</small></span><span class="sr-only">, press to flip</span></button>`;
     }
   }
   $('cgrid').innerHTML = html;

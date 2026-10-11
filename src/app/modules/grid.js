@@ -11,10 +11,10 @@ function build() {
   const g = $('qgrid');
   const parts = ['<div></div>'];
   for (let c = 0; c < 3; c++) {
-    parts.push(`<button type="button" class="ctx" id="ctxC${c + 1}" data-ctx="C${c + 1}" aria-pressed="false" aria-label="Column ${c + 1}, product must be ${c === 2 ? 'minus one' : 'plus one'}"><span><b>C${c + 1}</b>× = ${c === 2 ? '−1' : '+1'}</span></button>`);
+    parts.push(`<button type="button" class="ctx" id="ctxC${c + 1}" data-ctx="C${c + 1}" aria-pressed="false"><span><b>C${c + 1}</b>× = ${c === 2 ? '−1' : '+1'}</span><span class="sr-only">: column ${c + 1}, product must be ${c === 2 ? 'minus one' : 'plus one'}</span></button>`);
   }
   for (let r = 0; r < 3; r++) {
-    parts.push(`<button type="button" class="ctx" id="ctxR${r + 1}" data-ctx="R${r + 1}" aria-pressed="false" aria-label="Row ${r + 1}, product must be plus one"><span><b>R${r + 1}</b>× = +1</span></button>`);
+    parts.push(`<button type="button" class="ctx" id="ctxR${r + 1}" data-ctx="R${r + 1}" aria-pressed="false"><span><b>R${r + 1}</b>× = +1</span><span class="sr-only">: row ${r + 1}, product must be plus one</span></button>`);
     for (let c = 0; c < 3; c++) {
       parts.push(`<div class="cell" id="cell${r}${c}" role="img"><div><div class="op">${esc(opLabel(GRID[r][c]))}</div><div class="vals" id="vals${r}${c}"></div></div></div>`);
     }

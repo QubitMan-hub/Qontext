@@ -10,7 +10,7 @@
   --ink: #1d1f52;
   --ink-2: #4b4e7c;
   --rule: #c8ccdc;
-  --ok: #1f7a52;
+  --ok: #1a6e49;
   --no: #b4232c;
   --font-display: "Anybody", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Instrument Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -273,12 +273,14 @@ input[type="color"] { width: 44px; height: 32px; border: 1px solid var(--rule); 
 .thread path { stroke: var(--ink-2); stroke-width: 1.5; fill: none; stroke-dasharray: 5 7; animation: flow 1.4s linear infinite; }
 @keyframes flow { to { stroke-dashoffset: -24; } }
 .asset { position: relative; border-radius: var(--r); padding: 16px; display: grid; gap: 10px; border: 1px solid var(--rule); z-index: 1; }
-.asset.a { background: #f7f8fb; color: #1d1f52; }
-.asset.b { background: #17183d; color: #eceefb; grid-column: 2; margin-top: 64px; }
+.asset.a { background: #f7f8fb; color: #1d1f52; color-scheme: light; }
+.asset.b { background: #17183d; color: #eceefb; grid-column: 2; margin-top: 64px; color-scheme: dark; }
+.asset select { background: transparent; color: inherit; border: 1px solid currentColor; border-radius: var(--r); padding: 2px 6px; }
+.asset.b select option { background: #17183d; }
 .asset .bar { height: 10px; border-radius: 5px; transition: background-color 380ms ease; }
 .asset .ln { width: 80%; height: 7px; border-radius: 4px; background: currentColor; opacity: 0.25; }
 .asset .ln.short { width: 55%; }
-.asset .cta { justify-self: start; border-radius: var(--r); padding: 8px 14px; font-weight: 600; transition: background-color 380ms ease; }
+.asset .cta { justify-self: start; border-radius: var(--r); padding: 8px 14px; font-weight: 600; } /* no fade: text must never sit on a half-way colour */
 .asset .state { font-size: 0.82rem; display: flex; justify-content: space-between; gap: 8px; }
 .asset.zap { animation: zap 520ms ease; }
 @keyframes zap { 30% { transform: scale(1.03); box-shadow: 0 0 0 6px color-mix(in oklab, var(--q-harmony-1) 45%, transparent); } }

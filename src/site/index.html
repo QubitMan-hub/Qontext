@@ -329,7 +329,7 @@
         </ul>
       </div>
       <div class="exhibit">
-        <pre class="code"><code>&lt;script src="qontext-runtime.min.js"
+        <pre class="code" tabindex="0" role="region" aria-label="Observer setup code"><code>&lt;script src="qontext-runtime.min.js"
   data-qontext='{"base":<span id="obsBase">200</span>,"d":3}'&gt;&lt;/script&gt;
 
 &lt;section data-q-context="row"&gt;
@@ -365,7 +365,7 @@
     <div class="stack wide">
       <div class="section-head flush"><h2 id="frameTitle">Your world, framed</h2><p>A poster of the exact world you are in. Keep it with a long press or right click, or open it in the Atelier and keep designing.</p></div>
       <div class="actions"><a class="btn" id="editWorld" href="studio.html">Edit this world in the Atelier</a><button class="btn ghost" type="button" data-many>Frame another world</button></div>
-      <div><p class="small muted label">Your Wavefunction (the code for this world)</p><div class="wf" id="wf">-</div></div>
+      <div><p class="small muted label">Your Wavefunction (the code for this world)</p><div class="wf" id="wf" tabindex="0" role="region" aria-label="Wavefunction code">-</div></div>
       <button class="btn small ghost" type="button" id="wfCopy">Copy Wavefunction</button>
     </div>
   </div>
@@ -376,7 +376,7 @@
     <div class="section-head"><h2 id="toolsTitle">Take it home</h2><p>Every room above runs on one engine. These are the ways to use it in your own work.</p></div>
     <div class="tools">
       <div class="tool wide"><span class="kind">The studio</span><h3>Atelier</h3><p>All nine rooms as a working design tool, plus Bouncer, which checks text against every color a tile can take, Handoff for CSS, design tokens, Tailwind and SVG, and Walk-By print files.</p><a class="btn small" href="studio.html">Open the Atelier</a></div>
-      <div class="tool wide"><span class="kind">For quantum hardware</span><h3>Probe</h3><p>A command-line tool that runs the circuits on IBM Quantum and writes the results Notary seals.</p><div class="term" id="term" aria-label="Example Probe session"></div></div>
+      <div class="tool wide"><span class="kind">For quantum hardware</span><h3>Probe</h3><p>A command-line tool that runs the circuits on IBM Quantum and writes the results Notary seals.</p><div class="term" id="term" role="group" aria-label="Example Probe session"></div></div>
       <div class="tool"><span class="kind">For websites</span><h3>Observer</h3><p>A 12 KB script that gives each visitor their own world, with CSS variables for every tile.</p></div>
       <div class="tool"><span class="kind">For Figma</span><h3>Superpose</h3><p>Creates a grid and a variable collection with Row and Column modes, so contextual color works in your Figma files.</p></div>
       <div class="tool"><span class="kind">For sharing</span><h3>Wavefunction</h3><p>Every design is one short code. Paste it into the Atelier or Superpose and get the exact same world.</p></div>

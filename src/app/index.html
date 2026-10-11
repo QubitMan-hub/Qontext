@@ -155,7 +155,7 @@
     <div class="card">
       <h3>Start from an image</h3>
       <p class="muted small">Pick a photo or artwork. Qontext extracts five colors and sets the base phase from the dominant one. The image never leaves your device.</p>
-      <input type="file" id="imgIn" accept="image/*">
+      <input type="file" id="imgIn" accept="image/*" aria-label="Image to take colors from">
       <div class="chips" id="imgChips"></div>
     </div>
   </div>
@@ -288,7 +288,7 @@
     </div>
     <div class="card">
       <span class="eyebrow">Agreement by style</span>
-      <div class="table-wrap"><table><thead><tr><th>A / B</th><th>Ideal</th><th>Measured</th></tr></thead><tbody id="chshTable"></tbody></table></div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="CHSH results by setting"><table><thead><tr><th>A / B</th><th>Ideal</th><th>Measured</th></tr></thead><tbody id="chshTable"></tbody></table></div>
     </div>
   </aside>
 </section>
@@ -355,12 +355,12 @@
     </div>
     <div class="card">
       <h3>Load a pool</h3>
-      <div class="row"><input type="file" id="poolFile" accept=".json,application/json"><button class="btn ghost sm" type="button" id="poolExample">Load example pool (simulated noise)</button></div>
+      <div class="row"><input type="file" id="poolFile" accept=".json,application/json" aria-label="Measurement pool file (JSON)"><button class="btn ghost sm" type="button" id="poolExample">Load example pool (simulated noise)</button></div>
       <label class="field" for="poolText">Or paste pool JSON<textarea id="poolText" style="min-height:110px" placeholder='{"format": "qontext-pool/1", ...}'></textarea></label>
       <div class="row"><button class="btn sm" type="button" id="poolLoad">Load pasted pool</button><label class="check" for="poolUse"><input type="checkbox" id="poolUse"> Use pool for collapses</label><button class="btn ghost sm" type="button" id="poolClear">Unload</button></div>
     </div>
-    <div class="table-wrap"><table><thead><tr><th>Context</th><th>Rule</th><th>Shots</th><th>Rule held</th><th>Mean signed product</th></tr></thead><tbody id="poolTable"><tr><td colspan="5" class="muted">No pool loaded yet.</td></tr></tbody></table></div>
-    <div class="card"><h3>Run it yourself</h3><pre class="mono tiny" style="margin:0;overflow-x:auto">pip install './python[ibm]'
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Pool results by context"><table><thead><tr><th>Context</th><th>Rule</th><th>Shots</th><th>Rule held</th><th>Mean signed product</th></tr></thead><tbody id="poolTable"><tr><td colspan="5" class="muted">No pool loaded yet.</td></tr></tbody></table></div>
+    <div class="card"><h3>Run it yourself</h3><pre class="mono tiny" style="margin:0;overflow-x:auto" tabindex="0" role="region" aria-label="Probe commands">pip install './python[ibm]'
 qontext-probe --noisy              # local test with noise
 qontext-probe --ibm least_busy     # IBM Quantum</pre></div>
   </div>

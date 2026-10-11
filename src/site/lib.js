@@ -1,14 +1,14 @@
 // Small helpers shared by the site modules. Nothing here touches the world or the engine.
 
-import { relativeLuminance } from '../engine/index.js';
+import { inkFor } from '../engine/index.js';
 
 /** 1234567 -> "1,234,567" without Intl (Intl's first call is slow on phones). */
 export const fmtInt = (n) => String(Math.trunc(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 export const sgn = (v) => (v > 0 ? '+1' : '−1');
 
-/** Readable ink for text on a color from the engine. */
-export const inkOn = (col) => (relativeLuminance(col.lin) > 0.28 ? '#16173a' : '#ffffff');
+/** Readable ink for text on a color from the engine (whichever of Bouncer's two inks reads better). */
+export const inkOn = (col) => inkFor(col.hex);
 
 export const reduced = () => {
   try {
