@@ -16,5 +16,6 @@ export * from './pool.js';
 export * from './project.js';
 export * from './exporters.js';
 export * from './guard.js';
+export * from './phase.js';
 
 export const ENGINE_VERSION = '1.2.0';
