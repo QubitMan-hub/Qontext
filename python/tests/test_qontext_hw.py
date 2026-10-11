@@ -69,6 +69,17 @@ def test_validation_messages():
         validate_pool({"contexts": dict(good, R1=[[True, 1, 1]])})
 
 
+def test_validator_agrees_with_the_atelier_on_pool_size():
+    """The schema and the Atelier refuse more than 200,000 shots in a context; Probe's check must agree, or a
+    merged pool it calls valid would be rejected when loaded into Notary."""
+    good = {cid: [[1, 1, 1]] for cid in CONTEXTS}
+    good["C3"] = [[1, 1, -1]]
+    big = dict(good, R1=[[1, 1, 1]] * 200_001)
+    with pytest.raises(PoolError, match="200000"):
+        validate_pool({"contexts": big})
+    assert validate_pool({"contexts": dict(good, R1=[[1, 1, 1]] * 200_000)})
+
+
 def test_cli_end_to_end(tmp_path, capsys):
     out = tmp_path / "pool.json"
     assert main(["--noisy", "--shots", "64", "--out", str(out)]) == 0

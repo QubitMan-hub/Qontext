@@ -1,22 +1,15 @@
-// Small helpers shared by the site modules. Nothing here touches the world or the engine.
+// Small helpers shared by the site modules. Nothing here touches the visitor's world.
 
 import { inkFor } from '../engine/index.js';
 
 /** 1234567 -> "1,234,567" without Intl (Intl's first call is slow on phones). */
 export const fmtInt = (n) => String(Math.trunc(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-export const sgn = (v) => (v > 0 ? '+1' : '−1');
-
 /** Readable ink for text on a color from the engine (whichever of Bouncer's two inks reads better). */
 export const inkOn = (col) => inkFor(col.hex);
 
-export const reduced = () => {
-  try {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  } catch {
-    return false;
-  }
-};
+// One copy of each, shared with the Atelier.
+export { reducedMotion as reduced, sign as sgn } from '../app/dom.js';
 
 /**
  * Runs `fn` once, the first time `el` comes within `margin` of the viewport. This is how every room and

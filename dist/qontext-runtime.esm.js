@@ -207,7 +207,6 @@ function buildContexts() {
 }
 var CONTEXTS = buildContexts();
 var CONTEXT_IDS = CONTEXTS.map((c) => c.id);
-var contextById = Object.fromEntries(CONTEXTS.map((c) => [c.id, c]));
 var STATE_KINDS = ["random", "bell", "zero"];
 function makeState(kind, seed = 7) {
   if (kind === "bell") {

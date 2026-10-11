@@ -6,7 +6,6 @@ import { allTileColors } from './harmony.js';
 export const INKS = { dark: '#14131c', light: '#ffffff' };
 export const WCAG_AA = 4.5;
 export const WCAG_AA_LARGE = 3;
-export const APCA_BODY = 60;
 
 /** Worst-case WCAG ratio and APCA |Lc| for `inkHex` text over every color the grid can show. */
 export function guardReport(palette, inkHex) {

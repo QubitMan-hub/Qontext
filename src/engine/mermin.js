@@ -65,7 +65,6 @@ function buildContexts() {
 /** Six contexts with their operators and required product sign (+1 or -1). */
 export const CONTEXTS = buildContexts();
 export const CONTEXT_IDS = CONTEXTS.map((c) => c.id);
-export const contextById = Object.fromEntries(CONTEXTS.map((c) => [c.id, c]));
 
 export const STATE_KINDS = ['random', 'bell', 'zero'];
 

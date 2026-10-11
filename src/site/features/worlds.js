@@ -25,7 +25,7 @@ function apply(seed) {
   toast(`Welcome to world ${worldNumber(seed)}`);
 }
 
-export function manyWorlds() {
+function manyWorlds() {
   if (switching) return;
   const seed = newSeed();
   if (reduced()) {

@@ -17,9 +17,15 @@ class PoolError(ValueError):
     """A pool failed validation."""
 
 
-def _check_shots(name: str, shots: Any, width: int) -> None:
+# Same limit as schema/qontext-pool.schema.json and the Atelier (MAX_POOL_SHOTS_PER_CONTEXT in src/engine/pool.js).
+MAX_SHOTS_PER_CONTEXT = 200_000
+
+
+def _check_shots(name: str, shots: Any, width: int, limit: int | None = None) -> None:
     if not isinstance(shots, list) or not shots:
         raise PoolError(f"{name} has no shots.")
+    if limit is not None and len(shots) > limit:
+        raise PoolError(f"{name} has more than {limit} shots.")
     for s in shots:
         if not isinstance(s, list) or len(s) != width or any(v not in (1, -1) or isinstance(v, bool) for v in s):
             raise PoolError(f"Each shot in {name} must be {width} values, each 1 or -1.")
@@ -35,7 +41,7 @@ def validate_pool(pool: Any) -> dict:
     if not isinstance(contexts, dict):
         raise PoolError('Missing "contexts".')
     for ctx_id in CONTEXTS:
-        _check_shots(f"Context {ctx_id}", contexts.get(ctx_id), 3)
+        _check_shots(f"Context {ctx_id}", contexts.get(ctx_id), 3, MAX_SHOTS_PER_CONTEXT)
     chsh = pool.get("chsh")
     if chsh is not None:
         if not isinstance(chsh, dict):
