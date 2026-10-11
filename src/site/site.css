@@ -130,7 +130,9 @@ body.locked { overflow: hidden; }
 .menu ol a { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); text-decoration: none; font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; font-variation-settings: "wdth" 115; }
 .menu ol a span { font-family: var(--font-body); font-size: var(--step--1); font-weight: 400; color: var(--ink-2); align-self: end; }
 @media (max-width: 1080px) { .links { display: none; } .menu-btn { display: inline-flex; margin-left: auto; } }
-@media (max-width: 520px) { .nav-in { gap: 10px; } .nav .btn.open-atelier { display: none; } .world .lbl { display: none; } .world { padding-right: 10px; } .brand { font-size: 1.15rem; } }
+@media (max-width: 520px) { .nav-in { gap: 8px; } .nav .btn.open-atelier { display: none; } .world .lbl { display: none; } .world { padding-right: 9px; gap: 6px; font-size: 0.875rem; } .brand { font-size: 1.05rem; gap: 8px; } .menu-btn { padding: 8px 10px; } }
+/* The narrowest phones keep the world's dot; its number stays for screen readers and in the hero. */
+@media (max-width: 380px) { .world .num { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .world { padding-right: 6px; } }
 
 /* Hero */
 .hero { position: relative; isolation: isolate; min-height: clamp(560px, 82vh, 860px); display: grid; align-items: center; overflow: hidden; border-bottom: 1px solid var(--rule); }
