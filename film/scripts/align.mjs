@@ -1,6 +1,6 @@
 // Lines the chosen voice take up with the script. ffmpeg finds the pauses in public/voice.mp3; each sentence
-// boundary is matched to the pause nearest where an even reading pace would put it (a small dynamic program, so
-// extra pauses inside sentences are passed over). With too few pauses it falls back to timing each sentence by its
+// boundary is matched to a pause so that every sentence takes about as long as its syllables need (a dynamic
+// program over the pauses, so pauses inside sentences are passed over). With too few pauses it falls back to timing each sentence by its
 // share of the voice, and says so. Writes src/timing.json.
 //
 //   node scripts/align.mjs            align public/voice.mp3
@@ -10,6 +10,19 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { estimateTiming } from '../src/timing.js';
+
+/** Syllables, roughly: groups of vowels, a silent final e dropped. Speech time follows syllables more than words. */
+export function syllables(text) {
+  return text
+    .toLowerCase()
+    .split(/[^a-z']+/)
+    .filter(Boolean)
+    .reduce((n, w) => {
+      let k = (w.match(/[aeiouy]+/g) || []).length;
+      if (k > 1 && /[^aeiouy]e$/.test(w)) k--;
+      return n + Math.max(1, k);
+    }, 0);
+}
 
 const sentencesOf = (script) => script.scenes.flatMap((s, i) => s.sentences.map((text) => ({ text, scene: i })));
 
@@ -51,26 +64,51 @@ export function alignToPauses(script, pauses, { speechStartMs, speechEndMs, dura
     return build(script, sentences, starts, durationMs, 'estimate-in-voice');
   }
 
-  // cost[b][p]: boundary b (after sentence b) placed at pause p. Near where the pace expects it, and longer pauses
-  // are slightly preferred, since speakers breathe between sentences more than inside them.
-  const mid = (p) => (p.startMs + p.endMs) / 2;
-  const cost = (b, p) => Math.abs(mid(pauses[p]) - expected[b + 1].startMs) / 1000 - (0.5 * (pauses[p].endMs - pauses[p].startMs)) / 1000;
+  // Pick the pauses that make every sentence take about as long as its syllables need. A sentence's speaking time
+  // is its span minus the pauses inside it; the rate is the take's own (all speech over all syllables). Sentence
+  // breaks lean slightly towards longer pauses, scene breaks more so: speakers breathe between paragraphs.
+  const syl = flat.map((x) => syllables(x.text));
+  const dur = pauses.map((q) => q.endMs - q.startMs);
+  const before = [0];
+  for (const d of dur) before.push(before.at(-1) + d); // before[p] = total length of pauses 0..p-1
+  const speech = speechEndMs - speechStartMs - before[P];
+  const msPerSyl = speech / syl.reduce((a, b) => a + b, 0);
+  const sceneBreak = flat.map((x, i) => i + 1 < flat.length && flat[i + 1].scene !== x.scene);
+  // Sentence i runs from the end of pause `a` (or the speech start, a = -1) to the start of pause `b` (or the
+  // speech end, b = P), less the pauses strictly between them.
+  const spoken = (i, a, b) => {
+    const from = a < 0 ? speechStartMs : pauses[a].endMs;
+    const to = b >= P ? speechEndMs : pauses[b].startMs;
+    const inside = before[b >= P ? P : b] - before[a + 1];
+    const t = to - from - inside;
+    if (t <= 0) return Infinity;
+    return Math.log(t / (syl[i] * msPerSyl)) ** 2;
+  };
+  const breath = (i, p) => -(sceneBreak[i] ? 0.3 : 0.08) * Math.log(dur[p] / 400);
+
   const best = Array.from({ length: B }, () => new Array(P).fill(Infinity));
   const from = Array.from({ length: B }, () => new Array(P).fill(-1));
-  for (let p = 0; p < P; p++) best[0][p] = cost(0, p);
+  for (let p = 0; p < P; p++) best[0][p] = spoken(0, -1, p) + breath(0, p);
   for (let b = 1; b < B; b++) {
-    let runMin = Infinity;
-    let runArg = -1;
     for (let p = b; p < P; p++) {
-      if (best[b - 1][p - 1] < runMin) {
-        runMin = best[b - 1][p - 1];
-        runArg = p - 1;
+      for (let q = b - 1; q < p; q++) {
+        const c = best[b - 1][q] + spoken(b, q, p) + breath(b, p);
+        if (c < best[b][p]) {
+          best[b][p] = c;
+          from[b][p] = q;
+        }
       }
-      best[b][p] = runMin + cost(b, p);
-      from[b][p] = runArg;
     }
   }
-  let p = best[B - 1].indexOf(Math.min(...best[B - 1]));
+  let p = -1;
+  let total = Infinity;
+  for (let q = B - 1; q < P; q++) {
+    const c = best[B - 1][q] + spoken(B, q, P);
+    if (c < total) {
+      total = c;
+      p = q;
+    }
+  }
   const chosen = new Array(B);
   for (let b = B - 1; b >= 0; b--) {
     chosen[b] = pauses[p];
@@ -85,7 +123,7 @@ export function alignToPauses(script, pauses, { speechStartMs, speechEndMs, dura
   const starts = script.scenes.map((_, i) => {
     if (i === 0) return 0;
     const first = flat.findIndex((s) => s.scene === i);
-    return Math.round(mid(chosen[first - 1]));
+    return Math.round((chosen[first - 1].startMs + chosen[first - 1].endMs) / 2);
   });
   return build(script, sentences, starts, durationMs, 'voice');
 }

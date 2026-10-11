@@ -2,7 +2,10 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { alignToPauses } from '../../film/scripts/align.mjs';
+import { readFileSync } from 'node:fs';
+import { alignToPauses, syllables } from '../../film/scripts/align.mjs';
+
+const script2 = JSON.parse(readFileSync(new URL('../../film/src/script.json', import.meta.url), 'utf8'));
 
 const script = {
   scenes: [
@@ -48,4 +51,19 @@ test('too few pauses: times each sentence by its share of the voice instead, and
   assert.equal(all.at(-1).endMs, 7600);
   for (let i = 1; i < all.length; i++) assert.ok(all[i].startMs >= all[i - 1].endMs);
   assert.equal(t.durationMs, 8000);
+});
+
+test('on a real take, every sentence comes out at a believable speaking rate', () => {
+  // The first two scenes of the chosen take: its real pauses (start ms, length ms) between 0 and 34.8 s.
+  const real = [[310, 330], [1200, 610], [4790, 590], [6280, 380], [7910, 200], [9130, 650], [10590, 590], [11700, 570], [17660, 620],
+    [18390, 200], [19680, 470], [20990, 200], [21870, 590], [25720, 490], [28050, 530], [32330, 360]].map(([a, d]) => ({ startMs: a, endMs: a + d }));
+  const two = { scenes: script2.scenes.slice(0, 2) };
+  const t = alignToPauses(two, real, { speechStartMs: 0, speechEndMs: 34820, durationMs: 34820 });
+  // Each sentence's syllables per second stays near the take's own average (a misplaced break makes one
+  // sentence a blur and its neighbour a crawl), and the scene break lands on one of the long breaths.
+  const all = t.scenes.flatMap((x) => x.sentences);
+  const rates = all.map((s) => syllables(s.text) / ((s.endMs - s.startMs) / 1000));
+  const mean = rates.reduce((a, b) => a + b) / rates.length;
+  all.forEach((s, i) => assert.ok(rates[i] > 0.55 * mean && rates[i] < 1.6 * mean, `${(rates[i] / mean).toFixed(2)} times the average: ${s.text}`));
+  assert.equal(t.scenes[1].startMs, Math.round((11700 + 12270) / 2));
 });

@@ -1,339 +1,339 @@
 {
-  "source": "estimate",
-  "durationMs": 154000,
+  "source": "voice",
+  "durationMs": 148036,
   "scenes": [
     {
       "id": "hook",
       "startMs": 0,
-      "endMs": 11286,
+      "endMs": 11981,
       "sentences": [
         {
           "text": "Okay, quick question.",
           "startMs": 0,
-          "endMs": 926
+          "endMs": 1197
         },
         {
           "text": "Can one square be two colors at the same time?",
-          "startMs": 1146,
-          "endMs": 4232
+          "startMs": 1811,
+          "endMs": 4792
         },
         {
           "text": "Not a trick of the light.",
-          "startMs": 4453,
-          "endMs": 6304
+          "startMs": 5385,
+          "endMs": 6282
         },
         {
           "text": "Actually two colors, and both of them true.",
-          "startMs": 6525,
-          "endMs": 8993
+          "startMs": 6663,
+          "endMs": 9129
         },
         {
           "text": "Sounds fake, right?",
-          "startMs": 9214,
-          "endMs": 10140
+          "startMs": 9776,
+          "endMs": 10586
         },
         {
           "text": "Stick with me.",
-          "startMs": 10360,
-          "endMs": 11286
+          "startMs": 11174,
+          "endMs": 11697
         }
       ]
     },
     {
       "id": "idea",
-      "startMs": 11286,
-      "endMs": 35818,
+      "startMs": 11981,
+      "endMs": 35142,
       "sentences": [
         {
           "text": "Back in the sixties, the artist Josef Albers showed that a color can look different depending on what's next to it.",
-          "startMs": 11880,
-          "endMs": 18360
+          "startMs": 12264,
+          "endMs": 17665
         },
         {
           "text": "But that's just your eyes.",
-          "startMs": 18581,
-          "endMs": 20124
+          "startMs": 18286,
+          "endMs": 19683
         },
         {
           "text": "Qontext goes way further.",
-          "startMs": 20344,
-          "endMs": 21579
+          "startMs": 20148,
+          "endMs": 21867
         },
         {
           "text": "In quantum physics, some things don't have one fixed answer.",
-          "startMs": 21799,
-          "endMs": 24885
+          "startMs": 22454,
+          "endMs": 25720
         },
         {
           "text": "What you get depends on how you check.",
-          "startMs": 25106,
-          "endMs": 27574
+          "startMs": 26207,
+          "endMs": 28046
         },
         {
           "text": "So here, a tile really is one color when you read it along its row, and a different color when you read it down its column.",
-          "startMs": 27795,
-          "endMs": 35818
+          "startMs": 28579,
+          "endMs": 34817
         }
       ]
     },
     {
       "id": "dare",
-      "startMs": 35818,
-      "endMs": 51842,
+      "startMs": 35142,
+      "endMs": 53212,
       "sentences": [
         {
           "text": "Don't buy it?",
-          "startMs": 36412,
-          "endMs": 37337
+          "startMs": 35466,
+          "endMs": 35934
         },
         {
           "text": "Try Mermin's Dare.",
-          "startMs": 37558,
-          "endMs": 38484
+          "startMs": 36435,
+          "endMs": 37472
         },
         {
           "text": "Nine tiles, six rules.",
-          "startMs": 38704,
-          "endMs": 39939
+          "startMs": 37953,
+          "endMs": 39670
         },
         {
           "text": "Give every tile a plus or a minus and make all six rules happy.",
-          "startMs": 40159,
-          "endMs": 44479
+          "startMs": 40103,
+          "endMs": 43756
         },
         {
           "text": "You'll get five.",
-          "startMs": 44700,
-          "endMs": 45626
+          "startMs": 44261,
+          "endMs": 44886
         },
         {
           "text": "Everyone gets five.",
-          "startMs": 45846,
-          "endMs": 46772
+          "startMs": 45348,
+          "endMs": 46262
         },
         {
           "text": "A computer tried all five hundred and twelve ways.",
-          "startMs": 46993,
-          "endMs": 49770
+          "startMs": 46851,
+          "endMs": 49630
         },
         {
           "text": "Quantum gets six, every single time.",
-          "startMs": 49991,
-          "endMs": 51842
+          "startMs": 50190,
+          "endMs": 52881
         }
       ]
     },
     {
       "id": "world",
-      "startMs": 51842,
-      "endMs": 67734,
+      "startMs": 53212,
+      "endMs": 66725,
       "sentences": [
         {
           "text": "That's what the Qontext website runs on.",
-          "startMs": 52436,
-          "endMs": 54596
+          "startMs": 53543,
+          "endMs": 55195
         },
         {
           "text": "The second you open it, it rolls the dice and picks colors just for you.",
-          "startMs": 54817,
-          "endMs": 59445
+          "startMs": 55644,
+          "endMs": 59131
         },
         {
           "text": "That's your world.",
-          "startMs": 59666,
-          "endMs": 60592
+          "startMs": 59549,
+          "endMs": 60241
         },
         {
           "text": "Your friend gets a different one.",
-          "startMs": 60812,
-          "endMs": 62664
+          "startMs": 60578,
+          "endMs": 61660
         },
         {
           "text": "And colors you haven't scrolled to yet aren't decided.",
-          "startMs": 62884,
-          "endMs": 65661
+          "startMs": 62219,
+          "endMs": 64608
         },
         {
           "text": "They settle the moment you look.",
-          "startMs": 65882,
-          "endMs": 67734
+          "startMs": 65060,
+          "endMs": 66387
         }
       ]
     },
     {
       "id": "rooms",
-      "startMs": 67734,
-      "endMs": 86711,
+      "startMs": 66725,
+      "endMs": 86633,
       "sentences": [
         {
           "text": "Each room shows off a different trick.",
-          "startMs": 68328,
-          "endMs": 70488
+          "startMs": 67063,
+          "endMs": 68777
         },
         {
           "text": "Unity Wheel turns quantum math into perfect color combos.",
-          "startMs": 70708,
-          "endMs": 73485
+          "startMs": 69231,
+          "endMs": 72624
         },
         {
           "text": "Fringe mixes colors like waves of light.",
-          "startMs": 73706,
-          "endMs": 75866
+          "startMs": 73031,
+          "endMs": 75207
         },
         {
           "text": "Pentacle gives you five colors that never clash.",
-          "startMs": 76087,
-          "endMs": 78555
+          "startMs": 75709,
+          "endMs": 78268
         },
         {
           "text": "Spooky Pair links a light design and a dark one, so they react together.",
-          "startMs": 78776,
-          "endMs": 83096
+          "startMs": 78690,
+          "endMs": 82191
         },
         {
           "text": "And Unpaintables shows shapes you literally can't color by the rules.",
-          "startMs": 83317,
-          "endMs": 86711
+          "startMs": 82684,
+          "endMs": 86430
         }
       ]
     },
     {
       "id": "phase",
-      "startMs": 86711,
-      "endMs": 98458,
+      "startMs": 86633,
+      "endMs": 97123,
       "sentences": [
         {
           "text": "Oh, and light mode versus dark mode?",
-          "startMs": 87305,
-          "endMs": 89465
+          "startMs": 86835,
+          "endMs": 88588
         },
         {
           "text": "Tap the moon.",
-          "startMs": 89685,
-          "endMs": 90611
+          "startMs": 89040,
+          "endMs": 89579
         },
         {
           "text": "You get a whole dial: light, dark, and every kind of dusk in between.",
-          "startMs": 90832,
-          "endMs": 95152
+          "startMs": 89951,
+          "endMs": 94117
         },
         {
           "text": "The text stays easy to read the whole way round.",
-          "startMs": 95372,
-          "endMs": 98458
+          "startMs": 94635,
+          "endMs": 96851
         }
       ]
     },
     {
       "id": "atelier",
-      "startMs": 98458,
-      "endMs": 121226,
+      "startMs": 97123,
+      "endMs": 117240,
       "sentences": [
         {
           "text": "Want to make something?",
-          "startMs": 99052,
-          "endMs": 100287
+          "startMs": 97394,
+          "endMs": 99357
         },
         {
           "text": "Open the Atelier, the studio.",
-          "startMs": 100507,
-          "endMs": 102050
+          "startMs": 99617,
+          "endMs": 101547
         },
         {
           "text": "Play with every room, pick your colors, and save your design as one short code you can share.",
-          "startMs": 102271,
-          "endMs": 107825
+          "startMs": 101802,
+          "endMs": 105089
         },
         {
           "text": "Bouncer works like a bouncer at a club: if your text is hard to read on any color, it's not getting in.",
-          "startMs": 108046,
-          "endMs": 114834
+          "startMs": 105591,
+          "endMs": 110672
         },
         {
           "text": "Handoff sends your colors to code and design tools, and Walk-By makes prints that change color as you walk past.",
-          "startMs": 115055,
-          "endMs": 121226
+          "startMs": 111163,
+          "endMs": 116990
         }
       ]
     },
     {
       "id": "observer",
-      "startMs": 121226,
-      "endMs": 135266,
+      "startMs": 117240,
+      "endMs": 131125,
       "sentences": [
         {
           "text": "Got a website?",
-          "startMs": 121820,
-          "endMs": 122746
+          "startMs": 117489,
+          "endMs": 118058
         },
         {
           "text": "Drop in Observer.",
-          "startMs": 122967,
-          "endMs": 123892
+          "startMs": 118451,
+          "endMs": 119187
         },
         {
           "text": "It's one tiny file, and every visitor gets their own world.",
-          "startMs": 124113,
-          "endMs": 127507
+          "startMs": 119606,
+          "endMs": 122833
         },
         {
           "text": "No server, no tracking.",
-          "startMs": 127728,
-          "endMs": 128962
+          "startMs": 123296,
+          "endMs": 124685
         },
         {
           "text": "Designer?",
-          "startMs": 129183,
-          "endMs": 129492
+          "startMs": 125132,
+          "endMs": 125582
         },
         {
           "text": "Superpose puts the same grid in Figma, with a row version and a column version of every color.",
-          "startMs": 129712,
-          "endMs": 135266
+          "startMs": 125970,
+          "endMs": 130901
         }
       ]
     },
     {
       "id": "probe",
-      "startMs": 135266,
-      "endMs": 147102,
+      "startMs": 131125,
+      "endMs": 142042,
       "sentences": [
         {
           "text": "Want the real deal?",
-          "startMs": 135860,
-          "endMs": 137095
+          "startMs": 131349,
+          "endMs": 132096
         },
         {
           "text": "Probe runs it all on an actual IBM quantum computer.",
-          "startMs": 137315,
-          "endMs": 140401
+          "startMs": 132418,
+          "endMs": 135692
         },
         {
           "text": "Then Notary checks the results and stamps them with a seal, so anyone can see exactly where your colors came from.",
-          "startMs": 140622,
-          "endMs": 147102
+          "startMs": 136096,
+          "endMs": 141810
         }
       ]
     },
     {
       "id": "outro",
-      "startMs": 147102,
-      "endMs": 154000,
+      "startMs": 142042,
+      "endMs": 148036,
       "sentences": [
         {
           "text": "That's Qontext.",
-          "startMs": 147696,
-          "endMs": 148313
+          "startMs": 142274,
+          "endMs": 143085
         },
         {
           "text": "Colors that depend on how you look at them.",
-          "startMs": 148534,
-          "endMs": 151311
+          "startMs": 143416,
+          "endMs": 145363
         },
         {
           "text": "Open the Atelier and make your own world.",
-          "startMs": 151531,
-          "endMs": 154000
+          "startMs": 145812,
+          "endMs": 147762
         }
       ]
     }
