@@ -4,7 +4,9 @@
 
 ```
 src/engine/      pure functions, no DOM, no dependencies     (tested in Node)
-   ├── src/app/          Studio UI, vanilla JS modules        (tested in Chromium)
+   ├── src/site/         the website                          (tested in Chromium)
+   ├── src/app/          the Atelier, vanilla JS modules      (tested in Chromium)
+   ├── src/shared/       drawing code used by both
    ├── src/runtime/      theme runtime for websites           (tested in Node and Chromium)
    └── figma-plugin/src  Figma plugin main thread
 python/qontext_hw/  hardware runner                           (tested with Qiskit Aer)
@@ -31,7 +33,18 @@ Figma plugin import the same modules, so a palette looks the same everywhere.
 | `project.js` | Project sanitization and portable project codes |
 | `exporters.js` | CSS, design tokens, Tailwind, SVG, lenticular interlacing |
 
-## Studio
+## Website
+
+`src/site/world.js` owns the visitor's world: an Observer collapse whose seed (1 to 9,999,999) is the world
+number, kept for the browser session. It writes the tile tokens as CSS variables and tints every `.q[data-q]`
+swatch from its context (`data-q-context` on the nearest room, or `data-q-ctx` on the swatch). An
+IntersectionObserver collapses swatches from superposition the first time they are seen. `hero.js` draws the
+observable field on a canvas, `rooms.js` runs the nine exhibits, `scroll.js` drives every scroll-linked
+exhibit from one requestAnimationFrame loop, and `extras.js` handles navigation, the floor plan, Many Worlds,
+the poster, tools and the film. All continuous motion stops under `prefers-reduced-motion`.
+
+## Atelier
+
 
 `src/app/store.js` holds the project (every design setting, persisted to local storage and encodable as
 a `QX1.` project code) and the session (current measurement, loaded pool). Modules in

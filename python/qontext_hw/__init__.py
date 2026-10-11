@@ -1,6 +1,6 @@
-"""qontext-hw: measurement pools for Qontext from real or simulated quantum hardware."""
+"""Probe (qontext-hw): measurement pools for Qontext Notary from real or simulated quantum hardware."""
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 from .circuits import CHSH_ANGLES, CONTEXTS, GRID, SETTING_KEYS, bits_to_values, chsh_circuit, context_circuit  # noqa: E402
 from .pool import POOL_FORMAT, PoolError, build_pool, chsh_value, mermin_score, validate_pool  # noqa: E402

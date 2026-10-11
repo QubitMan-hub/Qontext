@@ -16,4 +16,4 @@ export * from './project.js';
 export * from './exporters.js';
 export * from './guard.js';
 
-export const ENGINE_VERSION = '1.0.0';
+export const ENGINE_VERSION = '1.1.0';

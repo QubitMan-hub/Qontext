@@ -1,4 +1,4 @@
-// Qontext theme runtime: contextual color for production websites.
+// Observer, the Qontext theme runtime: contextual color for production websites.
 //
 //   <script src="qontext-runtime.min.js" data-qontext='{"base":200,"d":3,"L":0.72,"C":0.13}'></script>
 //   <section data-q-context="row"> <div data-q-tile="r1c1">...</div> </section>
@@ -8,11 +8,11 @@
 // --q-harmony-1 and so on. No network calls, no dependencies.
 
 import {
-  sanitizeProject, paletteOf, makeState, measureAll, mulberry32, hashSeed, freshSeed, tileColor, harmony,
+  sanitizeProject, paletteOf, makeState, measureAll, mulberry32, hashSeed, freshSeed, tileColor, harmony, collapseSeed,
   rowValue, colValue, GRID, opAscii, validatePool, wcagContrast, apcaContrast, hexToLin, isHex, normalizeHex,
 } from '../engine/index.js';
 
-export const VERSION = '1.0.0';
+export const VERSION = '1.1.0';
 const VISITOR_KEY = 'qontext-visitor-seed';
 
 function poolDraw(pool, seed) {
@@ -29,7 +29,8 @@ export function collapse(options = {}) {
   const seed = Number.isFinite(options.seed) ? options.seed >>> 0 : freshSeed();
   const pal = paletteOf(project);
   const psi = makeState(project.state, project.stateSeed);
-  const out = measureAll(psi, mulberry32(hashSeed(seed, project.stateSeed)), options.pool ? poolDraw(options.pool, seed) : null);
+  // Same convention as the Atelier: this equals Atelier measurement 1 of a project whose measureSeed is `seed`.
+  const out = measureAll(psi, mulberry32(collapseSeed(seed, project.stateSeed, 1, 0)), options.pool ? poolDraw(options.pool, seed) : null);
   const tiles = {};
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {

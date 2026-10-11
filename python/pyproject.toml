@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qontext-hw"
-version = "1.0.0"
+version = "1.1.0"
 description = "Measure Qontext's contextuality circuits on quantum hardware and write measurement pools."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,7 +18,8 @@ ibm = ["qiskit-ibm-runtime>=0.40"]
 dev = ["pytest>=8", "ruff>=0.6"]
 
 [project.scripts]
-qontext-hw = "qontext_hw.cli:main"
+qontext-probe = "qontext_hw.cli:main"
+qontext-hw = "qontext_hw.cli:main"  # original name, kept so existing scripts keep working
 
 [tool.setuptools]
 packages = ["qontext_hw"]

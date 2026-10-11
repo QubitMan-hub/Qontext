@@ -2,7 +2,7 @@ import {
   GRID, CONTEXTS, opLabel, opAscii, rowValue, colValue, contextualTiles, roundSatisfied, tileColor,
   guardReport, fixLightness, INKS, merminScore, measureAll, makeState, mulberry32,
 } from '../../engine/index.js';
-import { $, $$, esc, pressOne, sign, toast } from '../dom.js';
+import { $, $$, esc, pressOne, reducedMotion, sign, toast } from '../dom.js';
 import { store, palette, setProject, remeasure, collapseSeed } from '../store.js';
 
 let focus = null;
@@ -138,7 +138,16 @@ export function renderBrand() {
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) marks[i++].style.background = tileColor(pal, r, c, rowValue(store.out, r, c)).hex;
 }
 
-export function render() {
+export function render(kind) {
+  if (kind === 'measure' && !reducedMotion()) {
+    for (let k = 0; k < 9; k++) {
+      const el = $(`cell${Math.floor(k / 3)}${k % 3}`);
+      el.classList.remove('flipping');
+      void el.offsetWidth;
+      el.style.animationDelay = `${k * 35}ms`;
+      el.classList.add('flipping');
+    }
+  }
   const pal = palette();
   const p = store.project;
   const ink = INKS[p.ink];
@@ -153,7 +162,7 @@ export function render() {
       el.style.background = p.view === 'rows' ? rc : p.view === 'cols' ? cc : `linear-gradient(135deg,${rc} 0 50%,${cc} 50% 100%)`;
       el.style.color = ink;
       $(`vals${r}${c}`).textContent =
-        p.view === 'rows' ? `row ${sign(rv)}` : p.view === 'cols' ? `col ${sign(cv)}` : `row ${sign(rv)} · col ${sign(cv)}`;
+        p.view === 'rows' ? `row ${sign(rv)}` : p.view === 'cols' ? `col ${sign(cv)}` : `row ${sign(rv)}, col ${sign(cv)}`;
       el.setAttribute('aria-label', `${opAscii(GRID[r][c])}: row reading ${sign(rv)} ${rc}, column reading ${sign(cv)} ${cc}`);
       el.classList.toggle('diff', rv !== cv && p.view === 'split');
       let dim = false;
@@ -180,7 +189,7 @@ export function render() {
   $('legend').innerHTML =
     '<span><i style="background:linear-gradient(135deg,var(--ink) 0 50%,transparent 50%)"></i>upper left: read with its row</span>' +
     '<span><i style="background:linear-gradient(135deg,transparent 0 50%,var(--ink) 50%)"></i>lower right: read with its column</span>' +
-    `<span>Measurement ${store.count} · ${diff} of 9 tiles change color with context${held < 6 ? ` · ${6 - held} rule broken by hardware noise` : ''}</span>`;
+    `<span>Measurement ${store.count}, ${diff} of 9 tiles change color with context${held < 6 ? `, ${6 - held} rule broken by hardware noise` : ''}</span>`;
   $('poolStatus').textContent =
     store.pool && store.usePool
       ? `Drawing collapses from ${store.pool.backend || 'a pool'}${store.pool.simulated ? ' (simulated example)' : ''}.`

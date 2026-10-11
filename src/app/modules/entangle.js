@@ -61,7 +61,7 @@ function paintAsset(prefix, outcome, style, dark) {
   const cta = $(`${prefix}Cta`);
   cta.style.background = acc.hex;
   cta.style.color = relativeLuminance(acc.lin) > 0.3 ? '#14131c' : '#ffffff';
-  $(`${prefix}Out`).textContent = `${STYLE_NAMES[style]} · ${sign(outcome)} · ${acc.hex}`;
+  $(`${prefix}Out`).textContent = `${STYLE_NAMES[style]}, ${sign(outcome)}, ${acc.hex}`;
 }
 
 export function render(kind) {
@@ -79,7 +79,7 @@ export function render(kind) {
       const a = assetAccent(pal, g.out[0], g.x, false).hex;
       const b = assetAccent(pal, g.out[1], g.y, true).hex;
       const same = g.out[0] === g.out[1];
-      return `<div class="pair"><div class="sw2" role="img" aria-label="${STYLE_NAMES[g.x]} and ${STYLE_NAMES[g.y]}, ${same ? 'match' : 'clash'}"><span style="background:${a}"></span><span style="background:${b}"></span></div>${STYLE_NAMES[g.x]} / ${STYLE_NAMES[g.y]} · ${same ? 'match' : 'clash'}</div>`;
+      return `<div class="pair"><div class="sw2" role="img" aria-label="${STYLE_NAMES[g.x]} and ${STYLE_NAMES[g.y]}, ${same ? 'match' : 'clash'}"><span style="background:${a}"></span><span style="background:${b}"></span></div>${STYLE_NAMES[g.x]} / ${STYLE_NAMES[g.y]}, ${same ? 'match' : 'clash'}</div>`;
     })
     .join('');
 

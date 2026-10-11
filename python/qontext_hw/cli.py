@@ -14,8 +14,8 @@ from .runner import RunnerError, ibm_target, local_target, run, transpile_report
 
 def _parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="qontext-hw",
-        description="Measure the Mermin-Peres contexts (and CHSH settings) for Qontext Studio.",
+        prog="qontext-probe",
+        description="Probe: measure the Mermin-Peres contexts and CHSH settings for Qontext Notary.",
     )
     where = ap.add_mutually_exclusive_group()
     where.add_argument("--ibm", metavar="BACKEND", help="IBM Quantum backend name, or least_busy")
@@ -26,7 +26,7 @@ def _parser() -> argparse.ArgumentParser:
     ap.add_argument("--no-chsh", action="store_true", help="skip the four CHSH circuits")
     ap.add_argument("--dry-run", action="store_true", help="transpile and report circuit cost without running")
     ap.add_argument("--validate", metavar="FILE", help="validate an existing pool file and print its scores")
-    ap.add_argument("--version", action="version", version=f"qontext-hw {__version__}")
+    ap.add_argument("--version", action="version", version=f"qontext-probe {__version__}")
     return ap
 
 
@@ -68,10 +68,10 @@ def main(argv: list[str] | None = None) -> int:
         with open(args.out, "w", encoding="utf-8") as f:
             json.dump(pool, f, separators=(",", ":"))
         print(_summary(pool))
-        print(f"Pool written to {args.out}. Load it in Qontext Studio > Hardware.")
+        print(f"Pool written to {args.out}. Load it in the Atelier's Notary room.")
         return 0
     except (RunnerError, PoolError, OSError, json.JSONDecodeError) as e:
-        print(f"qontext-hw: {e}", file=sys.stderr)
+        print(f"qontext-probe: {e}", file=sys.stderr)
         return 2
 
 

@@ -42,7 +42,7 @@ export function render() {
   pill.className = `pill ${beyond ? 'good' : 'bad'}`;
   pill.textContent = beyond ? 'Beyond classical' : 'Within classical';
   $('pentaChips').innerHTML = cols
-    .map((c, j) => `<div class="chip"><div class="sw" style="background:${c.hex}"></div><div class="meta"><span>${c.hex}</span><span>event ${j + 1} · p ${probs[j].toFixed(2)}</span></div></div>`)
+    .map((c, j) => `<div class="chip"><div class="sw" style="background:${c.hex}"></div><div class="meta"><span>${c.hex}</span><span>event ${j + 1}, p ${probs[j].toFixed(2)}</span></div></div>`)
     .join('');
 }
 

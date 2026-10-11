@@ -27,8 +27,8 @@ export function render() {
   const r = interfere(mixA, mixB, phi);
   $('outA').style.background = r.port1.hex;
   $('outB').style.background = r.port2.hex;
-  $('outAtxt').textContent = `Port 1 · ${r.port1.hex} · amplitude ${r.port1.amp.toFixed(3)}`;
-  $('outBtxt').textContent = `Port 2 · ${r.port2.hex} · amplitude ${r.port2.amp.toFixed(3)}`;
+  $('outAtxt').textContent = `Port 1, ${r.port1.hex}, amplitude ${r.port1.amp.toFixed(3)}`;
+  $('outBtxt').textContent = `Port 2, ${r.port2.hex}, amplitude ${r.port2.amp.toFixed(3)}`;
   $('eIn').textContent = r.energyIn.toFixed(4);
   $('eOut').textContent = r.energyOut.toFixed(4);
   $('eShare').textContent = `${Math.round(r.share1 * 100)}%`;

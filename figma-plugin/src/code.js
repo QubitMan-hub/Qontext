@@ -1,4 +1,4 @@
-// Qontext for Figma. Creates a contextual grid, a "Qontext" variable collection with Row and Column
+// Superpose: Qontext for Figma. Creates a contextual grid, a "Qontext" variable collection with Row and Column
 // modes (each tile variable holds its row reading in Row mode and its column reading in Column mode),
 // and optional paint styles for the harmony.
 

@@ -267,7 +267,7 @@ export function projectPoint(p, { yaw, pitch, w = 0, scale = 1 }) {
 
 /** Wavefront OBJ of the shape: one vertex per ray tip (both directions) and line segments for basis edges. */
 export function toObj(A, name = 'qontext-shape') {
-  const lines = [`# Qontext Shape Pack: ${A.set.name}`, `o ${name}`];
+  const lines = [`# Qontext Unpaintables: ${A.set.name}`, `o ${name}`];
   const pts = [];
   for (const v of A.vectors) {
     const p3 = v.length === 4 ? projectPoint(v, { yaw: 0, pitch: 0, w: 0.6 }) : v;

@@ -79,7 +79,7 @@ function renderLenticular() {
     fig(img, 'Print file (screen preview blends the strips). Right-click or long-press to save, print at the DPI above, laminate under the lens sheet.'),
     fig(zoom, target[2] ? `Detail of tile ${tileName} at 2x: row reading and column reading alternate under each lens.` : 'Detail at 2x. This collapse has no tile that changes with context, so measure again for strips.'),
   );
-  $('lentiInfo').textContent = `${size} × ${size} px · ${(dpi / lpi / 2).toFixed(1)} px per view strip`;
+  $('lentiInfo').textContent = `${size} × ${size} px, ${(dpi / lpi / 2).toFixed(1)} px per view strip`;
 }
 
 export function init() {
@@ -92,7 +92,7 @@ export function init() {
   }
   $('copyBtn').addEventListener('click', () => {
     if (blocked()) {
-      toast('Contrast Guard fails. Fix lightness on the Context Grid first.');
+      toast('Bouncer stopped this export. Some tile colors fail contrast; use Fix lightness in Janus.');
       return;
     }
     copyText($('exportOut').value, $('exportOut'));
@@ -102,7 +102,7 @@ export function init() {
   $('projLoad').addEventListener('click', () => {
     try {
       replaceProject(decodeProject($('projCode').value));
-      toast('Project loaded');
+      toast('Wavefunction loaded');
     } catch (e) {
       toast(e.message);
     }
@@ -121,7 +121,7 @@ export function render() {
   const isBlocked = blocked();
   $('copyBtn').disabled = isBlocked;
   $('exportNote').textContent = isBlocked
-    ? 'Blocked: label text fails contrast on some tile colors. Use Fix lightness on the Context Grid.'
+    ? 'Bouncer blocked exports: label text fails contrast on some tile colors. Use Fix lightness in Janus.'
     : `Measurement ${store.count}. Press Measure again for a new collapse.`;
   if (document.activeElement !== $('projName')) $('projName').value = store.project.name;
   if (document.activeElement !== $('projCode')) $('projCode').value = encodeProject(store.project);

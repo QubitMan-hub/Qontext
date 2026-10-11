@@ -1,7 +1,8 @@
-// Qontext Studio entry point: wires tabs, global shortcuts and module rendering.
+// Qontext Atelier entry point: wires tabs, global shortcuts, Wavefunction deep links and module rendering.
 
 import { $, $$, storage, toast } from './dom.js';
-import { store, subscribe, setTab, remeasure } from './store.js';
+import { store, subscribe, setTab, remeasure, replaceProject } from './store.js';
+import { decodeProject } from '../engine/index.js';
 import * as grid from './modules/grid.js';
 import * as learn from './modules/learn.js';
 import * as harmony from './modules/harmony.js';
@@ -90,6 +91,22 @@ function boot() {
   initGlobal();
   subscribe((kind) => renderActive(kind));
   const fromHash = (location.hash || '').replace('#', '');
+  if (fromHash.startsWith('QX1.')) {
+    // A Wavefunction from the site: open that exact world on Janus.
+    try {
+      replaceProject(decodeProject(fromHash));
+      try {
+        history.replaceState(null, '', location.pathname + location.search);
+      } catch {
+        /* sandboxed frames may refuse history changes */
+      }
+      showTab('grid');
+      toast(`Opened ${store.project.name}`);
+      return;
+    } catch {
+      toast('That Wavefunction could not be read');
+    }
+  }
   showTab(TABS.includes(fromHash) ? fromHash : storage.get(TAB_KEY, 'grid'));
 }
 

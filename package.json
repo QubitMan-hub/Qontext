@@ -1,8 +1,8 @@
 {
   "name": "qontext",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Qontext: a contextual color engine built on quantum contextuality.",
+  "description": "Qontext: the website, the Atelier and the engine for contextual color built on quantum contextuality.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -12,11 +12,15 @@
     "watch": "node scripts/build.mjs --watch",
     "test": "node --test \"tests/engine/*.test.js\"",
     "test:e2e": "python3 -m pytest tests/e2e -q",
+    "film": "python3 scripts/record-film.py",
     "lint": "eslint .",
     "check": "npm run lint && npm test && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@fontsource-variable/anybody": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.20.0",
     "globals": "^15.15.0"

@@ -64,7 +64,7 @@ function extractFromImage(file) {
     $('imgChips').innerHTML = clusters
       .map((c) => {
         const col = oklch(c.L, c.C, c.h);
-        return `<div class="chip"><div class="sw" style="background:${col.hex}"></div><div class="meta"><span>${col.hex}</span><span>${c === dominant ? 'dominant · ' : ''}${Math.round(c.share * 100)}%</span></div></div>`;
+        return `<div class="chip"><div class="sw" style="background:${col.hex}"></div><div class="meta"><span>${col.hex}</span><span>${c === dominant ? 'dominant, ' : ''}${Math.round(c.share * 100)}%</span></div></div>`;
       })
       .join('');
     setProject({
@@ -153,7 +153,7 @@ export function render() {
   });
   $('wheelSvg').innerHTML = svg;
   $('harmChips').innerHTML = cols
-    .map((c, k) => `<div class="chip"><div class="sw" style="background:${c.hex}"></div><div class="meta"><span>${c.hex}</span><span>phase ${k}/${p.d} · ${Math.round(c.h)}°</span></div></div>`)
+    .map((c, k) => `<div class="chip"><div class="sw" style="background:${c.hex}"></div><div class="meta"><span>${c.hex}</span><span>phase ${k}/${p.d}, ${Math.round(c.h)}°</span></div></div>`)
     .join('');
 }
 

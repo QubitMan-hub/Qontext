@@ -163,6 +163,7 @@ function normalize(v) {
 var pauliString = (p) => p.map((s) => PAULI[s]).reduce((acc, m) => kron(acc, m));
 
 // src/engine/mermin.js
+var collapseSeed = (measureSeed, stateSeed, count = 1, visitor = 0) => hashSeed(measureSeed, stateSeed, count, visitor);
 var GRID = [
   [["X", "I"], ["I", "X"], ["X", "X"]],
   [["I", "Z"], ["Z", "I"], ["Z", "Z"]],
@@ -485,7 +486,7 @@ function sanitizeProject(input = {}) {
 var paletteOf = (p) => ({ base: p.base, d: p.d, L: p.L, C: p.C });
 
 // src/runtime/qontext-runtime.js
-var VERSION = "1.0.0";
+var VERSION = "1.1.0";
 var VISITOR_KEY = "qontext-visitor-seed";
 function poolDraw(pool, seed) {
   const p = validatePool(pool);
@@ -499,7 +500,7 @@ function collapse(options = {}) {
   const seed = Number.isFinite(options.seed) ? options.seed >>> 0 : freshSeed();
   const pal = paletteOf(project);
   const psi = makeState(project.state, project.stateSeed);
-  const out = measureAll(psi, mulberry32(hashSeed(seed, project.stateSeed)), options.pool ? poolDraw(options.pool, seed) : null);
+  const out = measureAll(psi, mulberry32(collapseSeed(seed, project.stateSeed, 1, 0)), options.pool ? poolDraw(options.pool, seed) : null);
   const tiles = {};
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {

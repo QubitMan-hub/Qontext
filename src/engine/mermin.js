@@ -1,7 +1,13 @@
 // The Mermin-Peres square: nine two-qubit observables, six contexts, no classical value assignment.
 
 import { cx, matmul, matvec, norm2, normalize, pauliString } from './linalg.js';
-import { gaussian, mulberry32 } from './random.js';
+import { gaussian, hashSeed, mulberry32 } from './random.js';
+
+/**
+ * The seed for collapse number `count` (from 1) of a design, for visitor `visitor` (0 = the main view).
+ * The Atelier, the site and the Observer runtime all use this, so a world means the same everywhere.
+ */
+export const collapseSeed = (measureSeed, stateSeed, count = 1, visitor = 0) => hashSeed(measureSeed, stateSeed, count, visitor);
 
 /** GRID[r][c] = [pauli on qubit 1, pauli on qubit 2]. */
 export const GRID = [

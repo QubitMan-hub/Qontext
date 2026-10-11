@@ -15,7 +15,7 @@ test('collapse is deterministic per seed and obeys every rule', () => {
   let differs = false;
   for (let s = 0; s < 20 && !differs; s++) differs = JSON.stringify(collapse({ seed: s }).tiles) !== JSON.stringify(a.tiles);
   assert.ok(differs);
-  assert.equal(VERSION, '1.0.0');
+  assert.equal(VERSION, '1.1.0');
 });
 
 test('collapse can draw from a hardware pool', () => {
@@ -45,4 +45,15 @@ test('fromTokens reads Studio token exports', () => {
 test('contrast helpers', () => {
   assert.ok(Math.abs(contrast.wcag('#000', '#fff') - 21) < 1e-9);
   assert.ok(contrast.apca('#000000', '#ffffff') > 100);
+});
+
+import { collapseSeed, makeState, measureAll, mulberry32, encodeProject, decodeProject } from '../../src/engine/index.js';
+
+test('a world means the same in the runtime, the site and the Atelier', () => {
+  const r = collapse({ base: 77, stateSeed: 9, seed: 123456 });
+  const atelier = measureAll(makeState('random', 9), mulberry32(collapseSeed(123456, 9, 1, 0)));
+  assert.deepEqual(r.outcomes, atelier);
+  const code = encodeProject({ base: 77, stateSeed: 9, measureSeed: 123456 });
+  assert.match(code, /^[A-Za-z0-9._-]+$/, 'wavefunction codes must be valid URL fragment tokens');
+  assert.equal(decodeProject(code).measureSeed, 123456);
 });

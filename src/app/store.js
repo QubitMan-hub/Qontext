@@ -2,7 +2,7 @@
 // the loaded pool and UI state. Modules subscribe and re-render on change.
 
 import {
-  DEFAULT_PROJECT, sanitizeProject, paletteOf, makeState, measureAll, mulberry32, hashSeed, poolDrawer,
+  DEFAULT_PROJECT, sanitizeProject, paletteOf, makeState, measureAll, mulberry32, collapseSeed as seedFor, poolDrawer,
 } from '../engine/index.js';
 import { debounce, storage } from './dom.js';
 
@@ -36,7 +36,7 @@ const persist = debounce(() => storage.set(PROJECT_KEY, store.project), 250);
 export const palette = () => paletteOf(store.project);
 
 /** Seed for collapse number `count` of this project, optionally for visitor k. */
-export const collapseSeed = (count, k = 0) => hashSeed(store.project.measureSeed, store.project.stateSeed, count, k);
+export const collapseSeed = (count, k = 0) => seedFor(store.project.measureSeed, store.project.stateSeed, count, k);
 
 export function measureRound(count, k = 0, usePool = store.usePool) {
   const p = store.project;

@@ -92,7 +92,7 @@ def test_shapes(page):
     assert page.inner_text("#shapeKs") == "exists"
     assert page.locator("#yuohCard").is_visible()
     page.click('[data-sfmt="obj"]')
-    assert page.input_value("#shapeOut").startswith("# Qontext Shape Pack")
+    assert page.input_value("#shapeOut").startswith("# Qontext Unpaintables")
 
 
 def test_example_pool_and_seal(page):
