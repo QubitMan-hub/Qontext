@@ -27,6 +27,7 @@ Every product and feature has one name, used the same way in the website, the At
 | **Handoff** | Exports: CSS variables, design tokens, Tailwind, SVG | Atelier tab |
 | **Bouncer** | Contrast checks (WCAG 2.2 and APCA) against every color a tile can take; blocks failing exports | Inside Janus and Handoff |
 | **Many Worlds** | Per-visitor collapses of one design | Janus, the site's world switcher |
+| **Phase Dial** | Light, dark and every angle between: each angle is an interference blend of the two themes, with text checked by Bouncer at all 360 | The Moon in the site's bar |
 | **Wavefunction** | A portable code (`QX1.`) for one exact design | Handoff, the site, Superpose |
 | **Walk-By** | Interlaced lenticular print files | Handoff |
 | **Wall Wash** | The site's walls take on a little of each room's own tile color as you walk in | The website |

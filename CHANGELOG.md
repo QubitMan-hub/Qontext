@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+New
+- Phase Dial: light and dark are two points on one turn. Every whole degree between is a real theme, a
+  Mach-Zehnder blend of the two (lightness from the port intensity, tint from the waves' interference), so the
+  way to dark passes a teal dusk and the way back a plum one. Bouncer makes text read at 4.5 : 1 or better
+  at all 360 angles, on every wall and every Wall Wash, and a test sweeps them all. A Moon in the bar, lit
+  by the Moon's own phase law, opens the dial; the angle is kept per visitor.
+
 Quieter
 - The site is hung like a gallery. Each room is one wall: its name in tall vinyl lettering, a short wall text
   that credits where the idea comes from, and the exhibit straight on the wall instead of in a card.

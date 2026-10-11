@@ -17,8 +17,9 @@ Approved on 2026-10-12, in this order:
    ElevenLabs voice-over (the owner connected ElevenLabs): the script is shown before any audio is generated,
    because generation spends the owner's credits.
 
-Items 1 to 3 shipped on 2026-10-12. Added the same day: an Impeccable design pass so the site stops looking
-generic. The critique comes first, the owner picks the direction, then changes land before the Phase dial.
+Shipped on 2026-10-12: items 1 to 4, plus an Impeccable gallery pass on the site (rooms hung as walls,
+Literata for reading). The Phase Dial is site only, one 360 degree turn (the owner turned down a spin-1/2
+dial). Next: the film in Remotion with the ElevenLabs voice-over.
 
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
 Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the

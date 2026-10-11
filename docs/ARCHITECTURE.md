@@ -28,6 +28,7 @@ Figma plugin import the same modules, so a palette looks the same everywhere.
 | `kcbs.js`, `chsh.js`, `shapes.js` | The other contextuality and nonlocality structures |
 | `interferometer.js`, `harmony.js` | Color as phase |
 | `guard.js` | Contrast Guard report and automatic lightness fix |
+| `phase.js` | Phase Dial: the chrome at any angle (a Mach-Zehnder blend of the light and dark tokens) after Bouncer has made text readable on every wall |
 | `kmeans.js` | Palette extraction |
 | `pool.js` | Pool validation, summaries, drawers, example pools |
 | `project.js` | Project sanitization and portable project codes |
@@ -44,7 +45,7 @@ Figma plugin import the same modules, so a palette looks the same everywhere.
 | `lib.js` | `h()` and `svg()` build DOM from text nodes, never markup; `whenNear()` wakes code just before it is seen. |
 | `rooms/index.js` | Room metadata (`ROOMS`) and lazy start: a room's module runs `init()` and `paint()` when a visitor is 600 px away. |
 | `rooms/<id>.js` | One module per room: `{ id, init(article), paint(), theme?() }`. |
-| `features/` | Nav, floor plan, idea, tallies (floor plan counts and the footer proof), framed poster (drawn when near, encoded with `toBlob`), film (fetched when near), Many Worlds, and `traverse.js`: Wall Wash, Compass and Thresholds, all driven by IntersectionObserver. |
+| `features/` | Nav, Phase Dial (the theme as an angle, the Moon and the dial), floor plan, idea, tallies (floor plan counts and the footer proof), framed poster (drawn when near, encoded with `toBlob`), film (fetched when near), Many Worlds, and `traverse.js`: Wall Wash, Compass and Thresholds, all driven by IntersectionObserver. |
 
 Off-screen rooms and later sections use `content-visibility: auto`, so the browser skips their rendering until
 they come near. Wall labels are sized in CSS from each name's measured width (`--em`), with no script reads.
