@@ -43,3 +43,67 @@ def test_rolling_the_world_changes_the_pair(site):
     after = site.eval_on_selector_all("#pairSvg stop", "els => els.map((e) => e.getAttribute('stop-color'))")
     assert after != stops
     assert all(re.fullmatch(r"#[0-9a-f]{6}", s) for s in after)
+
+
+def _lin(hexstr):
+    c = [int(hexstr[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+    return [x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+
+
+def wcag(a, b):
+    """WCAG 2 contrast ratio, worked out here independently of the engine."""
+    la, lb = (0.2126 * x[0] + 0.7152 * x[1] + 0.0722 * x[2] for x in (_lin(a), _lin(b)))
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def turn(page, deg):
+    page.eval_on_selector("#pairTurn", f"(el) => {{ el.value = '{deg}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}")
+
+
+def test_harmony_changes_the_pair_not_the_site(site):
+    enter_pair(site, 2)
+    root = site.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--q-r1c1-row')")
+    stops = site.eval_on_selector_all("#pairSvg stop", "els => els.map((e) => e.getAttribute('stop-color'))")
+    chips = site.inner_text("#pairHarmony")
+    turn(site, 120)
+    assert site.eval_on_selector_all("#pairSvg stop", "els => els.map((e) => e.getAttribute('stop-color'))") != stops
+    assert site.inner_text("#pairHarmony") != chips
+    assert site.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--q-r1c1-row')") == root
+    site.click('#pairD [data-d="5"]')
+    assert site.locator("#pairHarmony .chip").count() == 5
+    assert site.get_attribute('#pairD [data-d="5"]', "aria-pressed") == "true"
+
+
+def test_logo_reads_on_both_stripe_colors(site):
+    enter_pair(site, 3)
+    for deg in [0, 60, 120, 180, 240, 300]:
+        turn(site, deg)
+        if site.is_visible("#pairFix"):
+            site.click("#pairFix")
+        stripe = site.get_attribute("#pairStage", "data-stripe").split()
+        ink = site.get_attribute("#pairStage", "data-ink")
+        assert len(stripe) == 2
+        assert min(wcag(ink, c) for c in stripe) >= 4.5, (deg, ink, stripe)
+        shown = float(site.inner_text("#pairInkRatio").split(":")[0])
+        assert shown >= 4.5
+        assert site.eval_on_selector("#pairSvg .logo text", "(t) => t.getAttribute('fill')") == ink
+
+
+def test_mid_tone_paint_fails_the_logo_and_fix_brings_it_back(site):
+    enter_pair(site, 3)
+    # Somewhere in the middle tones neither ink reaches 4.5 : 1 on both stripe colors; where depends on the hue.
+    failing = None
+    for v in range(50, 68):
+        site.eval_on_selector("#pairLight", f"(el) => {{ el.value = '{v}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}")
+        if float(site.inner_text("#pairInkRatio").split(":")[0]) < 4.5:
+            failing = str(v)
+            break
+    assert failing, "no mid-tone lightness failed the logo"
+    assert site.is_visible("#pairFix")
+    site.click("#pairFix")
+    assert site.is_hidden("#pairFix")
+    stripe = site.get_attribute("#pairStage", "data-stripe").split()
+    ink = site.get_attribute("#pairStage", "data-ink")
+    assert min(wcag(ink, c) for c in stripe) >= 4.5
+    assert site.eval_on_selector("#pairLight", "(el) => el.value") != failing

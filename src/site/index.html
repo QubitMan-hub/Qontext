@@ -115,10 +115,20 @@
       <li class="pair-step" data-step="2">
         <h3><span class="n" aria-hidden="true">2</span>Tune the harmony</h3>
         <p>A sneaker artist starts from a palette. Here the palette is a harmony: colors spaced evenly round the wheel, like the phases of a quantum system. Turn it to move every color at once, and pick how many colors share the shoe.</p>
+        <div class="pair-tune">
+          <label class="pair-label" for="pairTurn">Turn the harmony <output id="pairTurnOut" for="pairTurn">0°</output></label>
+          <input type="range" id="pairTurn" min="0" max="359" step="1" value="0">
+          <div class="pair-seg" id="pairD" role="group" aria-label="Colors in the harmony"><button type="button" data-d="3" aria-pressed="true">3 colors</button><button type="button" data-d="4" aria-pressed="false">4 colors</button><button type="button" data-d="5" aria-pressed="false">5 colors</button></div>
+          <ul class="pair-chips" id="pairHarmony" aria-label="The harmony"></ul>
+        </div>
       </li>
       <li class="pair-step" data-step="3">
         <h3><span class="n" aria-hidden="true">3</span>Bouncer checks the logo</h3>
-        <p>The logo sits on the stripe, and the stripe can come out in two colors. Bouncer picks the ink that reads on both and holds it to 4.5 to 1, the bar for readable text. If it falls short, fix the lightness and every color moves together.</p>
+        <p>The logo sits on the stripe, and the stripe can come out in two colors. Bouncer picks the ink that reads on both and holds it to 4.5 to 1, the bar for readable text. Slide the paint toward the middle tones and watch it fail. Fix finds the nearest lightness that reads.</p>
+        <label class="pair-label" for="pairLight">Paint lightness <output id="pairLightOut" for="pairLight">-</output></label>
+        <input type="range" id="pairLight" min="35" max="92" step="1" value="76">
+        <div class="pair-row"><span class="pair-label">Logo ink on the weaker stripe color <strong class="pair-ratio" id="pairInkRatio">-</strong></span><button class="btn small" type="button" id="pairFix" hidden>Fix the lightness</button></div>
+        <p class="pair-note" id="pairInkNote" aria-live="polite"></p>
       </li>
       <li class="pair-step" data-step="4">
         <h3><span class="n" aria-hidden="true">4</span>Paint the pair</h3>

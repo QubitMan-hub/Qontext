@@ -4,9 +4,9 @@
 // The section sleeps until a visitor is near. The SVG is built once from text nodes; after that only fill and
 // stop-color attributes change. Every color comes from the engine through pair-shape.js.
 
-import { oklch, hexToOklch } from '../../engine/index.js';
+import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
-import { svg, whenNear } from '../lib.js';
+import { h, svg, whenNear } from '../lib.js';
 import { site, onWorld, worldNumber } from '../world.js';
 import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf } from '../pair-shape.js';
 
@@ -77,6 +77,50 @@ function washed(hex) {
   return oklch(c.L + (GLASS_L - c.L) * 0.42, c.C * 0.55, c.h).hex;
 }
 
+const ratio = (ink, fill) => wcagContrast(hexToLin(ink), hexToLin(fill));
+
+/**
+ * Bouncer on the logo: the stripe can come out in either of its two colors, so the logo takes whichever of the
+ * two inks reads better on the weaker of them. Returns { ink, ratio, stripe }.
+ */
+function logoInk(stripe) {
+  const rate = (ink) => Math.min(...stripe.map((c) => ratio(ink, c)));
+  const dark = rate(INKS.dark);
+  const light = rate(INKS.light);
+  return dark >= light ? { ink: INKS.dark, ratio: dark, stripe } : { ink: INKS.light, ratio: light, stripe };
+}
+
+/** Step 2 and step 3: the harmony's chips and the logo's contrast. */
+function renderControls(pal, logo) {
+  $('pairLight').value = String(Math.round(pal.L * 100));
+  $('pairLightOut').textContent = pal.L.toFixed(2);
+  $('pairTurn').value = String(pair.nudge);
+  $('pairTurnOut').textContent = `${pair.nudge}°`;
+  for (const b of $('pairD').children) b.setAttribute('aria-pressed', String(Number(b.dataset.d) === pair.d));
+  $('pairHarmony').replaceChildren(...harmony(pal).map((c) => h('li', { class: 'chip' }, h('i', { style: { background: c.hex } }), h('code', {}, c.hex))));
+  const shown = Math.floor(logo.ratio * 10) / 10;
+  const ok = logo.ratio >= WCAG_AA;
+  $('pairInkRatio').textContent = `${shown.toFixed(1)} : 1`;
+  $('pairFix').hidden = ok;
+  const which = logo.ink === INKS.dark ? 'Dark ink' : 'Light ink';
+  $('pairInkNote').textContent = ok
+    ? `${which} reads on both stripe colors. Bouncer lets this pair ship.`
+    : `${which} is too faint on one stripe color. Fix moves every color's lightness together until it reads.`;
+  const stage = $('pairStage');
+  stage.dataset.stripe = logo.stripe.join(' ');
+  stage.dataset.ink = logo.ink;
+}
+
+/** Fix: the lightness closest to today's at which the logo's ink reads on every color the pair can take. */
+function fix() {
+  const pal = palette();
+  const { ink } = logoInk(pairOf(pal, site.result.outcomes).both.get('stripe'));
+  const other = ink === INKS.dark ? INKS.light : INKS.dark;
+  const L = fixLightness(pal, ink) ?? fixLightness(pal, other);
+  if (L !== null) pair.L = L;
+  render();
+}
+
 /** Paints the pair from the current world and the showcase's state. */
 export function render() {
   const sec = $('pair');
@@ -84,8 +128,11 @@ export function render() {
   sec.style.setProperty('--band', oklch(0.2, 0.03, pal.base).hex);
   sec.style.setProperty('--glass', oklch(GLASS_L, 0.036, pal.base).hex);
   $('pairWorld').textContent = worldNumber();
-  if (!built) return;
   const p = pairOf(pal, site.result.outcomes);
+  const logo = logoInk(p.both.get('stripe'));
+  renderControls(pal, logo);
+  if (!built) return;
+  for (const l of logos) for (const el of [l.tile, l.cut, l.word]) el.setAttribute('fill', logo.ink);
   for (const side of ['L', 'R']) {
     const foot = side === 'L' ? p.left : p.right;
     for (const panel of PANELS) {
@@ -106,6 +153,21 @@ export function initPair() {
     build();
     render();
   }, '600px 0px');
+  $('pairTurn').addEventListener('input', (e) => {
+    pair.nudge = Number(e.target.value);
+    render();
+  });
+  $('pairD').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-d]');
+    if (!b) return;
+    pair.d = Number(b.dataset.d);
+    render();
+  });
+  $('pairLight').addEventListener('input', (e) => {
+    pair.L = Number(e.target.value) / 100;
+    render();
+  });
+  $('pairFix').addEventListener('click', fix);
   onWorld((kind) => {
     if (kind !== 'world') return;
     Object.assign(pair, { nudge: 0, d: 3, L: null, match: false });
