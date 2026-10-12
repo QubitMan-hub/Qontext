@@ -8,6 +8,8 @@ color harmonies are the roots of unity of a d-level quantum system.
 Everything runs as exact quantum simulation on the visitor's device. Real hardware (IBM Quantum) adds
 physically random collapses, measured violations of classical limits, and a verifiable provenance seal.
 
+The site: https://qontext.pages.dev. The Atelier: https://qontext.pages.dev/studio.
+
 ## The names
 
 Every product and feature has one name, used the same way in the website, the Atelier, the code and the docs.
@@ -33,6 +35,8 @@ Every product and feature has one name, used the same way in the website, the At
 | **Wall Wash** | The site's walls take on a little of each room's own tile color as you walk in | The website |
 | **Compass** | A pocket floor plan: unvisited rooms are still split, visited rooms have collapsed | The website |
 | **Thresholds** | Each room's name enters the way its physics behaves | The website |
+| **Vacuum** | The page for addresses that do not exist: nothing was measured there, so its tile stays split | `src/site/pages/404.html` |
+| **Unobserved** | The privacy page: what the site keeps about you (nothing) and who else sees a visit | `src/site/pages/privacy.html` |
 | **Observer** | The 12 KB theme runtime for websites | `src/runtime/` → `dist/qontext-runtime.min.js` |
 | **Superpose** | The Figma plugin (Row and Column variable modes) | `figma-plugin/` |
 | **Probe** | The hardware runner CLI, `qontext-probe` | `python/` |
@@ -48,7 +52,8 @@ Every product and feature has one name, used the same way in the website, the At
 | Observer | `src/runtime/` |
 | Superpose | `figma-plugin/` |
 | Probe | `python/` |
-| The film, its poster and chapters | `dist/media/`, recorded by `scripts/record-film.py` |
+| Vacuum, Unobserved, and files copied to the site as they are (icons, link-preview image, `_headers`, `_redirects`) | `src/site/pages/`, `src/site/public/` |
+| The film: script, voice, scenes, link-preview card and icons (Remotion) | `film/` → `dist/media/`, made by `scripts/film.py` |
 | Pool schema | `schema/qontext-pool.schema.json` |
 | Tests | `tests/engine/`, `tests/e2e/`, `python/tests/` |
 | Docs | `docs/ARCHITECTURE.md`, `docs/PHYSICS.md` |
@@ -97,10 +102,27 @@ npm run watch       # rebuilds on every change
 npm test            # engine and runtime unit tests (node:test)
 npm run lint        # ESLint
 npm run test:e2e    # browser tests (pip install pytest playwright && playwright install chromium)
-npm run film        # re-records the film (needs ffmpeg)
+npm run film        # makes the film from the voice and the script (needs ffmpeg and `npm ci` in film/)
 npm run perf        # measures load, hero and scrolling on a phone and a desktop profile
 npm run check       # lint + test + build
 ```
+
+## The film
+
+Two and a half minutes in plain words: the idea, Mermin's Dare, your own world, the rooms, the Phase Dial and
+every tool. The script lives in `film/src/script.json` (scenes, sentences and chapter names); the voice is an
+ElevenLabs take of that script (`film/public/voice.mp3`). `npm run film` lines each sentence up with the pauses
+in the voice, records the two real clips of the site and the Atelier in step with it, renders the scenes with
+Remotion, and writes the film, its poster and the site's chapter list. Changing the script means a new voice
+take. `npm run cards` inside `film/` redraws the link-preview card and the icons in `src/site/public/`.
+
+## Hosting
+
+The site is static and free to host on Cloudflare Pages: connect this repository, leave the build command
+empty and set the output directory to `dist` (the built files are committed). Every push to `main` deploys.
+`404.html` is Vacuum, `_headers` adds the policies a meta tag cannot (no framing, no sniffing, no referrer),
+and `_redirects` sends the artifact fragment's address home. The public address is `homepage` in
+`package.json`; canonical links, link previews, `robots.txt` and `sitemap.xml` are built from it.
 
 ## Observer
 
@@ -138,12 +160,13 @@ qontext-probe --dry-run --ibm least_busy
 The site, the Atelier and Observer make no network requests of their own. The pages load fonts from Google
 Fonts without blocking the first paint, and fall back to system fonts when that is blocked. Images used for
 palette extraction never leave the device. Settings and your world number are stored in the browser only. No
-tracking.
+cookies, no analytics, no tracking. Unobserved says the same to visitors.
 
 ## Security
 
 - The standalone pages carry a Content Security Policy: the only script that runs is the page's own bundle,
   pinned by its SHA-256 hash; nothing can be fetched, framed or posted; the only third party is Google Fonts.
+  Vacuum and Unobserved run no script at all. On Cloudflare Pages, `_headers` also forbids framing.
 - A Wavefunction code can come from anyone, so everything in it is sanitized on the way in (numbers clamped,
   names reduced to one printable line) and escaped on the way out: a project name cannot break out of a CSS
   comment, add a line to a Tailwind config or add markup to an SVG. `tests/engine/security.test.js` tries.

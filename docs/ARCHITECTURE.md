@@ -57,7 +57,9 @@ throttled phone profile and a desktop profile; `tests/e2e/test_performance.py` h
 ## Security
 
 `scripts/build.mjs` writes a Content Security Policy into each standalone page, with the inline bundle pinned
-by SHA-256. The artifact fragment (`dist/artifact.html`) leaves the policy to its host. Untrusted text (project
+by SHA-256; Vacuum and Unobserved carry no script, so their policy allows none. On Cloudflare Pages,
+`src/site/public/_headers` adds `frame-ancestors 'none'`, which a meta tag cannot set. The artifact fragment
+(`dist/artifact.html`) leaves the policy to its host, and the public site redirects its address home. Untrusted text (project
 names from Wavefunction codes, files, storage) goes through `sanitizeProject` and the helpers in
 `src/engine/text.js` before any export writes it into CSS, JavaScript or SVG.
 
@@ -88,3 +90,13 @@ The provenance seal hashes the canonical JSON of the shots with SHA-256.
 filter values generated from the engine), the runtime as a minified browser global and an ES module,
 and the Figma plugin. Built files are committed so `dist/index.html` works without a toolchain; CI
 fails if they are out of date.
+
+It also builds Vacuum and Unobserved from `src/site/pages/` (one small stylesheet, no script), copies
+`src/site/public/` into `dist/` as it is, and writes `robots.txt` and `sitemap.xml`. Public pages get a
+canonical link, a link preview and icons from their own title and description; the address comes from
+`homepage` in `package.json`. `dist/` is the whole website, so a static host serves it with no build step.
+
+The film is its own Remotion project in `film/`, with its own dependencies, so the site's toolchain stays
+small. `scripts/film.py` runs it end to end: `film/scripts/align.mjs` times each sentence from the pauses in
+the voice, `film/scripts/clips.py` records the real clips in step with that timing, Remotion renders the
+scenes (`film/src/scenes/`), and the chapters land in `src/site/film-chapters.json` for the site.

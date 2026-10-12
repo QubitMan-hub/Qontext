@@ -17,9 +17,16 @@ Approved on 2026-10-12, in this order:
    ElevenLabs voice-over (the owner connected ElevenLabs): the script is shown before any audio is generated,
    because generation spends the owner's credits.
 
-Shipped on 2026-10-12: items 1 to 4, plus an Impeccable gallery pass on the site (rooms hung as walls,
+Shipped on 2026-10-12: items 1 to 5, plus an Impeccable gallery pass on the site (rooms hung as walls,
 Literata for reading). The Phase Dial is site only, one 360 degree turn (the owner turned down a spin-1/2
-dial). Next: the film in Remotion with the ElevenLabs voice-over.
+dial). The film: Alex voice, about 2.5 minutes, everyday slang, animation plus real clips; the owner picked
+and uploaded the take. Changing the script means a new paid take, so ask before regenerating.
+
+Launch (owner's ask, 2026-10-12): the website checklist, minus cookies and analytics, which the owner does
+not want. Hosting is Cloudflare Pages, free, from this repo's `main`; the address is `homepage` in
+package.json. The sandbox cannot reach the Cloudflare API or GitHub's settings, so the owner connects the
+repo in Cloudflare and fills GitHub's About box. Skipped on purpose: terms page (the license covers it),
+thank-you page and form states (no forms), sticky phone CTA (the bar already holds Open the Atelier).
 
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
 Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the

@@ -1,0 +1,3 @@
+# artifact.html is the site as a fragment for the Claude artifact host. On the public site it leads home.
+/artifact / 301
+/artifact.html / 301

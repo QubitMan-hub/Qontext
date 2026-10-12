@@ -8,7 +8,8 @@
     "studio": "npm run fonts && remotion studio",
     "align": "node scripts/align.mjs",
     "still": "npm run fonts && remotion still",
-    "render": "npm run fonts && remotion render"
+    "render": "npm run fonts && remotion render",
+    "cards": "npm run fonts && remotion still Card ../src/site/public/og.png && remotion still Icon ../src/site/public/apple-touch-icon.png && ffmpeg -hide_banner -loglevel error -y -i ../src/site/public/apple-touch-icon.png -vf crop=132:132:24:24,scale=32:32:flags=lanczos ../src/site/public/favicon.ico && node scripts/favicon.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
