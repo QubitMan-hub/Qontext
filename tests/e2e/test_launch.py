@@ -12,7 +12,7 @@ from conftest import SITE, _new_page
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 DIST = ROOT / "dist"
 HOME = json.loads((ROOT / "package.json").read_text())["homepage"].rstrip("/")
-PUBLIC = {"index.html": "/", "studio.html": "/studio", "privacy.html": "/privacy"}
+PUBLIC = {"index.html": "/", "studio.html": "/studio", "privacy.html": "/privacy", "turntable.html": "/turntable"}
 BASE = SITE.rsplit("/", 1)[0]
 
 
@@ -47,6 +47,29 @@ def test_sitemap_lists_every_public_page_and_robots_points_to_it():
     assert f"Sitemap: {HOME}/sitemap.xml" in (DIST / "robots.txt").read_text()
 
 
+def test_turntable_fetches_only_from_the_site():
+    html = (DIST / "turntable.html").read_text()
+    policy = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html).group(1)
+    assert "connect-src 'self' blob:;" in policy
+    for page in ("index.html", "studio.html"):
+        assert "connect-src" not in (DIST / page).read_text()
+
+
+def test_the_3d_shoe_ships_light_and_ready_to_paint():
+    glb = (DIST / "pair-shoe.glb").read_bytes()
+    assert glb[:4] == b"glTF"
+    assert len(glb) < 2.5 * 1024 * 1024
+    length = struct.unpack("<I", glb[12:16])[0]
+    model = json.loads(glb[20 : 20 + length])
+    assert set(model["extensionsRequired"]) == {"EXT_texture_webp", "KHR_mesh_quantization"}
+    attributes = model["meshes"][0]["primitives"][0]["attributes"]
+    assert {"POSITION", "NORMAL", "TEXCOORD_0", "_PAINT"} <= set(attributes)
+    # Stood in the photo's frame by scripts/pair_model.py: heel at 0, toe at 1, sole on the floor.
+    low, high = (model["accessors"][attributes["POSITION"]][k] for k in ("min", "max"))
+    assert abs(low[0]) < 0.03 and abs(high[0] - 1) < 0.03 and abs(low[1]) < 0.03
+    assert "emissiveTexture" not in model["materials"][0]
+
+
 def test_cloudflare_serves_dist_and_vacuum_for_missing_pages():
     # Workers static assets answer a missing page with an empty 404 unless told to use 404.html.
     config = json.loads((ROOT / "wrangler.jsonc").read_text())
@@ -76,7 +99,10 @@ def test_static_pages_run_no_script(page):
     assert "<script" not in html
 
 
-@pytest.mark.parametrize("page", ["index.html", "artifact.html", "studio.html", "privacy.html", "404.html"])
+PAGES = ["index.html", "artifact.html", "studio.html", "privacy.html", "turntable.html", "404.html"]
+
+
+@pytest.mark.parametrize("page", PAGES)
 def test_fonts_come_from_the_site_itself(page):
     html = (DIST / page).read_text()
     assert "googleapis" not in html
@@ -89,7 +115,7 @@ def test_fonts_come_from_the_site_itself(page):
         assert (DIST / "fonts" / name).is_file(), name
 
 
-@pytest.mark.parametrize("url", [SITE, f"{BASE}/studio.html", f"{BASE}/privacy.html"])
+@pytest.mark.parametrize("url", [SITE, f"{BASE}/studio.html", f"{BASE}/privacy.html", f"{BASE}/turntable.html"])
 def test_pages_render_in_their_own_typefaces(browser, url):
     errors = []
     ctx, page = _new_page(browser, {"width": 1440, "height": 900}, errors)

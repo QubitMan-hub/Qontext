@@ -128,6 +128,20 @@ def test_static_pages_have_no_axe_violations(browser, page_name, size, scheme):
     assert errors == []
 
 
+@pytest.mark.parametrize("scheme", ["light", "dark"])
+@pytest.mark.parametrize("size", list(VIEWPORTS))
+def test_turntable_has_no_axe_violations(browser, size, scheme):
+    errors = []
+    ctx, page = _new_page(browser, VIEWPORTS[size], errors)
+    page.emulate_media(color_scheme=scheme, reduced_motion="reduce")
+    page.goto(SITE.rsplit("/", 1)[0] + "/turntable.html")
+    page.wait_for_selector("#ttStage[data-ready='true']", timeout=30000)
+    violations = scan(page)
+    ctx.close()
+    assert violations == [], report(violations)
+    assert errors == []
+
+
 def test_site_skip_link_and_menu_work_by_keyboard(browser):
     errors = []
     ctx, page = _new_page(browser, VIEWPORTS["phone"], errors)

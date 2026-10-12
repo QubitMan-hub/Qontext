@@ -35,6 +35,8 @@ Every product and feature has one name, used the same way in the website, the At
 | **Wall Wash** | The site's walls take on a little of each room's own tile color as you walk in | The website |
 | **Compass** | A pocket floor plan: unvisited rooms are still split, visited rooms have collapsed | The website |
 | **Thresholds** | Each room's name enters the way its physics behaves | The website |
+| **Pair Production** | The showcase: a sneaker drop from start to finish. The nine panels of one shoe are the nine tiles; the left foot reads the rows, the right foot the columns | The website |
+| **Turntable** | Your Pair Production pair in 3D, on a platter you can turn | `src/turntable/` → `dist/turntable.html` |
 | **Vacuum** | The page for addresses that do not exist: nothing was measured there, so its tile stays split | `src/site/pages/404.html` |
 | **Unobserved** | The privacy page: what the site keeps about you (nothing) and who else sees a visit | `src/site/pages/privacy.html` |
 | **Observer** | The 12 KB theme runtime for websites | `src/runtime/` → `dist/qontext-runtime.min.js` |
@@ -47,6 +49,8 @@ Every product and feature has one name, used the same way in the website, the At
 | --- | --- |
 | Engine: pure ES modules for color science, quantum simulation, contextuality structures and exports | `src/engine/` |
 | Website, the front door | `src/site/` → `dist/index.html` |
+| Turntable, the pair in 3D (three.js) | `src/turntable/` → `dist/turntable.html` |
+| The shoe: a studio photo and its nine panels, and a 3D model generated from the photo | `art/pair-shoe.png`, `scripts/pair_photo.py`, `scripts/pair_model.py` → `src/site/pair-photo.js`, `src/site/public/pair-shoe.webp`, `src/site/public/pair-shoe.glb` |
 | Atelier | `src/app/` → `dist/studio.html` |
 | Shared drawing code (Unpaintables) | `src/shared/` |
 | Observer | `src/runtime/` |
@@ -76,6 +80,10 @@ The site is an exhibit in itself. Things it does:
   Spooky Pair arrives from both ends at once, Unpaintables never settles the same way twice, Notary stamps and
   Observer collapses.
 - **Your world, framed**: a poster of your world, plus a Wavefunction that opens it in the Atelier.
+- **Pair Production**, a sneaker drop start to finish: roll a world, tune the harmony, let Bouncer check the
+  print on every panel, paint the pair (some panels can never match between the feet, and the six rules show
+  why), pick from a drop of twelve worlds, and take the tag with its SHA-256 fingerprint. Then put the pair on
+  the **Turntable** and turn it in 3D.
 
 It is built to be fast on an ordinary phone. Rooms sleep until you are about to reach them, off-screen sections
 skip rendering, the hero field is a repeating SVG tile with compositor-run shimmer, and nothing animates on the

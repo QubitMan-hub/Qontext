@@ -1,0 +1,42 @@
+/* Turntable: the pair on a platter, in a band tinted by the world's own hue (set from the script, as in the
+   showcase). Built on page.css: the same paper, ink and type as the small pages. */
+
+main { padding-block: 0 clamp(40px, 7vw, 88px); }
+.stage { --band: #23264a; --glass: #2e3260; --on: #eceefb; --on-2: #b9bce0; position: relative; color: var(--on); background: radial-gradient(ellipse 60% 70% at 50% 42%, var(--glass), var(--band)); }
+.view { position: relative; height: clamp(340px, 62vh, 760px); outline: none; touch-action: pan-y; }
+.view canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+.view canvas:active { cursor: grabbing; }
+.view:focus-visible { box-shadow: inset 0 0 0 3px var(--on); }
+.loading[hidden] { display: none; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-family: var(--font-display); font-weight: 520; font-size: 1.2rem; color: var(--on-2); text-align: center; padding: 24px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-block: 4px 12px; }
+.seg { display: inline-flex; border: 1.5px solid var(--on-2); border-radius: 999px; overflow: hidden; }
+.seg button, .chip { font: 560 0.98rem/1.1 var(--font-display); color: var(--on); background: transparent; border: 0; padding: 10px 16px; min-height: 44px; cursor: pointer; }
+.seg button + button { border-left: 1.5px solid var(--on-2); }
+.seg button[aria-pressed="true"] { background: var(--on); color: var(--band); }
+.chip { border: 1.5px solid var(--on-2); border-radius: 999px; }
+.chip[aria-pressed="true"] { background: var(--glass); }
+.stage button:focus-visible { outline: 3px solid var(--on); outline-offset: 2px; }
+.readout { margin-block: 0; padding-block: 0 18px; min-height: 3.2em; color: var(--on-2); font-size: 1rem; }
+
+/* Without WebGL: the two feet side on, toes out. */
+.flat .view { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px 4%; height: auto; padding: 48px var(--gutter) 32px; }
+.flat .view canvas { width: min(46%, 560px); height: auto; cursor: default; }
+.flat .loading { position: static; width: 100%; }
+.flat .controls, .flat .readout { display: none; }
+
+.about { display: grid; gap: clamp(32px, 5vw, 72px); padding-top: clamp(36px, 6vw, 72px); }
+@media (min-width: 960px) { .about { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.about .lead { margin-top: 24px; }
+.notice { padding: 10px 14px; border-left: 3px solid var(--ink); background: var(--sheet); }
+
+.panels { width: 100%; border-collapse: collapse; font-size: 1rem; }
+.panels caption { text-align: left; font-family: var(--font-display); font-weight: 650; font-size: 1.35rem; padding-bottom: 10px; }
+.panels th, .panels td { text-align: left; padding: 9px 8px 9px 0; border-bottom: 1px solid var(--rule); font-weight: 400; }
+.panels thead th { font-family: var(--font-display); font-weight: 600; color: var(--ink-2); }
+.panels tbody th { font-family: var(--font-display); font-weight: 560; }
+.panels .hex { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.92rem; white-space: nowrap; }
+.panels .hex::before { content: ""; display: inline-block; width: 1.4em; height: 1.4em; margin-right: 10px; vertical-align: -0.35em; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.15); }
+.panels .differ { font-family: var(--font-body); font-weight: 400; color: var(--ink-2); font-size: 0.9rem; }
+.panels tr[data-active] { background: var(--sheet); }

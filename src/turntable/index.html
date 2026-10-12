@@ -1,0 +1,46 @@
+<title>Turntable, Qontext</title>
+<meta name="description" content="Your Pair Production sneakers in 3D. Turn the pair, look closer, and see which panels the two feet can never agree on.">
+<style>/*__CSS__*/</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar"><div class="wrap"><a href="index.html"><span class="tile" aria-hidden="true"></span>Qontext</a></div></header>
+
+<main id="main">
+  <div class="stage" id="ttStage" data-show="pair">
+    <div class="view" id="ttView" role="application" aria-roledescription="3D viewer" aria-label="Your pair in 3D" aria-describedby="ttHelp" tabindex="0">
+      <p class="loading" id="ttLoading">Bringing the pair out</p>
+    </div>
+    <div class="controls wrap">
+      <div class="seg" role="group" aria-label="Show">
+        <button type="button" data-show="left" aria-pressed="false">Left foot</button>
+        <button type="button" data-show="pair" aria-pressed="true">Pair</button>
+        <button type="button" data-show="right" aria-pressed="false">Right foot</button>
+      </div>
+      <button type="button" class="chip" id="ttSpin" aria-pressed="false">Spin</button>
+      <button type="button" class="chip" id="ttReset">Reset view</button>
+    </div>
+    <p class="readout wrap" id="ttReadout">Point at a panel to read it.</p>
+  </div>
+
+  <div class="wrap about">
+    <div>
+      <h1 class="name">Turntable</h1>
+      <p class="what">Your pair in 3D</p>
+      <p class="lead" id="ttLead">The pair you painted in Pair Production.</p>
+      <p id="ttHelp">Drag to turn it. Pinch, or hold Ctrl and scroll, to look closer. With the keyboard, focus the pair, then use the arrow keys to turn it and plus or minus to zoom.</p>
+      <p class="notice" id="ttNotice" role="status" hidden></p>
+      <div class="actions">
+        <a class="btn" id="ttBack" href="index.html#pair">Back to Pair Production</a>
+        <a class="btn ghost" id="ttAtelier" href="studio.html">Open in the Atelier</a>
+      </div>
+    </div>
+    <table class="panels" id="ttPanels">
+      <caption>Every panel, foot by foot</caption>
+      <thead><tr><th scope="col">Panel</th><th scope="col">Left foot</th><th scope="col">Right foot</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
+
+<footer><nav class="wrap" aria-label="Footer"><a href="index.html">Qontext</a><a href="studio.html">Atelier</a><a href="privacy.html">Privacy</a><a href="https://github.com/QubitMan-hub/Qontext">Source</a></nav></footer>
+<script>/*__JS__*/</script>

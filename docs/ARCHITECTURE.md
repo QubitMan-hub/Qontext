@@ -54,10 +54,27 @@ Only `opacity` and `transform` animate, and all continuous motion stops under `p
 `scripts/perf.py` measures boot, load blocking, the hero at rest and under a pointer, and scrolling, on a
 throttled phone profile and a desktop profile; `tests/e2e/test_performance.py` holds the site to a budget.
 
+### Pair Production and Turntable
+
+The shoe starts as one studio photo of a plain white sneaker (`art/pair-shoe.png`, made with Figma's image
+generator). `scripts/pair_photo.py` crops it and traces its nine panels from the photo's own seams into
+`src/site/pair-photo.js`; `src/site/pair-shape.js` maps the panels onto the grid (bands are rows, zones are
+columns) and paints a pair from a world. `features/pair.js` draws the photo and lays each panel's color over it
+with a multiply blend, so the leather's shading and stitching show through.
+
+Turntable (`src/turntable/`) is its own page with three.js bundled in. Its shoe is a 3D model generated from the
+same photo (Meshy, through Weave). `scripts/pair_model.py` fits the model's side outline to the photo's, stands
+it in the photo's frame (heel at 0, toe at 1, one unit per shoe length), marks the lining and insole so they stay
+white, and writes `pair-shoe.glb` with WebP textures and quantized normals. In the page, the nine panels are
+painted flat on a canvas the size of the photo and projected through the shoe from the side, so a point at model
+(x, y) takes the color of photo pixel (x0 + x * L, yBottom - y * L); the left foot is the right foot mirrored.
+The design arrives as a Wavefunction in the address, and frames are drawn only while something moves.
+
 ## Security
 
 `scripts/build.mjs` writes a Content Security Policy into each standalone page, with the inline bundle pinned
-by SHA-256; Vacuum and Unobserved carry no script, so their policy allows none. On Cloudflare,
+by SHA-256; Vacuum and Unobserved carry no script, so their policy allows none. Turntable alone may fetch,
+and only from the site (`connect-src 'self' blob:`), for its 3D model and the textures inside it. On Cloudflare,
 `src/site/public/_headers` adds `frame-ancestors 'none'`, which a meta tag cannot set. The artifact fragment
 (`dist/artifact.html`) leaves the policy to its host, and the public site redirects its address home. Untrusted text (project
 names from Wavefunction codes, files, storage) goes through `sanitizeProject` and the helpers in
@@ -91,7 +108,8 @@ filter values generated from the engine), the runtime as a minified browser glob
 and the Figma plugin. Built files are committed so `dist/index.html` works without a toolchain; CI
 fails if they are out of date.
 
-It also builds Vacuum and Unobserved from `src/site/pages/` (one small stylesheet, no script), copies
+It also builds Turntable from `src/turntable/` (the small pages' stylesheet plus its own, and three.js in its
+bundle), Vacuum and Unobserved from `src/site/pages/` (one small stylesheet, no script), copies
 `src/site/public/` into `dist/` as it is, and writes `robots.txt` and `sitemap.xml`. Public pages get a
 canonical link, a link preview and icons from their own title and description; the address comes from
 `homepage` in `package.json`. `dist/` is the whole website, so a static host serves it with no build step.

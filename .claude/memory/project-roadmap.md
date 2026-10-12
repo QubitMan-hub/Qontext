@@ -28,6 +28,12 @@ deployed from `main`; `wrangler.jsonc` and `homepage` in package.json must agree
 sandbox cannot change Cloudflare or GitHub settings, so those go to the owner. Skipped on purpose: terms page (the license covers it),
 thank-you page and form states (no forms), sticky phone CTA (the bar already holds Open the Atelier).
 
+Showcase (owner's ask, 2026-10-12): Pair Production, a sneaker drop scroll story, and Turntable, the pair in
+3D. The owner rejected the drawn shoe as unrealistic: the shoe is a studio photo (Figma AI) recolored with a
+multiply blend, and the 3D shoe is a Meshy model generated from that photo (Weave). The logo on the shoe was
+removed at the owner's request; bring branding back only if asked. Still to come: a clear, human-written paper
+on the method (LaTeX and PDF, figures from the real engine).
+
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
 Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the
 Impeccable pass.

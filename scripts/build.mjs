@@ -2,6 +2,7 @@
 //   dist/index.html              Website (complete document)
 //   dist/studio.html             Qontext Atelier, the studio (complete document)
 //   dist/privacy.html            Unobserved, the privacy page
+//   dist/turntable.html          Turntable, the Pair Production sneakers in 3D
 //   dist/404.html                Vacuum, the page for addresses that do not exist
 //   dist/artifact.html           Website as a page fragment, for hosts that add their own document shell
 //   dist/qontext-runtime.min.js  Observer runtime, browser global `Qontext`
@@ -27,20 +28,22 @@ const DEV = process.env.QONTEXT_DEV === '1';
 // The public site (package.json "homepage"), for canonical links, link previews, robots.txt and the sitemap.
 const SITE = JSON.parse(await readFile(p('package.json'), 'utf8')).homepage.replace(/\/$/, '');
 // Its pages by public address. Cloudflare drops ".html": studio.html is served at /studio.
-const PAGES = ['/', '/studio', '/privacy'];
+const PAGES = ['/', '/studio', '/privacy', '/turntable'];
 
 /**
  * Content Security Policy for the standalone pages. Scripts run only if they are the exact inline bundle
  * (pinned by hash), nothing can be fetched or framed, and there are no third parties: fonts come from the site.
  * Inline styles stay allowed: the pages set colors through style attributes, and styles cannot run code.
- * Pages without a bundle get no script-src at all, so `default-src 'none'` refuses every script.
+ * Pages without a bundle get no script-src at all, so `default-src 'none'` refuses every script. `connect` lets a page
+ * fetch from its own site (Turntable loads its 3D model, whose textures it then reads back as blobs).
  */
-function csp(html, bundles) {
+function csp(html, bundles, connect) {
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
   if (scripts.length !== bundles) throw new Error(`expected ${bundles} inline script(s), found ${scripts.length}`);
   return [
     "default-src 'none'",
     ...(bundles ? [`script-src ${scripts.join(' ')}`] : []),
+    ...(connect ? [`connect-src ${connect}`] : []),
     "style-src 'unsafe-inline'",
     "font-src 'self'",
     "img-src 'self' data: blob:",
@@ -78,13 +81,14 @@ function share(head, path) {
 }
 
 /**
- * Bundles a page: the typefaces + template + CSS + JS entry (none for the static pages). Pages read their faces
+ * Bundles a page: the typefaces + template + CSS (one file or several, in order) + JS entry (none for the static pages). Pages read their faces
  * from `fonts/` beside them; Vacuum is served at any depth, so it reads them from `/fonts/`. Returns { full, fragment }.
  */
-async function buildPage({ entry, css, template, version, path, fonts = 'fonts/' }) {
+async function buildPage({ entry, css, template, version, path, fonts = 'fonts/', connect }) {
   const js = entry && (await build({ entryPoints: [p(entry)], bundle: true, format: 'iife', target: ['es2020'], minify: !DEV, write: false, legalComments: 'none' }));
   const faces = (await readFile(p('src/fonts.css'), 'utf8')).replaceAll('url(fonts/', `url(${fonts}`);
-  const style = await transform(faces + (await readFile(p(css), 'utf8')), { loader: 'css', minify: true });
+  const sheets = await Promise.all([css].flat().map((f) => readFile(p(f), 'utf8')));
+  const style = await transform(faces + sheets.join('\n'), { loader: 'css', minify: true });
   let html = await readFile(p(template), 'utf8');
   const replacements = {
     '/*__CSS__*/': style.code.trim(),
@@ -102,7 +106,7 @@ async function buildPage({ entry, css, template, version, path, fonts = 'fonts/'
   const head = html.slice(0, split).trim();
   const body = html.slice(split).trim();
   const meta = path ? `\n${share(head, path)}` : '';
-  const full = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${csp(body, js ? 1 : 0)}">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}${meta}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
+  const full = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${csp(body, js ? 1 : 0, connect)}">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}${meta}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
   // The fragment is for hosts that wrap pages in their own document, and their own policy.
   return { full, fragment: html.trim() + '\n' };
 }
@@ -133,10 +137,11 @@ async function buildAll() {
   await mkdir(p('dist/media'), { recursive: true });
   await mkdir(p('figma-plugin/dist'), { recursive: true });
   const page = (template) => ({ css: 'src/site/pages/page.css', template, version });
-  const [site, studio, privacy, vacuum, runtime, figma] = await Promise.all([
+  const [site, studio, privacy, turntable, vacuum, runtime, figma] = await Promise.all([
     buildPage({ entry: 'src/site/main.js', css: 'src/site/site.css', template: 'src/site/index.html', version, path: PAGES[0] }),
     buildPage({ entry: 'src/app/main.js', css: 'src/app/styles.css', template: 'src/app/index.html', version, path: PAGES[1] }),
     buildPage({ ...page('src/site/pages/privacy.html'), path: PAGES[2] }),
+    buildPage({ entry: 'src/turntable/main.js', css: ['src/site/pages/page.css', 'src/turntable/turntable.css'], template: 'src/turntable/index.html', version, path: PAGES[3], connect: "'self' blob:" }),
     buildPage({ ...page('src/site/pages/404.html'), fonts: '/fonts/' }),
     buildRuntime(),
     buildFigma(),
@@ -146,6 +151,7 @@ async function buildAll() {
   await writeFile(p('dist/artifact.html'), site.fragment);
   await writeFile(p('dist/studio.html'), studio.full);
   await writeFile(p('dist/privacy.html'), privacy.full);
+  await writeFile(p('dist/turntable.html'), turntable.full);
   await writeFile(p('dist/404.html'), vacuum.full);
   // Icons, the link-preview image, and Cloudflare's _headers and _redirects, as they are.
   await cp(p('src/site/public'), p('dist'), { recursive: true });
@@ -155,6 +161,7 @@ async function buildAll() {
   console.log(`Qontext ${version} built in ${Date.now() - started} ms`);
   console.log(`  dist/index.html (website)     ${kb(site.full.length)}`);
   console.log(`  dist/studio.html (Atelier)    ${kb(studio.full.length)}`);
+  console.log(`  dist/turntable.html           ${kb(turntable.full.length)}`);
   console.log(`  dist/qontext-runtime.min.js   ${kb(runtime)}`);
   console.log(`  figma-plugin/dist/code.js     ${kb(figma)}`);
 }

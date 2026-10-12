@@ -3,6 +3,15 @@
 ## Unreleased
 
 New
+- Pair Production, the showcase: a sneaker drop from start to finish, told as a scroll story beside a pinned
+  vitrine. One shoe's nine panels are the grid's nine tiles; the left foot reads the rows and the right foot the
+  columns. Roll a world, tune the harmony, let Bouncer check the print on every panel (and fix the lightness when
+  it fails), paint the pair panel by panel, try to force the feet to match and watch a rule break, pick a pair
+  from a drop of twelve worlds, and take a hang tag with a SHA-256 fingerprint, a paint sheet (SVG) and a link
+  into the Atelier. The shoe is a studio photo, recolored live with a multiply blend so the leather shows through.
+- Turntable: your pair in 3D. A model generated from the same photo stands on a platter in your world's hue;
+  drag, pinch or use the keyboard to turn it, show one foot or both, and point at a panel to read both feet's
+  colors. It opens from the tag with the exact design, and stands side on in 2D where WebGL is missing.
 - The film, rebuilt in Remotion: two and a half minutes in everyday words, with an ElevenLabs voice. Each
   sentence is lined up with the voice by its speaking rate, the scenes are drawn by the engine itself, and the
   clips of the site and the Atelier are recorded in step with the narration. Ten chapters on the site.

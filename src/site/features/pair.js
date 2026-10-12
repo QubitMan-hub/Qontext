@@ -33,7 +33,8 @@ const GLASS_L = 0.27;
 /** The world's palette with the showcase's own harmony and lightness on top. */
 export function palette() {
   const p = site.palette;
-  return { base: p.base + pair.nudge, d: pair.d, L: pair.L ?? p.L, C: p.C };
+  // Hue wraps round: a Wavefunction keeps 0 to 360, and would stop a turn that passes the top of the wheel.
+  return { base: (p.base + pair.nudge + 360) % 360, d: pair.d, L: pair.L ?? p.L, C: p.C };
 }
 
 /** Shared by the vitrine and the drop: the shoe's outline as a clip, and the soft shadow it stands on. */
@@ -222,8 +223,8 @@ function renderDrop() {
   $('pairDrop').replaceChildren(
     ...dropSeeds(site.seed).map((seed) => {
       const { root, differ } = miniPair(seed);
-      const label = `World ${worldNumber(seed)}, ${differ} of 9 panels differ`;
-      return h('li', {}, h('button', { type: 'button', 'data-seed': seed, 'aria-label': `Make it yours: ${label}` }, root, h('span', { class: 'w' }, `World ${worldNumber(seed)}`), h('span', { class: 'd' }, `${differ} of 9 differ`)));
+      // Named by its own words, so voice control users can say what they see.
+      return h('li', {}, h('button', { type: 'button', 'data-seed': seed }, root, h('span', { class: 'sr-only' }, 'Make it yours: '), h('span', { class: 'w' }, `World ${worldNumber(seed)}`), ' ', h('span', { class: 'd' }, `${differ} of 9 differ`)));
     }),
   );
 }
@@ -235,13 +236,14 @@ function designCode() {
 
 const listOf = (names) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
 
-/** Step 6: the hang tag, its fingerprint (SHA-256 of the Wavefunction) and the link into the Atelier. */
+/** Step 6: the hang tag, its fingerprint (SHA-256 of the Wavefunction), and the links to Turntable and the Atelier. */
 function renderTag(p, held) {
   const code = designCode();
   $('pairTagWorld').textContent = worldNumber();
   $('pairTagRules').textContent = pair.match ? `${held} of 6, matched` : `${held} of 6`;
   const names = PANELS.filter((x) => p.differ.includes(x.id)).map((x) => x.name);
   $('pairTagDiffer').textContent = pair.match ? 'none, the feet were forced to match' : names.length ? listOf(names) : 'none in this world';
+  $('pairTurntable').href = `turntable.html#${code}`;
   $('pairAtelier').href = `studio.html#${code}`;
   const ticket = ++printTicket;
   const show = (text) => ticket === printTicket && ($('pairPrint').textContent = text);

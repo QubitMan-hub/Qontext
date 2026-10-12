@@ -15,3 +15,6 @@ type: reference
 - GitHub: public repo https://github.com/QubitMan-hub/Qontext (remote `origin`, branch `main`). The site's
   Take it home index links into it, so keep those paths (src/runtime, figma-plugin, python) valid.
 - Axe: the free axe-core checker runs in the browser tests; Deque's hosted Axe service is not connected.
+- Weave (Figma's AI models, e.g. Meshy V6 image to 3D): every run spends the owner's Weave credits, so each run
+  needs the owner's explicit approval. Weave reads inputs from a public URL (a pushed GitHub raw file works);
+  the sandbox cannot download from media.weavy.ai, so the owner downloads outputs and attaches them.

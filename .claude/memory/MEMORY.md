@@ -8,7 +8,7 @@ Index of Qontext's memory. One line per entry; open only the files that match th
 - [feedback-naming.md](feedback-naming.md): every feature gets a distinctive name plus a plain descriptor
 
 ## Project
-- [project-roadmap.md](project-roadmap.md): released versions and the approved next steps, in order
+- [project-roadmap.md](project-roadmap.md): released versions, the approved next steps in order, and the showcase
 
 ## Reference
-- [reference-surfaces.md](reference-surfaces.md): public site, preview artifact, product doc, skill, Figma, GitHub and Axe
+- [reference-surfaces.md](reference-surfaces.md): public site, preview artifact, product doc, skill, Figma, Weave, GitHub and Axe
