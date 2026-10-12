@@ -9,6 +9,7 @@
     <a class="brand" href="#hero" aria-label="Qontext, back to top"><span class="mark" id="navMark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>Qontext</a>
     <ul class="links" id="links">
       <li><a href="#idea">Idea</a></li>
+      <li><a href="#pair">Showcase</a></li>
       <li><a href="#floor">Floor plan</a></li>
       <li><a href="#room-janus">Rooms</a></li>
       <li><a href="#tools">Tools</a></li>
@@ -35,6 +36,7 @@
   <div class="menu-top"><span class="brand">Qontext</span><button class="btn small ghost" type="button" id="menuClose">Close</button></div>
   <ol>
     <li><a href="#idea">The idea <span>why context matters</span></a></li>
+    <li><a href="#pair">Pair Production <span>a sneaker drop, start to finish</span></a></li>
     <li><a href="#floor">Floor plan <span>the map of this site</span></a></li>
     <li><a href="#room-janus">Janus <span>one tile, two colors</span></a></li>
     <li><a href="#room-dare">Mermin's Dare <span>the impossible puzzle</span></a></li>
@@ -89,6 +91,48 @@
         <figcaption>This is one tile, X<sub>1</sub>, measured in two contexts. Here the colors really differ, and both readings obey the rules.</figcaption>
       </figure>
     </div>
+  </div>
+</section>
+
+<section class="pair" id="pair" aria-labelledby="pairTitle">
+  <div class="wrap pair-in">
+    <header class="pair-head">
+      <h2 class="pair-name" id="pairTitle">Pair Production</h2>
+      <p class="pair-what">A sneaker drop, start to finish</p>
+      <p class="pair-lead">A pair of shoes is two contexts. The left foot reads your grid by its rows and the right foot by its columns, so one panel can be two true colors, one on each foot. Design a pair the way a sneaker artist would, then paint it yourself.</p>
+    </header>
+    <div class="pair-stage" id="pairStage" data-step="1">
+      <div class="vitrine">
+        <svg id="pairSvg" viewBox="0 0 620 640" role="img" aria-labelledby="pairSvgTitle"><title id="pairSvgTitle">Your pair. The left foot reads the rows, the right foot reads the columns.</title></svg>
+      </div>
+    </div>
+    <ol class="pair-steps" id="pairSteps">
+      <li class="pair-step" data-step="1">
+        <h3><span class="n" aria-hidden="true">1</span>Roll your world</h3>
+        <p>Every visitor gets their own world: one measurement of the grid, rolled the moment the page opened. That world decides which panels can change between the feet. Roll a new one and the whole site changes with it.</p>
+        <div class="pair-row"><span class="pair-world">World <strong id="pairWorld">-</strong></span><button class="btn small" type="button" id="pairRoll" data-many>Roll a new world</button></div>
+      </li>
+      <li class="pair-step" data-step="2">
+        <h3><span class="n" aria-hidden="true">2</span>Tune the harmony</h3>
+        <p>A sneaker artist starts from a palette. Here the palette is a harmony: colors spaced evenly round the wheel, like the phases of a quantum system. Turn it to move every color at once, and pick how many colors share the shoe.</p>
+      </li>
+      <li class="pair-step" data-step="3">
+        <h3><span class="n" aria-hidden="true">3</span>Bouncer checks the logo</h3>
+        <p>The logo sits on the stripe, and the stripe can come out in two colors. Bouncer picks the ink that reads on both and holds it to 4.5 to 1, the bar for readable text. If it falls short, fix the lightness and every color moves together.</p>
+      </li>
+      <li class="pair-step" data-step="4">
+        <h3><span class="n" aria-hidden="true">4</span>Paint the pair</h3>
+        <p>Tap a panel to measure it. It lands on its row color on the left foot and its column color on the right. Most panels match. A few cannot, and the maths says no paint job could make them all match and still follow every rule.</p>
+      </li>
+      <li class="pair-step" data-step="5">
+        <h3><span class="n" aria-hidden="true">5</span>The drop</h3>
+        <p>A drop is a limited run, and here every pair in it is a different world. Twelve of them, each one following all six rules. Pick one to make it yours.</p>
+      </li>
+      <li class="pair-step" data-step="6">
+        <h3><span class="n" aria-hidden="true">6</span>The tag</h3>
+        <p>Every pair ships with a tag that says exactly which world it came from. The fingerprint is a SHA-256 of the design, so anyone can check the pair is the one you made.</p>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -316,7 +360,7 @@
 <footer class="wrap foot">
   <div class="foot-top">
     <span class="foot-big" aria-hidden="true">Qontext</span>
-    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a></nav>
+    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#pair">Showcase</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a></nav>
   </div>
   <p class="proof" id="proof">-</p>
   <div class="foot-end">

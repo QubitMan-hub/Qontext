@@ -9,6 +9,7 @@ import { initRooms } from './rooms/index.js';
 import { initNav } from './features/nav.js';
 import { initPlan } from './features/plan.js';
 import { initIdea } from './features/idea.js';
+import { initPair } from './features/pair.js';
 import { initTallies } from './features/tallies.js';
 import { initPhase } from './features/phase.js';
 import { initFrame } from './features/frame.js';
@@ -25,6 +26,7 @@ function boot() {
   initNav();
   initPlan();
   initIdea();
+  initPair();
   initTallies();
   initFrame();
   initFilm();
