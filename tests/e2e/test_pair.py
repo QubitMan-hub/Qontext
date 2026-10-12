@@ -3,6 +3,11 @@ its columns, and the visitor paints the pair in their own world."""
 
 import re
 
+ALL_PAINTED = (
+    "() => [...document.querySelectorAll('#pairSvg path[data-panel]')]"
+    ".every((p) => !p.getAttribute('fill').startsWith('url('))"
+)
+
 
 def enter_pair(page, step=None):
     """Brings the section (or one of its steps) to the middle of the screen and waits for the pair to be drawn."""
@@ -58,7 +63,9 @@ def wcag(a, b):
 
 
 def turn(page, deg):
-    page.eval_on_selector("#pairTurn", f"(el) => {{ el.value = '{deg}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}")
+    page.eval_on_selector(
+        "#pairTurn", f"(el) => {{ el.value = '{deg}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}"
+    )
 
 
 def test_harmony_changes_the_pair_not_the_site(site):
@@ -95,7 +102,9 @@ def test_mid_tone_paint_fails_the_logo_and_fix_brings_it_back(site):
     # Somewhere in the middle tones neither ink reaches 4.5 : 1 on both stripe colors; where depends on the hue.
     failing = None
     for v in range(50, 68):
-        site.eval_on_selector("#pairLight", f"(el) => {{ el.value = '{v}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}")
+        site.eval_on_selector(
+            "#pairLight", f"(el) => {{ el.value = '{v}'; el.dispatchEvent(new Event('input', {{bubbles: true}})); }}"
+        )
         if float(site.inner_text("#pairInkRatio").split(":")[0]) < 4.5:
             failing = str(v)
             break
@@ -117,9 +126,7 @@ def feet(page):
 
 def paint_all(page):
     page.click("#pairPaintAll")
-    page.wait_for_function(
-        "() => [...document.querySelectorAll('#pairSvg path[data-panel]')].every((p) => !p.getAttribute('fill').startsWith('url('))"
-    )
+    page.wait_for_function(ALL_PAINTED)
 
 
 def test_painting_collapses_panels_on_both_feet(site):
@@ -177,7 +184,10 @@ def world_seed(page):
 
 def drop_seeds(page):
     page.wait_for_function("() => document.querySelectorAll('#pairDrop button[data-seed]').length === 12")
-    return [int(s) for s in page.eval_on_selector_all("#pairDrop button[data-seed]", "els => els.map((b) => b.dataset.seed)")]
+    return [
+        int(s)
+        for s in page.eval_on_selector_all("#pairDrop button[data-seed]", "els => els.map((b) => b.dataset.seed)")
+    ]
 
 
 def test_the_drop_is_twelve_different_worlds(site):
@@ -212,9 +222,7 @@ def test_jumping_straight_to_the_drop_paints_the_pair(site):
     site.goto(site.url.split("#")[0] + "#pairDrop")
     site.wait_for_selector("#plan .cellwrap")
     enter_pair(site, 5)
-    site.wait_for_function(
-        "() => [...document.querySelectorAll('#pairSvg path[data-panel]')].every((p) => !p.getAttribute('fill').startsWith('url('))"
-    )
+    site.wait_for_function(ALL_PAINTED)
 
 
 def decode_wavefunction(code):
@@ -267,10 +275,22 @@ def test_the_paint_sheet_is_an_svg_with_both_feet(site):
     with site.expect_download() as dl:
         site.click("#pairSheet")
     download = dl.value
-    assert download.suggested_filename.startswith("qontext-pair-world-") and download.suggested_filename.endswith(".svg")
+    assert download.suggested_filename.startswith("qontext-pair-world-") and download.suggested_filename.endswith(
+        ".svg"
+    )
     text = open(download.path(), encoding="utf-8").read()
     assert text.startswith("<svg")
     assert len(re.findall(r"#[0-9a-f]{6}", text)) >= 18
     assert text.count("oklch(") == 18
-    for name in ["Laces", "Tongue", "Collar", "Toe box", "Stripe", "Heel counter", "Toe bumper", "Midsole", "Heel sole"]:
+    for name in [
+        "Laces",
+        "Tongue",
+        "Collar",
+        "Toe box",
+        "Stripe",
+        "Heel counter",
+        "Toe bumper",
+        "Midsole",
+        "Heel sole",
+    ]:
         assert name in text
