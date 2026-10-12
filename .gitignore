@@ -10,3 +10,10 @@ film/node_modules/
 film/out/
 film/public/fonts/
 film/public/clips/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out

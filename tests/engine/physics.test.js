@@ -5,7 +5,7 @@ import {
   merminScore, expectedScore, classicalOptimum, classicalCheck, rowValue, colValue, roundSatisfied, opLabel, opAscii,
   KCBS_VECTORS, kcbsProbs, kcbsSum, kcbsClassicalMax, KCBS_QUANTUM_MAX, KCBS_CLASSICAL_MAX,
   correlation, chshValue, idealCorrelations, chshClassicalMax, TSIRELSON, samplePair, chshFromShots, winRate,
-  mulberry32, hashSeed, STATE_KINDS,
+  mulberry32, hashSeed, STATE_KINDS, contextualTiles,
 } from '../../src/engine/index.js';
 
 const close = (a, b, eps = 1e-9) => assert.ok(Math.abs(a - b) < eps, `${a} != ${b}`);
@@ -62,6 +62,43 @@ test('every sampled round satisfies all six product rules', () => {
 test('expected Mermin score is exactly 6 for every state', () => {
   for (let seed = 0; seed < 25; seed++) close(expectedScore(makeState('random', seed)), QUANTUM_SCORE, 1e-9);
   close(expectedScore(makeState('bell')), 6, 1e-9);
+});
+
+/** <O> for each of the nine tiles, from the marginals of the row contexts. */
+const tileExpectations = (psi) =>
+  CONTEXTS.filter((c) => c.kind === 'row').flatMap((ctx) => {
+    const probs = contextProbs(ctx, psi);
+    return [0, 1, 2].map((k) => probs.reduce((s, o) => s + o.p * [o.a, o.b, o.c][k], 0));
+  });
+
+test('the row and column readings differ on an odd number of tiles, every round', () => {
+  for (const kind of STATE_KINDS) {
+    const psi = makeState(kind, 3);
+    const rng = mulberry32(11);
+    for (let i = 0; i < 2000; i++) assert.equal(contextualTiles(measureAll(psi, rng)).length % 2, 1);
+  }
+});
+
+test('expected differing tiles is half the sum of 1 - <O>^2, between 3 and 4 (the paper, section 4)', () => {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (let seed = 1; seed <= 3000; seed++) {
+    const e = tileExpectations(makeState('random', seed)).reduce((s, x) => s + (1 - x * x) / 2, 0);
+    lo = Math.min(lo, e);
+    hi = Math.max(hi, e);
+  }
+  assert.ok(lo >= 3 - 1e-9 && hi <= 4 + 1e-9, `${lo} .. ${hi}`);
+  // The ends: a Bell state gives exactly 3, |0> (x) |+i> exactly 4.
+  close(tileExpectations(makeState('bell')).reduce((s, x) => s + (1 - x * x) / 2, 0), 3);
+  const k = Math.SQRT1_2;
+  close(tileExpectations([[k, 0], [0, k], [0, 0], [0, 0]]).reduce((s, x) => s + (1 - x * x) / 2, 0), 4);
+  // And the simulation agrees with the formula.
+  const psi = makeState('random', 7);
+  const rng = mulberry32(5);
+  let total = 0;
+  for (let i = 0; i < 20000; i++) total += contextualTiles(measureAll(psi, rng)).length;
+  const predicted = tileExpectations(psi).reduce((s, x) => s + (1 - x * x) / 2, 0);
+  assert.ok(Math.abs(total / 20000 - predicted) < 0.03, `${total / 20000} vs ${predicted}`);
 });
 
 test('classical optimum by exhaustive search: 5 of 6 rules, score 4', () => {

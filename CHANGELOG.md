@@ -9,6 +9,9 @@ New
   it fails), paint the pair panel by panel, try to force the feet to match and watch a rule break, pick a pair
   from a drop of twelve worlds, and take a hang tag with a SHA-256 fingerprint, a paint sheet (SVG) and a link
   into the Atelier. The shoe is a studio photo, recolored live with a multiply blend so the leather shows through.
+- The paper, "One Tile, Two True Colors" (`paper/qontext.pdf`): the idea, two results about the readings (they
+  always differ on an odd number of tiles, and on 3 to 4 tiles on average for any pure state), Bouncer, the Phase
+  Dial, Pair Production and the limits, with numbers and charts computed by the engine. Unit tests pin both results.
 - Turntable: your pair in 3D. A model generated from the same photo stands on a platter in your world's hue;
   drag, pinch or use the keyboard to turn it, show one foot or both, and point at a panel to read both feet's
   colors. It opens from the tag with the exact design, and stands side on in 2D where WebGL is missing.

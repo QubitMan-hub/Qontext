@@ -1,0 +1,445 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[scaled=0.92]{helvet}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{pgf}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\graphicspath{{figures/}}
+\usepackage{placeins}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+
+\definecolor{qink}{HTML}{1D1F52}
+\captionsetup{font=small,labelfont=bf,margin=0.5em}
+\setlist{itemsep=2pt,topsep=4pt}
+\renewcommand{\sectionmark}[1]{}
+\newcommand{\figwidth}{\linewidth}
+\newcommand{\ket}[1]{\lvert #1\rangle}
+\newcommand{\expect}[1]{\langle #1\rangle}
+
+\title{\sffamily\bfseries\color{qink}One Tile, Two True Colors:\\[2pt]
+  \large\mdseries Quantum Contextuality as a Design Material}
+\author{Lakshmi Monish\\[2pt]
+  \small\url{https://github.com/QubitMan-hub/Qontext}}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Design systems assume that a token has one value. A brand color is one color wherever it appears. Quantum
+mechanics has a family of results, the Kochen-Specker theorem and one of its simplest forms, the Mermin-Peres square,
+which say that some quantities cannot be given one value that holds whatever else is measured with them. We use that
+result as a design material. In Qontext, each of the nine tiles of the Mermin-Peres square holds two colors: one when
+it is read with its row and one when it is read with its column. Hue is treated as quantum phase, so the colors come
+from an even harmony on the OKLCH wheel, and every reading obeys the square's six product rules. No fixed table of
+colors can do this. An exhaustive search over all 512 tables confirms that at most five of the six rules can hold. We
+show that the two readings always differ on an odd number of tiles, and that the expected number is between 3 and 4
+for any pure two-qubit state. We describe the engine, a contrast checker that tests text against every color a tile
+can take, a theme dial built from the interferometer model, and a case study in which the nine panels of a sneaker
+are the nine tiles and the two feet are the two readings. Everything runs as exact simulation in a web browser. We
+say plainly what this is and is not: the system is small enough to simulate on a phone, and we claim no quantum
+advantage.
+\end{abstract}
+
+\section{Introduction}
+
+A design token is a named value: \texttt{color-accent} is \texttt{\#3fc0f2}, everywhere, for everyone. Modern design
+systems do let tokens change with context. A token can have a light mode and a dark mode, or a hover state. But in
+every case a designer picks the value for each context by hand, and nothing stops them from picking one value for all
+of them. The context is a label.
+
+Quantum mechanics offers a different kind of context. In 1967 Kochen and Specker showed that there are sets of
+measurements whose outcomes cannot all be fixed in advance, independent of which other compatible measurements are
+made alongside them \citep{kochen1967,bell1966}. In 1990 Peres and Mermin found a version small enough to write on a
+napkin: a three by three grid of two-qubit observables, now called the Mermin-Peres square
+\citep{peres1990,mermin1990}. Each row and each column is a set of observables that can be measured together, and
+quantum mechanics fixes the product of their outcomes. No assignment of $+1$ and $-1$ to the nine cells can satisfy
+all six products at once. So a cell's value depends on whether it was measured with its row or with its column.
+
+Qontext turns this into color. Each cell becomes a tile. Each outcome becomes a hue: $+1$ shows the tile's harmony
+color, $-1$ its complement. Reading the grid by rows gives one coloring, reading it by columns gives another, and the
+mathematics guarantees that the two can never be the same coloring. The context is no longer a label. It is a
+constraint that no fixed palette can meet.
+
+We built this as a working product, not a demonstration: a website where every visitor gets their own measured
+palette, a studio for designers (the Atelier), a 12\,KB runtime that applies a measured palette to any website, a
+Figma plugin with Row and Column variable modes, and a command line tool that runs the same circuits on IBM Quantum
+hardware. This paper describes the ideas and their limits. Its contributions are:
+\begin{itemize}
+  \item A mapping from the Mermin-Peres square to color tokens, with hue as quantum phase (Section~\ref{sec:method}).
+  \item Two short results about the two readings: they differ on an odd number of tiles, and on $\tfrac12\sum_t
+        (1-\expect{O_t}^2)$ tiles on average, which is between 3 and 4 for any pure state (Section~\ref{sec:two}).
+  \item Bouncer, a contrast check over every color a tile can take, and the Phase Dial, a light and dark theme
+        built as an interferometer (Section~\ref{sec:usable}).
+  \item Pair Production, a worked case of an artist designing a sneaker drop with the system
+        (Section~\ref{sec:pair}).
+  \item An implementation in which every classical limit shown to the user is checked by exhaustive search in the
+        test suite (Section~\ref{sec:impl}).
+\end{itemize}
+We are careful about one point throughout. Two qubits are easy to simulate, so nothing here needs a quantum computer.
+What the physics gives is a grammar for color that comes with a proof (Section~\ref{sec:limits}).
+
+\section{Background}
+\label{sec:background}
+
+\paragraph{Contextuality.} Two observables are compatible when they commute, so they can be measured together. A
+\emph{context} is a set of mutually compatible observables. A noncontextual hidden variable model gives every
+observable one predetermined value, the same in every context it appears in. The Kochen-Specker theorem says no such
+model can reproduce quantum mechanics in dimension three or more \citep{kochen1967}. A recent review covers the
+theory and the experiments in depth \citep{budroni2022}.
+
+\paragraph{The Mermin-Peres square.} Table~\ref{tab:square} shows the version we use. $X_i$, $Y_i$ and $Z_i$ are
+Pauli operators on qubit $i$. The three observables in each row commute, and so do the three in each column. Each row
+multiplies to the identity, as do the first two columns. The third column multiplies to minus the identity, because
+$X_1X_2 \cdot Z_1Z_2 = -Y_1Y_2$. Our engine derives these six signs from the matrices when it loads, rather than
+storing them.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{c|ccc|c}
+\toprule
+ & column 1 & column 2 & column 3 & row product \\
+\midrule
+row 1 & $X_1$ & $X_2$ & $X_1X_2$ & $+I$ \\
+row 2 & $Z_2$ & $Z_1$ & $Z_1Z_2$ & $+I$ \\
+row 3 & $X_1Z_2$ & $Z_1X_2$ & $Y_1Y_2$ & $+I$ \\
+\midrule
+column product & $+I$ & $+I$ & $-I$ & \\
+\bottomrule
+\end{tabular}
+\caption{The Mermin-Peres square as Qontext uses it. Rows and columns are the six contexts.}
+\label{tab:square}
+\end{table}
+
+Suppose each cell had a fixed value $v_t \in \{+1,-1\}$. Multiplying all nine values row by row gives $+1$, since
+each row gives $+1$. Multiplying them column by column gives $-1$. It is the same nine numbers, so this is a
+contradiction, and at least one of the six rules must fail. Checking all $2^9 = 512$ tables confirms that the best
+any table can do is five rules out of six. Quantum mechanics satisfies all six on every run, whatever the state, which
+makes the square a state-independent test. It has been measured with trapped ions \citep{kirchmair2009}, on IBM's
+public quantum computers \citep{dikme2020}, and as a two-player game with entangled photons \citep{xu2022}.
+
+\paragraph{Other structures.} The engine also builds the KCBS pentagram \citep{kcbs2008}, the CHSH setting
+\citep{chsh1969,tsirelson1980}, and three Kochen-Specker sets: Peres's 33 rays \citep{peres1991}, the 18 vectors of
+Cabello, Estebaranz and Garc\'ia-Alcaine \citep{cabello1996}, and the 13 rays of Yu and Oh \citep{yuoh2012}.
+Table~\ref{tab:limits} lists the classical and quantum values the interface shows. Each classical value in the table
+is checked by exhaustive search in the test suite, not copied from the literature.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Structure & classical limit & quantum value & search in the tests \\
+\midrule
+Mermin-Peres score (rules held, as $2k-6$) & 4 & 6 & all 512 tables \\
+KCBS sum of probabilities & 2 & $\sqrt5 \approx 2.236$ & all 32 assignments \\
+CHSH value $S$ & 2 & $2\sqrt2 \approx 2.828$ & all 16 strategies \\
+Yu-Oh expression & 8 & $25/3 \approx 8.33$ & all 8{,}192 assignments \\
+Peres 33, Cabello 18 coloring & impossible & & complete search \\
+\bottomrule
+\end{tabular}
+\caption{Classical limits and quantum values shown in Qontext. The Yu-Oh set can be colored, but its expression still
+separates the two.}
+\label{tab:limits}
+\end{table}
+
+\section{From observables to colors}
+\label{sec:method}
+
+\paragraph{Hue as phase.} A quantum system with $d$ levels has a clock operator whose eigenvalues are the $d$-th roots
+of unity, $\omega^k = e^{2\pi i k/d}$. They sit evenly on a circle. We place them on the hue circle of OKLCH, the
+cylindrical form of the Oklab color space \citep{ottosson2020,csscolor4}, so a palette with base hue $h_0$ has the
+hues
+\begin{equation}
+  h_k = h_0 + \frac{360^\circ k}{d}, \qquad k = 0, \dots, d-1,
+\end{equation}
+all at one lightness $L$ and chroma $C$. With $d=2$ this is a complementary pair, with $d=3$ a triad, with $d=4$ a
+square, up to $d=8$. These are the classic even harmonies of color theory \citep{itten1961}. The analogy is
+structural: the eye does not see quantum phase, but the same arithmetic of turning by equal steps produces both.
+
+\paragraph{Tile colors.} Tile $(r,c)$, with $r,c \in \{0,1,2\}$, takes harmony color $k = (3r+c) \bmod d$. An outcome
+of $+1$ shows hue $h_k$. An outcome of $-1$ shows $h_k + 180^\circ$, its complement. A three by three grid therefore
+has eighteen tile colors, two per tile, drawn from at most $2d$ distinct hues.
+
+\paragraph{Measurement.} The engine samples outcomes exactly. For a context with observables $A$ and $B$ and third
+observable $C = sAB$ (with $s = \pm1$ from Table~\ref{tab:square}), the probability of outcomes $(a,b)$ on state
+$\ket\psi$ is
+\begin{equation}
+  P(a,b) = \Bigl\lVert \tfrac{I+aA}{2}\,\tfrac{I+bB}{2}\ket\psi \Bigr\rVert^2, \qquad c = s\,a\,b .
+\end{equation}
+Each of the six contexts is measured on its own copy of $\ket\psi$, as in the experiments above. The random numbers
+come from a seeded generator, so a measurement is reproducible from two numbers: the state's seed and the
+measurement's seed. On the website each visitor gets a measurement seed between 1 and 9{,}999{,}999, called their
+\emph{world}, and the whole site is colored from it. The state is a fixed random two-qubit state (Gaussian
+amplitudes, normalized). A design, with its harmony, lightness, chroma and seeds, travels as a short code beginning
+\texttt{QX1.} that any part of the system can open.
+
+\section{Two true colors}
+\label{sec:two}
+
+Reading the grid by rows takes each tile's value from its row's measurement. Reading it by columns takes each tile's
+value from its column's measurement. Figure~\ref{fig:grid} shows both readings for one world. Three tiles differ.
+
+\begin{figure}[t]
+  \centering
+  \resizebox{\figwidth}{!}{\input{figures/fig-grid.pgf}}
+  \caption{World 4{,}227{,}792 with a triad ($d=3$). Left: the observables. Middle and right: the same measurement
+  read by rows and by columns. Outlined tiles differ between the readings. The numbers beside and below the first grid
+  are the products each row and column must have.}
+  \label{fig:grid}
+\end{figure}
+
+\paragraph{The number of differing tiles is always odd.} Let $R_t$ and $C_t$ be tile $t$'s values in the two readings.
+Every row satisfies its rule, so $\prod_t R_t = +1$. Every column satisfies its rule, so $\prod_t C_t = -1$. Hence
+$\prod_t R_t C_t = -1$. A tile where the readings agree contributes $+1$ to this product and a tile where they differ
+contributes $-1$, so the number of differing tiles is odd. It is never zero. That is the square's contradiction seen
+from the designer's side: there is always at least one tile with two true colors.
+
+\paragraph{The expected number.} A tile's two values come from two separate runs on the same state, so they are
+independent draws of the same observable $O_t$. Each is $+1$ with probability $p_t = (1+\expect{O_t})/2$, so they
+differ with probability $2p_t(1-p_t) = (1-\expect{O_t}^2)/2$. By linearity,
+\begin{equation}
+  \mathbb{E}[\text{differing tiles}] = \frac12 \sum_{t=1}^{9} \bigl(1 - \expect{O_t}^2\bigr).
+\end{equation}
+For a pure two-qubit state the squared expectations of the fifteen non-identity Pauli operators sum to 3, because
+$\operatorname{tr}\rho^2 = 1$. The nine tiles are nine of those fifteen, so $\sum_t \expect{O_t}^2 \le 3$. The
+other six split into two triples of operators that all anticommute with each other, $\{Y_1, X_1Y_2, Z_1Y_2\}$ and
+$\{Y_2, Y_1X_2, Y_1Z_2\}$, and within such a triple the squared expectations sum to at most 1. (For any unit vector
+$c$, the operator $\sum_i c_i P_i$ squares to the identity, so its expectation is at most 1; choose $c$ along the
+vector of expectations.) So the six hold at
+most 2, the nine hold at least 1, and the expected count lies between $3$ and $4$. Both ends are reached. The top
+end is reached by $\ket{0}\otimes\ket{{+}i}$, where only $Z_1$ among the tiles has a definite value. The lower end is
+reached when all of the state's Pauli weight lies on the nine tiles. A Bell state is one example: it fixes $X_1X_2$, $Z_1Z_2$ and $Y_1Y_2$. The product state $\ket{00}$ is
+another: it fixes $Z_1$, $Z_2$ and $Z_1Z_2$. A fixed tile reads the same in both contexts, so for these states at most
+five tiles can differ.
+
+Figure~\ref{fig:differ} checks both results against the engine over 100{,}000 worlds. Only odd counts occur. For the
+site's random state the formula predicts 3.752 differing tiles and the simulation gives 3.754. For the Bell state the
+formula gives exactly 3 and the simulation 3.003. The state is therefore a design choice: a state that fixes some
+tiles gives calmer worlds, with fewer tiles that change between readings.
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \resizebox{\linewidth}{!}{\input{figures/fig-differ.pgf}}
+    \caption{How many tiles differ between the two readings, over 100{,}000 worlds. Only odd counts occur.}
+    \label{fig:differ}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \resizebox{\linewidth}{!}{\input{figures/fig-bouncer.pgf}}
+    \caption{Bouncer. The weakest contrast of each ink over all eighteen tile colors, as the palette's lightness
+    moves. The grey line is the site's lightness.}
+    \label{fig:bouncer}
+  \end{minipage}
+\end{figure}
+
+\section{Making it usable}
+\label{sec:usable}
+
+A palette that changes with context is only useful if text stays readable on every color it can show. Two tools
+handle this.
+
+\paragraph{Bouncer.} Text on a tile must read on both of the tile's colors, since the reader may see either. Bouncer
+computes the contrast of an ink against all eighteen tile colors, using the WCAG 2 contrast ratio \citep{wcag22} and
+the APCA lightness contrast \citep{apca}, and reports the weakest. A palette whose weakest ratio is below 3\,:\,1
+cannot be exported. Between 3 and 4.5 it is marked as fit for large text only. When a palette fails, Bouncer offers
+the nearest lightness that passes, searched in steps of 0.01. Figure~\ref{fig:bouncer} shows the trade-off for one
+triad: dark ink passes once $L \ge 0.61$, white ink while $L \le 0.55$, and between the two there is a band where
+neither passes on all eighteen colors.
+
+\paragraph{The Phase Dial.} The site's light and dark themes are two points on one turn. A theme at dial angle
+$\varphi$ passes each color token through the model of a Mach-Zehnder interferometer, the same model the system's
+color mixer uses. The light value enters one arm and the dark value the other. Lightness follows the intensity at one
+output port,
+\begin{equation}
+  L(\varphi) = \cos^2\!\tfrac{\varphi}{2}\, L_{\text{light}} + \sin^2\!\tfrac{\varphi}{2}\, L_{\text{dark}},
+\end{equation}
+and the two chromas add as waves with relative phase $\varphi - 180^\circ$. Because of that cross term, the way from
+light to dark passes a teal dusk and the way back a plum one. Every whole degree is a usable theme. Bouncer then moves
+the background walls out of the band where neither black nor white text reads, and moves each text color's lightness
+until it reaches 4.5\,:\,1 on every wall. Figure~\ref{fig:phase} shows the paper color and the weakest text contrast
+at all 360 angles. The minimum is 4.50, reached near $93^\circ$. As with hue, the interferometer is a model for
+interpolation, not a claim about optics.
+
+\begin{figure}[t]
+  \centering
+  \resizebox{\figwidth}{!}{\input{figures/fig-phase.pgf}}
+  \caption{The Phase Dial. Top: the page's paper color at each angle. Bottom: the weakest contrast of any text color
+  on any background at that angle. It never drops below the line at 4.5\,:\,1.}
+  \label{fig:phase}
+\end{figure}
+
+\section{Case study: Pair Production}
+\label{sec:pair}
+
+An engine is easier to judge in use. Pair Production is a section of the Qontext website that follows an artist
+through a sneaker drop, from first color to finished pair. We chose sneakers because the culture already thinks in
+the right shapes. A drop is a limited run. A pair is two objects that are meant to match. Collectors care about
+which run a pair came from.
+
+\paragraph{The mapping.} A low-top sneaker is divided into nine panels in three bands and three zones. The bands are
+the rows: the top band (laces, tongue, collar), the body band (toe box, stripe, heel counter) and the sole band (toe
+bumper, midsole, heel sole). The zones are the columns: toe, middle and heel. The left foot shows the row reading and
+the right foot shows the column reading. The two feet of a pair therefore differ on exactly the tiles where the
+readings differ, which by Section~\ref{sec:two} is always an odd number of panels. Figure~\ref{fig:pair} shows the
+pair for the world of Figure~\ref{fig:grid}. The stripe, heel counter and heel sole differ between the feet. The
+other six panels match.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.62\linewidth]{figures/fig-pair.jpg}
+  \caption{Pair Production for world 4{,}227{,}792. The left foot reads the grid by rows, the right foot by columns.
+  The stripe, heel counter and heel sole differ, the three outlined tiles of Figure~\ref{fig:grid}.}
+  \label{fig:pair}
+\end{figure}
+
+\paragraph{The workflow.} The section is a scroll story in six steps beside a pinned display case.
+\begin{enumerate}
+  \item \emph{Roll your world.} The visitor's world decides which panels can change between the feet. Rolling a new
+        one recolors the whole site.
+  \item \emph{Tune the harmony.} Turning the base hue and choosing $d$ changes every panel's pair of colors at once.
+  \item \emph{Bouncer checks the print.} Anything printed on the shoe has to read on all eighteen panel colors. The
+        colors are laid over a photograph of white leather with a multiply blend, so each panel is a little darker
+        than its color. Bouncer multiplies each color by the measured brightness of the leather under that panel
+        (between 0.78 and 0.93) before it checks, and offers the nearest passing lightness when the check fails.
+  \item \emph{Paint the pair.} The visitor taps a panel to measure it. It lands on its row color on the left foot
+        and its column color on the right. A button tries to force the feet to match. The six rules are listed in
+        shoe terms, and a matching pair always breaks at least one of them, because at most five of six can hold.
+  \item \emph{The drop.} Twelve more pairs from twelve other worlds, each following all six rules (Figure~\ref{fig:drop}).
+        Choosing one makes it the visitor's world.
+  \item \emph{The tag.} A hang tag records the world, the rules held and the panels that differ, with a SHA-256
+        fingerprint of the design code so anyone can check a pair is the one that was made. The visitor can download
+        a paint sheet with every panel's color, open the design in the Atelier, or put the pair on the Turntable.
+\end{enumerate}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.62\linewidth]{figures/fig-drop.jpg}
+  \caption{Six of a drop's twelve pairs, each from its own world and labeled with how many panels differ between its
+  feet. Every count is odd.}
+  \label{fig:drop}
+\end{figure}
+
+\paragraph{The shoe.} The shoe is a studio photograph of a plain white sneaker, made with an image generator. A script
+finds the seams as thin dark lines, splits the leather into regions between them, and assigns the regions to the
+nine panels, with a few hand-drawn cuts where a seam is only partly visible. Each panel becomes a vector outline. The
+browser lays each panel's color over the photograph with a multiply blend, so the leather's shading, stitching and
+laces show through every color. The quarter and mudguard stay white, as on a real colorway.
+
+\paragraph{The Turntable.} The final step shows the pair in three dimensions (Figure~\ref{fig:turntable}). The model
+was generated from the same photograph with an image-to-3D model (Meshy). A script fits the model's side outline to
+the photograph's outline by maximizing their overlap, which reaches an intersection over union of 0.965, and stands
+the model in the photograph's frame. In the browser, the nine panel outlines are painted on a flat image the size of
+the photograph and projected through the shoe from the side, so a point at model position $(x,y)$ takes the color of
+the photograph's pixel at the matching place. The lining and insole, found from the direction their surfaces face,
+stay white. Because the 2D and 3D views share one set of outlines, they cannot disagree about which panel is which.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\linewidth]{figures/fig-turntable.jpg}
+  \caption{The same pair on the Turntable. The panel colors are projected from the photograph's outlines onto a 3D
+  model generated from the photograph. The left foot is the right foot mirrored.}
+  \label{fig:turntable}
+\end{figure}
+
+\FloatBarrier
+\section{Implementation and verification}
+\label{sec:impl}
+
+The engine is a set of plain JavaScript modules with no dependencies: color science, a small linear algebra library,
+the quantum structures above, and exporters for CSS variables, W3C design tokens \citep{designtokens}, Tailwind and
+SVG. The website, the Atelier, the runtime and the Figma plugin are built from it, and they share one convention for
+turning seeds into measurements, so a world looks the same everywhere.
+
+Every classical limit the interface shows has a test that finds it by exhaustive search (Table~\ref{tab:limits}). The
+unit tests (90 at the time of writing) cover the engine and runtime. The browser tests (127) drive the website and
+the Atelier in Chromium: they check, for example, that the pair's two feet differ exactly on the contextual tiles,
+that forcing a match breaks a rule, that the Turntable shows the same colors as the 2D pair, and that the pages have
+no accessibility violations under axe-core at phone and desktop sizes in light and dark. A separate check holds the
+website to a performance budget on a throttled phone profile.
+
+For hardware, a command line tool builds each row and column as a circuit in which every observable is measured with
+its own ancilla qubit. The three values of a context are therefore measured separately, so noise can break a rule,
+as it does on real devices. In the tool's noisy simulation the Mermin score is about 4.7, between the classical limit
+of 4 and the ideal 6. On IBM's public devices, Dikme et al.\ measured a comparable violation using a single ancilla
+per context \citep{dikme2020}. Recorded hardware shots can be saved as a pool and replayed by the website in place of
+the simulator, which gives physically random worlds and a job record that serves as provenance. We do not report
+new hardware results in this paper.
+
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Quantum computing and art.} Artists and researchers have used quantum computers to make music
+\citep{miranda2022}, paintings \citep{crippa2024} and game content. Wootton's quantum blur encodes an image in a
+quantum state and lets interference blur it \citep{wootton2020}. Quantum Brush offers painting brushes that turn strokes into
+quantum algorithms and map the measured states back to color \citep{ferreira2025}. Earlier still,
+WaveFunctionCollapse borrowed the language of measurement for procedural generation \citep{gumin2016}. These works use
+quantum dynamics or randomness as a source of new effects. Qontext uses a different part of the theory. It takes a
+no-go theorem about values and makes it a rule of the design system itself: a token is allowed, and in fact required,
+to have two values, and no fixed palette can imitate it. We share Wootton's view that the useful thing at this scale is
+designing software with quantum principles, not running it on quantum hardware \citep{wootton2020}.
+
+\paragraph{Contextuality.} The theory and its experiments are reviewed by Budroni et al.\ \citep{budroni2022}. The
+Mermin-Peres square has been tested with ions \citep{kirchmair2009}, on public cloud devices \citep{dikme2020} and as
+a nonlocal game with photons \citep{xu2022}. Our results about differing tiles are elementary consequences of the
+square. We state them because they describe what a designer sees.
+
+\paragraph{Color and accessibility.} Qontext works in OKLCH \citep{ottosson2020,csscolor4}, where equal steps in hue
+and lightness look more even than in older spaces. Contrast follows WCAG 2.2 \citep{wcag22}, with APCA \citep{apca}
+reported alongside.
+
+\section{Limits}
+\label{sec:limits}
+
+\paragraph{No quantum advantage.} Two qubits have a four-dimensional state. The browser simulates them exactly in
+microseconds. A classical program that is told which context is being read can reproduce every reading, which is
+exactly what our simulator does. The theorem rules out fixed tables of colors, not software. What Qontext offers is a
+grammar for color with a guarantee attached: any fixed palette placed on the grid breaks at least one of the six
+rules. Real hardware adds three things a simulator cannot honestly claim: physically random collapses, measured
+violations of classical limits, and a job record. It adds nothing else.
+
+\paragraph{Randomness.} Worlds on the website come from a seeded pseudorandom generator, chosen so that a world can be
+shared and reproduced. They are physically random only when replayed from a hardware pool.
+
+\paragraph{Perception.} Hue as phase is an analogy that produces even harmonies. Whether contextual palettes help
+designers, or confuse readers who see a color change between two places, is an open question. We have not run a user
+study. Bouncer makes sure text stays readable, but readability is not the same as clarity.
+
+\paragraph{Contrast metrics.} The WCAG 2 ratio is known to misjudge some dark color pairs, and APCA is still a draft.
+Bouncer's leather model, a single brightness factor per panel, is an approximation of a printed surface.
+
+\paragraph{The shoe.} The panel outlines were finished by hand where seams were faint. The 3D model was generated
+from one photograph, so its far side is the generator's guess. Projecting the outlines from the side is exact on the
+sides of the shoe and approximate on its top, where the panel borders are the side view's borders.
+
+\section{Conclusion}
+
+A design token with one value is a noncontextual hidden variable. The Mermin-Peres square shows a small, precise case
+where no such value exists, and we have turned that case into a working color system: tiles with two true colors, a
+proof that no palette can fake them, tools that keep the results readable, and a sneaker that wears the idea on its
+two feet. The physics does not make the software faster or more powerful. It gives designers a new kind of
+constraint, and a reason for it that anyone can check.
+
+\paragraph{Availability.} The website is at \url{https://qontext.qubitmen.workers.dev}. The source, including the
+scripts that compute this paper's numbers and draw its figures from the engine, is at
+\url{https://github.com/QubitMan-hub/Qontext}.
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}

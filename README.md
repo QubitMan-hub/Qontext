@@ -115,6 +115,19 @@ npm run perf        # measures load, hero and scrolling on a phone and a desktop
 npm run check       # lint + test + build
 ```
 
+## The paper
+
+`paper/qontext.pdf`, "One Tile, Two True Colors: Quantum Contextuality as a Design Material", explains the idea,
+the two results about the readings, Bouncer, the Phase Dial, Pair Production and the limits, in plain words. Its
+numbers and charts come from the engine, and its pictures from the built site:
+
+```
+node paper/figures/data.mjs > paper/figures/data.json   # the numbers (100,000 worlds; takes a few seconds)
+python3 paper/figures/plot.py                           # the charts, as PGF (needs matplotlib)
+python3 paper/figures/shots.py                          # the pictures (needs a built dist/ and Playwright)
+cd paper && latexmk -pdf qontext.tex                    # the PDF (pdflatex, arXiv-friendly)
+```
+
 ## The film
 
 Two and a half minutes in plain words: the idea, Mermin's Dare, your own world, the rooms, the Phase Dial and
