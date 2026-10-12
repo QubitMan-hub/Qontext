@@ -7,6 +7,10 @@ New
   Mermin score 5.286 ± 0.026 against a classical limit of 4, and CHSH 2.732 ± 0.032 against 2. The shots are in
   `data/hardware/`, the Notary opens them with a real stamp (Open the real ibm_kingston run), and the paper has a
   section on the run. Pools can be packed to about 9 KB (`packPool`, `unpackPool`, `scripts/pack-run.mjs`).
+- The paper is on the site (`qontext-paper.pdf`, linked from Tools and the footer), and `npm run paper:arxiv` packs
+  an arXiv bundle that is compiled in an empty folder to prove it stands on its own.
+- The site's Notary seals the real ibm_kingston run instead of the practice example, and Draw a world from these
+  shots paints one real measurement of all six contexts in your colors, naming any rule the chip broke.
 - The Atelier explains itself. Every room opens with a Wall Card in everyday words: what the room does, a real
   example, a Try this button and a small goal. Reaching a goal (Eureka) ticks it off, counts it in the header and
   throws a short burst of your own colors, which stays still for anyone who asks for less motion.
@@ -87,6 +91,8 @@ Fixed
   shots, which pulled the CHSH value down to about 1.1. On a simulated ibm_kingston it is now 2.7.
 
 Sturdier
+- The site speed test judges the median of three measurements, so one slow moment on a shared machine no longer
+  fails a run. When a browser test fails in CI, its name and message are posted as annotations.
 - Probe's pool validator agrees with the Atelier on the size limit per context; duplicate helpers and dead
   exports removed.
 

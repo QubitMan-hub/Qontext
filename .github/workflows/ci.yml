@@ -35,7 +35,18 @@ jobs:
           pip install pytest playwright==1.56.0 pillow numpy
           python -m playwright install --with-deps chromium
       - name: Browser end-to-end tests
-        run: python -m pytest tests/e2e -q
+        run: python -m pytest tests/e2e -q --junitxml=e2e-report.xml
+      - name: Name failed tests as annotations
+        # Annotations can be read where full logs cannot, so a failure always says which test and why.
+        if: failure()
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          for case in ET.parse("e2e-report.xml").iter("testcase"):
+              for bad in list(case.iter("failure")) + list(case.iter("error")):
+                  msg = (bad.get("message") or "").replace("\n", " ")[:300]
+                  print(f"::error title={case.get('name')}::{msg}")
+          PY
 
   python:
     name: Hardware runner (Python ${{ matrix.python }})

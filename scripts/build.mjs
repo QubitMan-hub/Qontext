@@ -155,6 +155,8 @@ async function buildAll() {
   await writeFile(p('dist/404.html'), vacuum.full);
   // Icons, the link-preview image, and Cloudflare's _headers and _redirects, as they are.
   await cp(p('src/site/public'), p('dist'), { recursive: true });
+  // The paper ships next to the pages, so the site can link to it.
+  await copyFile(p('paper/qontext.pdf'), p('dist/qontext-paper.pdf'));
   await writeFile(p('dist/robots.txt'), `User-agent: *\nDisallow:\n\nSitemap: ${SITE}/sitemap.xml\n`);
   const urls = PAGES.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n');
   await writeFile(p('dist/sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);

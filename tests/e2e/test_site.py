@@ -103,8 +103,29 @@ def test_unpaintables_and_notary(site):
     site.click('[data-uset="yuoh13"]')
     assert "exists" in site.inner_text("#uFacts")
     enter(site, "notary", "center")
-    site.wait_for_function("() => document.getElementById('seal').innerText.includes('sha-256')", timeout=8000)
-    assert "simulated example" in site.inner_text("#seal")
+    # The seal types itself out; wait for the last line to finish.
+    site.wait_for_function(
+        "() => /sha-256 +[0-9a-f]{64}/.test(document.getElementById('seal').innerText)", timeout=8000
+    )
+    seal = site.inner_text("#seal")
+    # The seal is the real run on ibm_kingston, with the fingerprint the paper prints.
+    assert "ibm_kingston" in seal and "simulated" not in seal
+    assert "91bf9f705b18ad2a72a0c4ca67c0ebce5181454d32af786592c78e51e45dcdd0" in seal
+    assert "5.286" in seal and "2.732" in seal
+
+
+def test_notary_draws_worlds_from_the_real_shots(site):
+    enter(site, "notary", "center")
+    seen = set()
+    for _ in range(6):
+        site.click("#realDraw")
+        assert site.locator("#realGrid i").count() == 9
+        note = site.inner_text("#realNote")
+        held = int(re.search(r"(\d) of 6 rules", note).group(1))
+        assert 0 <= held <= 6
+        assert re.search(r"Shot \d+ of 2,048 from ibm_kingston", note)
+        seen.add(site.get_attribute("#realGrid", "data-shot"))
+    assert len(seen) > 1
 
 
 def test_edit_this_world_opens_the_same_world_in_the_atelier(site):
@@ -353,3 +374,16 @@ def test_fringe_band_reaches_gray_and_its_needle_stays_on_it(site):
         assert band["x"] - 0.5 <= needle["x"] and needle["x"] + needle["width"] <= band["x"] + band["width"] + 0.5
     assert min(shares) <= 2 and max(shares) >= 98, shares
     assert "0.0" not in site.inner_text("#fEnergy")
+
+
+def test_the_paper_is_on_the_site(site):
+    # The build ships the paper next to the pages, byte for byte, and the site links to it from Tools and the footer.
+    import pathlib
+
+    root = pathlib.Path(__file__).resolve().parents[2]
+    shipped = root / "dist" / "qontext-paper.pdf"
+    assert shipped.read_bytes() == (root / "paper" / "qontext.pdf").read_bytes()
+    assert site.locator('#tools a[href="qontext-paper.pdf"]').count() == 1
+    assert site.locator('footer a[href="qontext-paper.pdf"]').count() == 1
+    response = site.request.get(site.url.split("index.html")[0] + "qontext-paper.pdf")
+    assert response.ok and response.body()[:5] == b"%PDF-"

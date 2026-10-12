@@ -17,3 +17,4 @@ paper/*.fdb_latexmk
 paper/*.fls
 paper/*.log
 paper/*.out
+paper/arxiv-source.tar.gz

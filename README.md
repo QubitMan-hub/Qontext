@@ -120,14 +120,16 @@ npm run check       # lint + test + build
 ## The paper
 
 `paper/qontext.pdf`, "One Tile, Two True Colors: Quantum Contextuality as a Design Material", explains the idea,
-the two results about the readings, Bouncer, the Phase Dial, Pair Production and the limits, in plain words. Its
-numbers and charts come from the engine, and its pictures from the built site:
+the two results about the readings, Bouncer, the Phase Dial, Pair Production, the run on IBM hardware and the
+limits, in plain words. The build ships it with the site as `qontext-paper.pdf`, linked from Tools and the footer.
+Its numbers and charts come from the engine, and its pictures from the built site:
 
 ```
 node paper/figures/data.mjs > paper/figures/data.json   # the numbers (100,000 worlds; takes a few seconds)
 python3 paper/figures/plot.py                           # the charts, as PGF (needs matplotlib)
 python3 paper/figures/shots.py                          # the pictures (needs a built dist/ and Playwright)
 cd paper && latexmk -pdf qontext.tex                    # the PDF (pdflatex, arXiv-friendly)
+npm run paper:arxiv                                     # paper/arxiv-source.tar.gz, checked to compile on its own
 ```
 
 ## The film

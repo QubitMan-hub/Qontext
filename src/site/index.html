@@ -315,11 +315,17 @@
     <h2 class="room-name" id="t-notary">Notary</h2>
     <div class="wall-text">
       <p class="source">SHA-256 seal on IBM Quantum shots</p>
-      <p>Run the circuits on IBM Quantum with Probe and load the results here. Notary scores them against the classical limits and seals the shots with a SHA-256 hash, the device name and the job record, so a print edition carries provenance anyone can check.</p>
+      <p>On 12 October 2026 we ran Qontext's circuits on IBM's ibm_kingston quantum computer: 20,480 measurements. Every rule of the square held on 93 to 95% of shots, where no fixed palette can keep all six. Notary seals the shots with a SHA-256 hash, the device and the job, so anyone can check them.</p>
     </div>
     <div class="exhibit">
       <div class="seal" id="seal" aria-live="polite"></div>
-      <p class="cap">This seal comes from the example pool that ships with Qontext, measured on a noisy simulator, and it says so. Seals from IBM hardware name the device.</p>
+      <div class="realworld">
+        <div class="rw-grid" id="realGrid" role="img" aria-label="A world drawn from the ibm_kingston shots"></div>
+        <div class="rw-side">
+          <button class="btn small" id="realDraw" type="button">Draw a world from these shots</button>
+          <p class="cap" id="realNote" aria-live="polite">Each press takes one real measurement from the chip and paints its nine tiles in your world's colors. Real chips are a little noisy, so now and then a rule breaks, and the note says which.</p>
+        </div>
+      </div>
     </div>
   </div>
 </article>
@@ -366,6 +372,7 @@
       <li><h3>Observer</h3><p>The 12 KB script this page runs on. Add it to any website and every visitor gets their own world.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/src/runtime">Get the script</a></li>
       <li><h3>Superpose</h3><p>A Figma plugin that builds the grid as a variable collection with Row and Column modes.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/figma-plugin">Get the plugin</a></li>
       <li><h3>Probe</h3><p>A command-line tool that runs the circuits on IBM Quantum and writes the results Notary seals.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext/tree/main/python">Get Probe</a></li>
+      <li><h3>The paper</h3><p>One Tile, Two True Colors: the idea, the two results about the readings, the run on IBM hardware and the limits, in twelve pages.</p><a class="go" href="qontext-paper.pdf">Read the paper (PDF)</a></li>
       <li><h3>Source</h3><p>The engine, this site and every tool above, with the tests that check each classical limit.</p><a class="go" href="https://github.com/QubitMan-hub/Qontext">Read the code</a></li>
     </ul>
   </div>
@@ -389,7 +396,7 @@
 <footer class="wrap foot">
   <div class="foot-top">
     <span class="foot-big" aria-hidden="true">Qontext</span>
-    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#pair">Showcase</a><a href="turntable.html">Turntable</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a></nav>
+    <nav aria-label="Footer"><a href="#idea">Idea</a><a href="#pair">Showcase</a><a href="turntable.html">Turntable</a><a href="#floor">Floor plan</a><a href="#room-janus">Rooms</a><a href="#tools">Tools</a><a href="#film">Film</a><a href="studio.html">Atelier</a><a href="qontext-paper.pdf">Paper</a></nav>
   </div>
   <p class="proof" id="proof">-</p>
   <div class="foot-end">

@@ -449,6 +449,13 @@ input[type="color"] { width: 44px; height: 32px; border: 1px solid var(--rule); 
 .caret::after { content: "\2588"; animation: blink 0.9s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 @media (max-width: 560px) { .seal { padding-top: 76px; } }
+/* Worlds drawn from the real shots: the nine tiles beside the button and the note. */
+.realworld { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 8px; }
+.rw-grid { display: grid; grid-template-columns: repeat(3, clamp(36px, 5vw, 52px)); gap: 4px; }
+.rw-grid:empty { display: none; }
+.rw-grid i { aspect-ratio: 1; border-radius: 2px; display: block; }
+.rw-side { display: grid; gap: 10px; align-content: start; }
+@media (max-width: 520px) { .realworld { grid-template-columns: 1fr; } }
 
 /* Observer */
 pre.code { background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--r); padding: 18px; overflow-x: auto; margin: 0; line-height: 1.6; }
