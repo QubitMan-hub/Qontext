@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
 \usepackage[scaled=0.92]{helvet}
+\renewcommand{\ttdefault}{lmtt} % scalable Latin Modern mono, not the bitmap T1 Computer Modern
 \usepackage[a4paper,left=30mm,right=30mm,top=30mm,bottom=32mm,headsep=9mm]{geometry}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,amsthm}
@@ -87,7 +88,9 @@
   \vspace{14pt}
   {\sffamily\color{qink}Lakshmi Monish\par}
   \vspace{2pt}
-  {\sffamily\small\color{qink2}October 2026\quad\textperiodcentered\quad\href{https://github.com/QubitMan-hub/Qontext}{github.com/QubitMan-hub/Qontext}\par}
+  {\sffamily\small\color{qink2}October 2026\par}
+  \vspace{1pt}
+  {\sffamily\small\color{qink2}\href{https://github.com/QubitMan-hub/Qontext}{github.com/QubitMan-hub/Qontext}\par}
 \end{minipage}\hfill
 \begin{minipage}[b]{0.17\linewidth}\raggedleft\qmark\end{minipage}
 
@@ -103,8 +106,8 @@ row and one when it is read with its column, and hue plays the role of quantum p
 always differ on an odd number of tiles, and on 3 to 4 tiles on average for any pure state. We describe a contrast
 checker that tests text against every color a tile can take, a theme dial built from an interferometer model, and a
 case study in which the nine panels of a sneaker are the nine tiles. On IBM's \texttt{ibm\_kingston} each of the six
-rules held on 93 to 95\% of shots, a score of 5.29 where no fixed table can pass 4. Everything else runs as exact
-simulation in a web browser, and we claim no quantum advantage.
+rules held on 93 to 95\% of shots, for a score of 5.29 against the classical limit of 4. Everything else runs as
+exact simulation in a web browser, and we claim no quantum advantage.
 
 \vspace{10pt}
 \begin{tcolorbox}[enhanced,colback=qpaper,colframe=qpaper,boxrule=0pt,arc=1.5pt,left=10pt,right=10pt,top=8pt,bottom=8pt,
@@ -115,8 +118,8 @@ no single palette can stand in for it. \\[4pt]
 {\sffamily\bfseries\color{qink}What we show} & The two readings of the grid differ on an odd number of tiles, never
 zero, and on 3 to 4 on average (Results~\ref{res:odd} and~\ref{res:mean}). On IBM hardware the square scores 5.29
 against a classical limit of 4 (Section~\ref{sec:hardware}). \\[4pt]
-{\sffamily\bfseries\color{qink}What it is not} & Two qubits are easy to simulate. The physics gives a grammar for color
-with a guarantee, not speed or power (Section~\ref{sec:limits}).
+{\sffamily\bfseries\color{qink}What it is not} & A speed-up. Two qubits are easy to simulate on any laptop; what the
+physics contributes is a constraint on palettes that can be proved (Section~\ref{sec:limits}).
 \end{tabular}
 \end{tcolorbox}
 \vspace{4pt}
@@ -134,7 +137,7 @@ made alongside them \citep{kochen1967,bell1966}. In 1990 Peres and Mermin found 
 napkin: a three by three grid of two-qubit observables, now called the Mermin-Peres square
 \citep{peres1990,mermin1990}. Each row and each column is a set of observables that can be measured together, and
 quantum mechanics fixes the product of their outcomes. No assignment of $+1$ and $-1$ to the nine cells can satisfy
-all six products at once. So a cell's value depends on whether it was measured with its row or with its column.
+all six products at once, so no single table of values can stand behind every row and every column.
 
 \begin{figure}[tb]
   \centering
@@ -147,8 +150,8 @@ all six products at once. So a cell's value depends on whether it was measured w
 
 Qontext turns this into color (Figure~\ref{fig:grid}). Each cell becomes a tile. Each outcome becomes a hue: $+1$ shows the tile's harmony
 color, $-1$ its complement. Reading the grid by rows gives one coloring, reading it by columns gives another, and the
-mathematics guarantees that the two can never be the same coloring. The context is no longer a label. It is a
-constraint that no fixed palette can meet.
+mathematics guarantees that the two can never be the same coloring. Here the context does real work: it decides
+which color a tile shows, and no fixed palette can reproduce both readings.
 
 We built this as a working product, not a demonstration: a website where every visitor gets their own measured
 palette, a studio for designers (the Atelier), a 12\,KB runtime that applies a measured palette to any website, a
@@ -167,8 +170,9 @@ hardware. This paper describes the ideas and their limits. Its contributions are
   \item A run on IBM's \texttt{ibm\_kingston}, where every rule of the square held on at least 93\% of shots
         (Section~\ref{sec:hardware}).
 \end{itemize}
-We are careful about one point throughout. Two qubits are easy to simulate, so nothing here needs a quantum computer.
-What the physics gives is a grammar for color that comes with a proof (Section~\ref{sec:limits}).
+One caveat runs through the whole paper. Two qubits are easy to simulate, so nothing here needs a quantum computer;
+the hardware run in Section~\ref{sec:hardware} adds physical randomness and a provenance record, not capability
+(Section~\ref{sec:limits}).
 
 \section{Background}
 \label{sec:background}
@@ -273,8 +277,8 @@ Reading the grid by rows takes each tile's value from its row's measurement. Rea
 value from its column's measurement. Figure~\ref{fig:grid} shows both readings for one world. Three tiles differ.
 
 
-Two facts describe what a designer will see. The first says the two readings can never agree. The second says how
-much they disagree.
+For a designer, two questions follow: can the readings ever agree, and how much do they usually differ? The answers
+are short.
 
 \begin{result}[Always an odd number]\label{res:odd}
 In every measurement, the row reading and the column reading differ on an odd number of tiles: 1, 3, 5, 7 or 9.
@@ -381,9 +385,9 @@ interpolation, not a claim about optics.
 \label{sec:pair}
 
 An engine is easier to judge in use. Pair Production is a section of the Qontext website that follows an artist
-through a sneaker drop, from first color to finished pair. We chose sneakers because the culture already thinks in
-the right shapes. A drop is a limited run. A pair is two objects that are meant to match. Collectors care about
-which run a pair came from.
+through a sneaker drop, from first color to finished pair. Sneakers suit the idea unusually well: a drop is a
+limited run, collectors care about which run a pair came from, and a pair is two objects that are supposed to match,
+which is exactly the expectation the square breaks.
 
 \begin{figure}[tb]
   \centering
@@ -475,17 +479,19 @@ For hardware, a command line tool builds each row and column as a circuit in whi
 its own ancilla qubit. The three values of a context are therefore measured separately, so noise can break a rule,
 as it does on real devices. In the tool's noisy simulation the Mermin score is about 4.7, between the classical limit
 of 4 and the ideal 6. On IBM's public devices, Dikme et al.\ measured a comparable violation using a single ancilla
-per context \citep{dikme2020}. Recorded hardware shots can be saved as a pool and replayed by the website in place of
-the simulator, which gives physically random worlds and a job record that serves as provenance.
+per context \citep{dikme2020}. Recorded hardware shots can be saved as a pool and replayed by the Atelier in place
+of the simulator, which gives physically random worlds and a job record that serves as provenance.
 
 \section{A run on IBM hardware}
 \label{sec:hardware}
 
-We ran the tool once on IBM's \texttt{ibm\_kingston} on 12 October 2026, on the free Open Plan. One job held ten
-circuits, the six contexts of the square and the four CHSH settings, at 2{,}048 shots each: 20{,}480 measurements
-in all. The state is the same seeded random state the website uses. Table~\ref{tab:hardware} gives the results.
+We ran the tool on IBM's \texttt{ibm\_kingston} on 12 October 2026, using the free Open Plan. Each job held ten
+circuits, the six contexts of the square and the four CHSH settings, prepared on the same seeded random state the
+website uses. We made three runs; the first two exposed a qubit-placement problem described below, and we report
+the third, at 2{,}048 shots per circuit or 20{,}480 measurements in all, in Table~\ref{tab:hardware}.
 
-\begin{table}[tb]
+
+\begin{table}[!hb]
 \centering
 \small
 \begin{tabular}{@{}lcccccc@{}}
@@ -510,17 +516,17 @@ CHSH value $S$ & 2 & $2\sqrt2 \approx 2.828$ & $2.732 \pm 0.032$ \\
 \label{tab:hardware}
 \end{table}
 
-Both scores lie far above their classical limits: the Mermin-Peres score by 50 standard errors and the CHSH value by
-23. Every one of the six rules held on at least 92.9\% of shots, where no fixed table of values can keep more than five
-of the six. These are the expected results for a working device. They are not new physics; they show that the
-colors Qontext draws from hardware come from measurements that broke the classical limit.
+Both scores lie far above their classical limits, the Mermin-Peres score by 50 standard errors and the CHSH value by
+23. Averaged over the six contexts, 5.64 of the six rules held per round, while any model with fixed values keeps at
+most five on average. This is what a working device should do, and we make no claim beyond it; the point for Qontext
+is that colors drawn from these shots come from a run that, taken as a whole, exceeded the classical limit.
 
-A first attempt taught us one practical lesson. At Qiskit's light optimization level the transpiler placed the
-two-qubit CHSH circuits on the first two qubits of the chip whenever they fitted, without looking at their quality.
-On \texttt{ibm\_kingston} one of them misread 17\% of its results, and two runs gave CHSH values of 1.11 and 1.05,
-below the classical limit. IBM's simulated copy of the device reproduced the drop. The tool now uses a noise-aware
-layout for every circuit, and the value rose to 2.73. A test on the simulated device now guards against the
-mistake.
+The first two runs went wrong in an instructive way. At Qiskit's light optimization level the transpiler placed the
+two-qubit CHSH circuits on the first two qubits of the chip whenever they fitted, without checking their error rates.
+On \texttt{ibm\_kingston} one of those qubits misread 17\% of its results, and the CHSH value came out at 1.11 and
+then 1.05, below the classical limit, while the Mermin-Peres circuits, which the transpiler had already placed with
+care, scored 5.15 and 5.26. IBM's simulated copy of the device reproduced the drop, with a CHSH value of 1.15. With a noise-aware layout
+for every circuit the CHSH value rose to 2.73, and a test on the simulated device now catches the mistake.
 
 The shots are stored in the repository as \nolinkurl{data/hardware/ibm_kingston-2026-10-12.json}. The Atelier ships
 the same run and stamps it. The SHA-256 fingerprint of its shot data is
@@ -543,7 +549,7 @@ designing software with quantum principles, not running it on quantum hardware \
 \paragraph{Contextuality.} The theory and its experiments are reviewed by Budroni et al.\ \citep{budroni2022}. The
 Mermin-Peres square has been tested with ions \citep{kirchmair2009}, on public cloud devices \citep{dikme2020} and as
 a nonlocal game with photons \citep{xu2022}. Our results about differing tiles are elementary consequences of the
-square. We state them because they describe what a designer sees.
+square; we state them because they describe what a designer actually sees on the page.
 
 \paragraph{Color and accessibility.} Qontext works in OKLCH \citep{ottosson2020,csscolor4}, where equal steps in hue
 and lightness look more even than in older spaces. Contrast follows WCAG 2.2 \citep{wcag22}, with APCA \citep{apca}
@@ -552,12 +558,18 @@ reported alongside.
 \section{Limits}
 \label{sec:limits}
 
-\paragraph{No quantum advantage.} Two qubits have a four-dimensional state. The browser simulates them exactly in
-microseconds. A classical program that is told which context is being read can reproduce every reading, which is
-exactly what our simulator does. The theorem rules out fixed tables of colors, not software. What Qontext offers is a
-grammar for color with a guarantee attached: any fixed palette placed on the grid breaks at least one of the six
-rules. Real hardware adds three things a simulator cannot honestly claim: physically random collapses, measured
-violations of classical limits, and a job record. It adds nothing else.
+\paragraph{No quantum advantage.} Two qubits live in a four-dimensional state space, and the browser simulates them
+exactly in microseconds. A classical program that is told which context is being read can reproduce every reading,
+which is precisely what our simulator does: the theorem rules out fixed tables of colors, not software. What Qontext
+offers instead is a design rule with a proof behind it, namely that any fixed palette placed on the grid breaks at
+least one of the six rules. Real hardware contributes physically random collapses, measured violations of classical
+limits and a job record, and nothing beyond those three.
+
+\paragraph{The hardware test.} Like other contextuality experiments on noisy devices, ours assumes that the three
+measurements in a context are compatible. Gate and readout errors mean they are only approximately so, which is the
+compatibility loophole discussed by Budroni et al.\ \citep{budroni2022}; the run is a demonstration on a working
+device, not a loophole-free test. The CHSH circuits use two neighbouring qubits on one chip, so their value says
+nothing about nonlocality.
 
 \paragraph{Randomness.} Worlds on the website come from a seeded pseudorandom generator, chosen so that a world can be
 shared and reproduced. They are physically random only when replayed from a hardware pool.
@@ -575,11 +587,11 @@ sides of the shoe and approximate on its top, where the panel borders are the si
 
 \section{Conclusion}
 
-A design token with one value is a noncontextual hidden variable. The Mermin-Peres square shows a small, precise case
-where no such value exists, and we have turned that case into a working color system: tiles with two true colors, a
-proof that no palette can fake them, tools that keep the results readable, and a sneaker that wears the idea on its
-two feet. The physics does not make the software faster or more powerful. It gives designers a new kind of
-constraint, and a reason for it that anyone can check.
+A design token with one value behaves like a noncontextual hidden variable. The Mermin-Peres square is a small,
+precise case where no such value can exist, and we have turned it into a working color system: tiles with two true
+colors, a proof that no palette can fake them, tools that keep the results readable, and a sneaker that wears the
+idea on its two feet. None of this makes software faster. What designers gain is a new kind of constraint, together
+with a reason for it that anyone can check, on a laptop or on a quantum computer.
 
 \paragraph{Availability.} The website is at \url{https://qontext.qubitmen.workers.dev}. The source, including the
 scripts that compute this paper's numbers and draw its figures from the engine, is at
