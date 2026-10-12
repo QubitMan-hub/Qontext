@@ -6,10 +6,10 @@ New
 - The film, rebuilt in Remotion: two and a half minutes in everyday words, with an ElevenLabs voice. Each
   sentence is lined up with the voice by its speaking rate, the scenes are drawn by the engine itself, and the
   clips of the site and the Atelier are recorded in step with the narration. Ten chapters on the site.
-- Ready to host on Cloudflare Pages for free: Vacuum (the 404 page), Unobserved (the privacy page), a
-  link-preview image, icons, `robots.txt`, `sitemap.xml`, and `_headers` that forbid framing. Each page has a
-  real title, description and canonical address. The footer links to Privacy, License, Contact and Source.
-  Still no cookies and no analytics.
+- Live at https://qontext.qubitmen.workers.dev on Cloudflare's free plan, deployed from `main`. With it:
+  Vacuum (the 404 page), Unobserved (the privacy page), a link-preview image, icons, `robots.txt`,
+  `sitemap.xml`, and `_headers` that forbid framing. Each page has a real title, description and canonical
+  address. The footer links to Privacy, License, Contact and Source. Still no cookies and no analytics.
 - Phase Dial: light and dark are two points on one turn. Every whole degree between is a real theme, a
   Mach-Zehnder blend of the two (lightness from the port intensity, tint from the waves' interference), so the
   way to dark passes a teal dusk and the way back a plum one. Bouncer makes text read at 4.5 : 1 or better

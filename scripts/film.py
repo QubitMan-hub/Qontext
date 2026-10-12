@@ -17,7 +17,7 @@ import subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FILM = ROOT / "film"
 MEDIA = ROOT / "dist" / "media"
-MAX_MB = 24  # Cloudflare Pages serves files up to 25 MiB
+MAX_MB = 24  # Cloudflare serves static files up to 25 MiB
 
 
 def run(cmd, cwd=ROOT):

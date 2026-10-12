@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://qontext.pages.dev/sitemap.xml
+Sitemap: https://qontext.qubitmen.workers.dev/sitemap.xml

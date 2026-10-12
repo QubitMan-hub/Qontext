@@ -6,7 +6,7 @@
 //   dist/artifact.html           Website as a page fragment, for hosts that add their own document shell
 //   dist/qontext-runtime.min.js  Observer runtime, browser global `Qontext`
 //   dist/qontext-runtime.esm.js  Observer runtime, ES module
-//   dist/ icons, link-preview image, robots.txt, sitemap.xml, and Cloudflare Pages' _headers and _redirects
+//   dist/ icons, link-preview image, robots.txt, sitemap.xml, and Cloudflare's _headers and _redirects
 //   figma-plugin/dist/code.js    Superpose, the Figma plugin
 // Usage: node scripts/build.mjs [--watch]
 
@@ -25,7 +25,7 @@ const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
 const DEV = process.env.QONTEXT_DEV === '1';
 // The public site (package.json "homepage"), for canonical links, link previews, robots.txt and the sitemap.
 const SITE = JSON.parse(await readFile(p('package.json'), 'utf8')).homepage.replace(/\/$/, '');
-// Its pages by public address. Cloudflare Pages drops ".html": studio.html is served at /studio.
+// Its pages by public address. Cloudflare drops ".html": studio.html is served at /studio.
 const PAGES = ['/', '/studio', '/privacy'];
 
 /**
@@ -51,7 +51,7 @@ function csp(html, bundles) {
 
 /**
  * The canonical address, link preview and icons of a public page, from its own title and description. `path` is
- * where the page lives on the site (Cloudflare Pages serves studio.html at /studio).
+ * where the page lives on the site (Cloudflare serves studio.html at /studio).
  */
 function share(head, path) {
   const title = /<title>([^<]+)<\/title>/.exec(head)[1];
@@ -133,7 +133,7 @@ async function buildAll() {
   await writeFile(p('dist/studio.html'), studio.full);
   await writeFile(p('dist/privacy.html'), privacy.full);
   await writeFile(p('dist/404.html'), vacuum.full);
-  // Icons, the link-preview image, and Cloudflare Pages' _headers and _redirects, as they are.
+  // Icons, the link-preview image, and Cloudflare's _headers and _redirects, as they are.
   await cp(p('src/site/public'), p('dist'), { recursive: true });
   await writeFile(p('dist/robots.txt'), `User-agent: *\nDisallow:\n\nSitemap: ${SITE}/sitemap.xml\n`);
   const urls = PAGES.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n');

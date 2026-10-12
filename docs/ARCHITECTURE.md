@@ -57,7 +57,7 @@ throttled phone profile and a desktop profile; `tests/e2e/test_performance.py` h
 ## Security
 
 `scripts/build.mjs` writes a Content Security Policy into each standalone page, with the inline bundle pinned
-by SHA-256; Vacuum and Unobserved carry no script, so their policy allows none. On Cloudflare Pages,
+by SHA-256; Vacuum and Unobserved carry no script, so their policy allows none. On Cloudflare,
 `src/site/public/_headers` adds `frame-ancestors 'none'`, which a meta tag cannot set. The artifact fragment
 (`dist/artifact.html`) leaves the policy to its host, and the public site redirects its address home. Untrusted text (project
 names from Wavefunction codes, files, storage) goes through `sanitizeProject` and the helpers in

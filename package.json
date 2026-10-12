@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "private": true,
   "description": "Qontext: the website, the Atelier and the engine for contextual color built on quantum contextuality.",
-  "homepage": "https://qontext.pages.dev",
+  "homepage": "https://qontext.qubitmen.workers.dev",
   "repository": "github:QubitMan-hub/Qontext",
   "type": "module",
   "engines": {

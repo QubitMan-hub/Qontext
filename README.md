@@ -8,7 +8,7 @@ color harmonies are the roots of unity of a d-level quantum system.
 Everything runs as exact quantum simulation on the visitor's device. Real hardware (IBM Quantum) adds
 physically random collapses, measured violations of classical limits, and a verifiable provenance seal.
 
-The site: https://qontext.pages.dev. The Atelier: https://qontext.pages.dev/studio.
+The site: https://qontext.qubitmen.workers.dev. The Atelier: https://qontext.qubitmen.workers.dev/studio.
 
 ## The names
 
@@ -118,11 +118,12 @@ take. `npm run cards` inside `film/` redraws the link-preview card and the icons
 
 ## Hosting
 
-The site is static and free to host on Cloudflare Pages: connect this repository, leave the build command
-empty and set the output directory to `dist` (the built files are committed). Every push to `main` deploys.
-`404.html` is Vacuum, `_headers` adds the policies a meta tag cannot (no framing, no sniffing, no referrer),
-and `_redirects` sends the artifact fragment's address home. The public address is `homepage` in
-`package.json`; canonical links, link previews, `robots.txt` and `sitemap.xml` are built from it.
+The site runs on Cloudflare's free plan as a Worker with static assets, connected to this repository, so
+every push to `main` deploys. `wrangler.jsonc` serves `dist/` as it is (the built files are committed, so
+there is no build step) and answers missing addresses with Vacuum, `404.html`. `_headers` adds the policies a
+meta tag cannot (no framing, no sniffing, no referrer), and `_redirects` sends the artifact fragment's
+address home. The public address is `homepage` in `package.json`; canonical links, link previews,
+`robots.txt` and `sitemap.xml` are built from it.
 
 ## Observer
 
@@ -166,7 +167,7 @@ cookies, no analytics, no tracking. Unobserved says the same to visitors.
 
 - The standalone pages carry a Content Security Policy: the only script that runs is the page's own bundle,
   pinned by its SHA-256 hash; nothing can be fetched, framed or posted; the only third party is Google Fonts.
-  Vacuum and Unobserved run no script at all. On Cloudflare Pages, `_headers` also forbids framing.
+  Vacuum and Unobserved run no script at all. On Cloudflare, `_headers` also forbids framing.
 - A Wavefunction code can come from anyone, so everything in it is sanitized on the way in (numbers clamped,
   names reduced to one printable line) and escaped on the way out: a project name cannot break out of a CSS
   comment, add a line to a Tailwind config or add markup to an SVG. `tests/engine/security.test.js` tries.

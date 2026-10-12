@@ -4,7 +4,9 @@ description: Where Qontext lives outside this repo (live page, product doc, skil
 type: reference
 ---
 
-- Live site (private Claude artifact, the owner shares it): https://claude.ai/artifact/Wp4SYJZ2ymd1NDXUpgqHzA
+- Public site: https://qontext.qubitmen.workers.dev (Cloudflare Worker `qontext`, static assets from `dist/`,
+  deployed on every push to `main`). The Cloudflare MCP can list the Worker but cannot deploy or change it.
+- Preview (private Claude artifact, the owner shares it): https://claude.ai/artifact/Wp4SYJZ2ymd1NDXUpgqHzA
   It holds index.html (from dist/artifact.html), studio.html, media/qontext-film.mp4 and the poster.
 - Product doc (Claude Docs): project cc016557-89a4-47b3-91d1-0f98e0445930.
 - Build, test and publish steps: the qontext-builder skill in the owner's account, and README.md.

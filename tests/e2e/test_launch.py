@@ -1,5 +1,5 @@
 """The files a public website needs beyond its pages: link previews, icons, the sitemap, robots.txt, Cloudflare
-Pages' headers and redirects, Vacuum (the 404 page) and Unobserved (the privacy page)."""
+static-asset headers and redirects, Vacuum (the 404 page) and Unobserved (the privacy page)."""
 
 import json
 import pathlib
@@ -45,6 +45,17 @@ def test_sitemap_lists_every_public_page_and_robots_points_to_it():
     locs = re.findall(r"<loc>([^<]+)</loc>", (DIST / "sitemap.xml").read_text())
     assert locs == [HOME + path for path in PUBLIC.values()]
     assert f"Sitemap: {HOME}/sitemap.xml" in (DIST / "robots.txt").read_text()
+
+
+def test_cloudflare_serves_dist_and_vacuum_for_missing_pages():
+    # Workers static assets answer a missing page with an empty 404 unless told to use 404.html.
+    config = json.loads((ROOT / "wrangler.jsonc").read_text())
+    assert config["name"] == "qontext"
+    assert config["assets"] == {
+        "directory": "./dist",
+        "not_found_handling": "404-page",
+        "html_handling": "auto-trailing-slash",
+    }
 
 
 def test_cloudflare_headers_and_redirects():

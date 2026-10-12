@@ -23,9 +23,9 @@ dial). The film: Alex voice, about 2.5 minutes, everyday slang, animation plus r
 and uploaded the take. Changing the script means a new paid take, so ask before regenerating.
 
 Launch (owner's ask, 2026-10-12): the website checklist, minus cookies and analytics, which the owner does
-not want. Hosting is Cloudflare Pages, free, from this repo's `main`; the address is `homepage` in
-package.json. The sandbox cannot reach the Cloudflare API or GitHub's settings, so the owner connects the
-repo in Cloudflare and fills GitHub's About box. Skipped on purpose: terms page (the license covers it),
+not want. Hosting: the owner connected the repo to Cloudflare as a Worker with static assets (free plan),
+deployed from `main`; `wrangler.jsonc` and `homepage` in package.json must agree with that Worker. The
+sandbox cannot change Cloudflare or GitHub settings, so those go to the owner. Skipped on purpose: terms page (the license covers it),
 thank-you page and form states (no forms), sticky phone CTA (the bar already holds Open the Atelier).
 
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
