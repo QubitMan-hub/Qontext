@@ -156,6 +156,16 @@ def test_a_broken_link_shows_your_own_world(browser, errors):
     assert errors == []
 
 
+def test_a_garbled_link_shows_your_own_world(browser, errors):
+    # Broken percent-encoding, as a chat app can leave behind when it cuts a long link short.
+    ctx, page = open_turntable(browser, errors, code="QX1.%E0%A4%A")
+    assert page.get_attribute("#ttStage", "data-ready") == "true"
+    assert "your own world" in page.inner_text("#ttNotice")
+    assert len(table(page)) == 9
+    ctx.close()
+    assert errors == []
+
+
 def test_a_new_code_repaints_the_pair(browser, errors):
     ctx, page = open_turntable(browser, errors)
     before = table(page)

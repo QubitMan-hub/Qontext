@@ -48,7 +48,14 @@ const feet = { left: null, right: null };
 
 /** The design in the address, or the visitor's own world when there is none (or it cannot be read). */
 function readDesign() {
-  const code = decodeURIComponent(location.hash.slice(1)).trim();
+  const raw = location.hash.slice(1);
+  let code = raw;
+  try {
+    code = decodeURIComponent(raw);
+  } catch {
+    // Broken percent-encoding (a link cut short): decodeProject rejects it below, with the notice.
+  }
+  code = code.trim();
   let notice = '';
   if (code) {
     try {
