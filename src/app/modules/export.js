@@ -1,12 +1,15 @@
 import {
   buildExportData, toCss, toTokens, toTailwind, toSvgGrid, guardReport, INKS, encodeProject, decodeProject,
-  DEFAULT_PROJECT, lenticularView, rowValue, colValue, tileColor, clamp,
+  DEFAULT_PROJECT, lenticularView, rowValue, colValue, tileColor, clamp, inkFor,
 } from '../../engine/index.js';
-import { $, $$, copyText, pressOne, toast } from '../dom.js';
+import { $, $$, copyText, esc, pressOne, toast } from '../dom.js';
 import { store, palette, setProject, replaceProject } from '../store.js';
 import { currentProbs } from './penta.js';
+import { reach } from '../guide.js';
 
 let fmt = 'css';
+const FILES = { css: ['css', 'text/css'], tokens: ['tokens.json', 'application/json'], tailwind: ['tailwind.js', 'text/javascript'], svg: ['svg', 'image/svg+xml'] };
+const PAUSED = 'Exporting is paused until text reads on every color. Press Fix it for me.';
 
 function data() {
   return buildExportData(palette(), store.out, currentProbs(), { name: store.project.name });
@@ -82,6 +85,43 @@ function renderLenticular() {
   $('lentiInfo').textContent = `${size} × ${size} px, ${(dpi / lpi / 2).toFixed(1)} px per view strip`;
 }
 
+/** A file name from the design's name: "Spring launch" -> qontext-spring-launch.css */
+function fileName() {
+  const slug = store.project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'design';
+  return `qontext-${slug}.${FILES[fmt][0]}`;
+}
+
+function download() {
+  if (blocked()) {
+    toast(PAUSED);
+    return;
+  }
+  try {
+    const url = URL.createObjectURL(new Blob([$('exportOut').value], { type: FILES[fmt][1] }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName();
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(`Downloaded ${a.download}`);
+    reach('export');
+  } catch {
+    toast('This browser blocked the download. Use Copy instead.');
+  }
+}
+
+/** The harmony, then every tile split on the diagonal into its row color and its column color. */
+function renderSwatches() {
+  const d = data();
+  const harm = d.harmony.map((hex) => `<div class="sw-h" style="background:${hex};color:${inkFor(hex)}"><span>${esc(hex)}</span></div>`).join('');
+  const tiles = d.tiles
+    .map((t) => `<div class="sw-t" style="--row:${t.row};--col:${t.col}" title="${esc(t.id)}: row ${esc(t.row)}, column ${esc(t.col)}"></div>`)
+    .join('');
+  $('handoffSwatches').innerHTML = `<div class="sw-harm">${harm}</div><div class="sw-grid" role="img" aria-label="Nine squares, each split into its row color and its column color">${tiles}</div>`;
+}
+
 export function init() {
   for (const b of $$('[data-fmt]')) {
     b.addEventListener('click', () => {
@@ -92,24 +132,27 @@ export function init() {
   }
   $('copyBtn').addEventListener('click', () => {
     if (blocked()) {
-      toast('Bouncer stopped this export. Some tile colors fail contrast; use Fix lightness in Janus.');
+      toast(PAUSED);
       return;
     }
     copyText($('exportOut').value, $('exportOut'));
+    reach('export');
   });
+  $('downloadBtn').addEventListener('click', download);
+  $('handoffFix').addEventListener('click', () => $('cgFix').click());
   $('projName').addEventListener('change', (e) => setProject({ name: e.target.value }));
   $('projCopy').addEventListener('click', () => copyText($('projCode').value, $('projCode')));
   $('projLoad').addEventListener('click', () => {
     try {
       replaceProject(decodeProject($('projCode').value));
-      toast('Wavefunction loaded');
+      toast('Design opened');
     } catch (e) {
       toast(e.message);
     }
   });
   $('projReset').addEventListener('click', () => {
     replaceProject(DEFAULT_PROJECT);
-    toast('Project reset to defaults');
+    toast('Started over with the default design');
   });
   $('lentiBtn').addEventListener('click', renderLenticular);
 }
@@ -118,11 +161,14 @@ export function render() {
   const d = data();
   const text = fmt === 'css' ? toCss(d) : fmt === 'tokens' ? toTokens(d) : fmt === 'tailwind' ? toTailwind(d) : toSvgGrid(d);
   $('exportOut').value = text;
+  renderSwatches();
   const isBlocked = blocked();
   $('copyBtn').disabled = isBlocked;
-  $('exportNote').textContent = isBlocked
-    ? 'Bouncer blocked exports: label text fails contrast on some tile colors. Use Fix lightness in Janus.'
-    : `Measurement ${store.count}. Press Measure again for a new collapse.`;
+  $('downloadBtn').disabled = isBlocked;
+  $('handoffBlock').hidden = !isBlocked;
+  $('exportNote').textContent = isBlocked ? '' : `Ready as ${fileName()}`;
   if (document.activeElement !== $('projName')) $('projName').value = store.project.name;
-  if (document.activeElement !== $('projCode')) $('projCode').value = encodeProject(store.project);
+  const code = encodeProject(store.project);
+  if (document.activeElement !== $('projCode')) $('projCode').value = code;
+  $('projShort').textContent = `${code.slice(0, 18)}…${code.slice(-6)}`;
 }

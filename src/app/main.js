@@ -12,6 +12,7 @@ import * as entangle from './modules/entangle.js';
 import * as shapes from './modules/shapes.js';
 import * as hardware from './modules/hardware.js';
 import * as exporter from './modules/export.js';
+import * as guide from './guide.js';
 
 const MODULES = { grid, learn, harmony, mixer, penta, entangle, shapes, hardware, export: exporter };
 const TAB_KEY = 'qontext-tab-v1';
@@ -87,9 +88,13 @@ function initGlobal() {
 function boot() {
   document.documentElement.lang = document.documentElement.lang || 'en';
   for (const m of Object.values(MODULES)) safe(() => m.init());
+  safe(() => guide.init());
   initTabs();
   initGlobal();
-  subscribe((kind) => renderActive(kind));
+  subscribe((kind) => {
+    renderActive(kind);
+    safe(() => guide.afterRender(kind));
+  });
   const fromHash = (location.hash || '').replace('#', '');
   if (fromHash.startsWith('QX1.')) {
     // A Wavefunction from the site: open that exact world on Janus.

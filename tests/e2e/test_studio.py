@@ -1,8 +1,11 @@
 """End-to-end tests: drive Qontext Studio the way a person would."""
 
+import pathlib
 import re
 
 from conftest import DEMO
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 TABS = ["grid", "learn", "harmony", "mixer", "penta", "entangle", "shapes", "hardware", "export"]
 
@@ -98,7 +101,7 @@ def test_shapes(page):
 def test_example_pool_and_seal(page):
     open_tab(page, "hardware")
     page.click("#poolExample")
-    page.wait_for_function("() => document.querySelector('#seal').innerText.includes('sha-256')")
+    page.wait_for_function("() => document.querySelector('#seal').innerText.includes('SHA-256')")
     assert float(page.inner_text("#hwScore")) > 4
     assert re.search(r"[0-9a-f]{64}", page.inner_text("#seal"))
     assert page.locator("#poolTable tr").count() == 6
@@ -108,6 +111,7 @@ def test_example_pool_and_seal(page):
 
 def test_bad_pool_shows_message(page):
     open_tab(page, "hardware")
+    page.click("text=Paste the file's text instead")
     page.fill("#poolText", '{"contexts": {"R1": [[1, 0, 1]]}}')
     page.click("#poolLoad")
     page.wait_for_function("() => document.querySelector('#toast').innerText.length > 0")
@@ -143,6 +147,7 @@ def test_project_code_round_trip_and_persistence(page):
     page.wait_for_selector("#tab-harmony:not([hidden])")  # the last tab is restored too
     assert page.inner_text("#hVal") == "33°"
     open_tab(page, "export")
+    page.click("#openFold summary")
     page.fill("#projCode", code)
     page.click("#projLoad")
     open_tab(page, "harmony")
@@ -198,3 +203,111 @@ def test_loads_pool_written_by_python_runner(page):
     assert float(page.inner_text("#hwChsh")) > 2
     open_tab(page, "entangle")
     assert "Measured on aer simulator" in page.inner_text("#chshSource")
+
+
+def test_every_room_explains_itself_in_plain_words(page):
+    for name in TABS:
+        open_tab(page, name)
+        wall = page.locator(f"#tab-{name} .wall")
+        assert wall.is_visible()
+        assert len(wall.locator(".wall-what").inner_text().split()) >= 20
+        assert wall.locator(".wall-eg").inner_text().startswith("For example")
+        assert wall.locator(f'[data-goal="{name}"]').is_visible()
+        assert "—" not in wall.inner_text()  # house style: no em dashes
+
+
+def test_try_this_does_what_it_says(page):
+    page.click('[data-try="grid"]')
+    assert "Measurement 2" in page.inner_text("#legend")
+    open_tab(page, "mixer")
+    page.click('[data-try="mixer"]')
+    page.fill("#phiIn", "180")
+    page.dispatch_event("#phiIn", "input")
+    # Opposite colors at the opposite phase leave one output plain gray, and the goal is reached.
+    share = int(page.inner_text("#eShare").rstrip("%"))
+    assert share <= 3 or share >= 97
+    page.wait_for_function("() => document.querySelector('[data-goal=\"mixer\"]').classList.contains('done')")
+    assert page.inner_text("#eurekaN") == "1"
+
+
+def test_a_goal_counts_once_and_survives_a_reload(page):
+    open_tab(page, "shapes")
+    page.click('[data-shape="yuoh13"]')
+    page.wait_for_function("() => document.querySelector('[data-goal=\"shapes\"]').classList.contains('done')")
+    assert page.locator('[data-goal="shapes"] .goal-k').inner_text() == "Goal reached:"
+    page.click('[data-shape="peres33"]')
+    page.click('[data-shape="yuoh13"]')
+    assert page.inner_text("#eurekaN") == "1"
+    page.reload()
+    page.wait_for_selector("#tab-shapes:not([hidden])")  # the last room is restored too
+    assert page.inner_text("#eurekaN") == "1"
+
+
+def test_best_attempt_does_not_count_as_your_own(page):
+    open_tab(page, "learn")
+    page.click('[data-try="learn"]')
+    assert page.inner_text("#learnVerdict").startswith("5 of 6")
+    assert page.inner_text("#eurekaN") == "0"
+    page.click('[data-try="learn"]')
+    # From a best attempt, flip a tile twice: the visitor's own 5 of 6 counts.
+    page.click("#cl00")
+    page.click("#cl00")
+    page.wait_for_function("() => document.querySelector('[data-goal=\"learn\"]').classList.contains('done')")
+
+
+def test_celebration_stays_still_under_reduced_motion(browser):
+    from conftest import STUDIO, _new_page
+
+    errors = []
+    ctx, page = _new_page(browser, {"width": 1280, "height": 900}, errors)
+    page.emulate_media(reduced_motion="reduce")
+    page.goto(STUDIO)
+    page.wait_for_selector("#cell00")
+    open_tab(page, "hardware")
+    page.click("#poolExample")
+    page.wait_for_function("() => document.getElementById('eurekaN').textContent === '1'")
+    assert page.locator(".burst").count() == 0
+    ctx.close()
+    assert errors == []
+
+
+def test_notary_hides_results_until_there_are_some(page):
+    open_tab(page, "hardware")
+    assert page.locator("#poolResults").is_hidden()
+    assert page.locator("#poolText").is_hidden()  # the raw text box waits behind its fold
+    assert "appears here" in page.inner_text("#seal")
+    page.set_input_files("#poolFile", str(ROOT / "examples" / "sample-pool-noisy.json"))
+    page.wait_for_selector("#poolResults:not([hidden])")
+    rows = page.locator("#poolTable tr")
+    assert rows.count() == 6
+    assert rows.first.inner_text().startswith("Row 1 multiplies to +1")
+    assert page.locator("#seal .stamp svg").count() == 1
+    page.click("#poolClear")
+    assert page.locator("#poolResults").is_hidden()
+    assert "appears here" in page.inner_text("#seal")
+
+
+def test_handoff_shows_colors_and_downloads_a_named_file(page):
+    open_tab(page, "export")
+    assert page.locator("#handoffSwatches .sw-h").count() == 3
+    assert page.locator("#handoffSwatches .sw-t").count() == 9
+    assert page.locator("#exportOut").is_hidden()  # the code waits behind Show the code
+    page.fill("#projName", "Spring launch")
+    page.dispatch_event("#projName", "change")
+    page.click('[data-fmt="tokens"]')
+    with page.expect_download() as info:
+        page.click("#downloadBtn")
+    assert info.value.suggested_filename == "qontext-spring-launch.tokens.json"
+    assert page.inner_text("#eurekaN") == "1"
+
+
+def test_handoff_pauses_and_fixes_unreadable_colors(page):
+    open_tab(page, "harmony")
+    page.fill("#lIn", "0.4")
+    page.dispatch_event("#lIn", "input")
+    open_tab(page, "export")
+    assert page.locator("#handoffBlock").is_visible()
+    assert page.is_disabled("#downloadBtn")
+    page.click("#handoffFix")
+    assert page.locator("#handoffBlock").is_hidden()
+    assert page.is_enabled("#copyBtn")

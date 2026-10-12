@@ -35,6 +35,8 @@ Every product and feature has one name, used the same way in the website, the At
 | **Wall Wash** | The site's walls take on a little of each room's own tile color as you walk in | The website |
 | **Compass** | A pocket floor plan: unvisited rooms are still split, visited rooms have collapsed | The website |
 | **Thresholds** | Each room's name enters the way its physics behaves | The website |
+| **Wall Cards** | Each Atelier room opens in plain words: what it does, a real example, one thing to try | The Atelier |
+| **Eureka** | One small goal per Atelier room; reaching it bursts the design's own colors (still under reduced motion) | The Atelier |
 | **Pair Production** | The showcase: a sneaker drop from start to finish. The nine panels of one shoe are the nine tiles; the left foot reads the rows, the right foot the columns | The website |
 | **Turntable** | Your Pair Production pair in 3D, on a platter you can turn | `src/turntable/` → `dist/turntable.html` |
 | **Vacuum** | The page for addresses that do not exist: nothing was measured there, so its tile stays split | `src/site/pages/404.html` |

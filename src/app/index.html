@@ -16,6 +16,7 @@
         <h1>Qontext <span class="sub">Atelier</span></h1>
         <a class="back" href="index.html">Back to the site</a>
       </div>
+      <p class="eureka" id="eureka">Goals <b id="eurekaN">0</b> of 9</p>
       <label class="vision" for="vision">Color vision
         <select id="vision">
           <option value="none">Typical</option>
@@ -34,8 +35,8 @@
         <button class="tab" role="tab" id="tabbtn-penta" aria-controls="tab-penta" data-tab="penta" aria-selected="false" tabindex="-1"><span class="tn">Pentacle</span><span class="td">five colors</span></button>
         <button class="tab" role="tab" id="tabbtn-entangle" aria-controls="tab-entangle" data-tab="entangle" aria-selected="false" tabindex="-1"><span class="tn">Spooky Pair</span><span class="td">entangled assets</span></button>
         <button class="tab" role="tab" id="tabbtn-shapes" aria-controls="tab-shapes" data-tab="shapes" aria-selected="false" tabindex="-1"><span class="tn">Unpaintables</span><span class="td">impossible shapes</span></button>
-        <button class="tab" role="tab" id="tabbtn-hardware" aria-controls="tab-hardware" data-tab="hardware" aria-selected="false" tabindex="-1"><span class="tn">Notary</span><span class="td">hardware seal</span></button>
-        <button class="tab" role="tab" id="tabbtn-export" aria-controls="tab-export" data-tab="export" aria-selected="false" tabindex="-1"><span class="tn">Handoff</span><span class="td">exports</span></button>
+        <button class="tab" role="tab" id="tabbtn-hardware" aria-controls="tab-hardware" data-tab="hardware" aria-selected="false" tabindex="-1"><span class="tn">Notary</span><span class="td">prove it was real</span></button>
+        <button class="tab" role="tab" id="tabbtn-export" aria-controls="tab-export" data-tab="export" aria-selected="false" tabindex="-1"><span class="tn">Handoff</span><span class="td">take your colors</span></button>
       </div>
     </div>
   </div>
@@ -49,7 +50,12 @@
     <div class="head">
       <span class="eyebrow">Janus, the Mermin-Peres square on two qubits</span>
       <h2>One tile, two true colors</h2>
-      <p class="muted">Each tile is a quantum observable. Read it with its row or with its column and it can take a different color, and no fixed coloring could ever satisfy all six rules at once.</p>
+    </div>
+    <div class="wall" data-wall="grid" aria-label="In plain words" role="note">
+      <p class="wall-what">Every square here has two true colors. Read it along its row and it shows one color. Read it down its column and it can show another. At least one square always changes, and the physics guarantees it.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Your website's Buy button uses one of these squares. One visitor sees it teal, the next sees it coral, and both pages still follow all six color rules, so the design never breaks.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="grid">Roll a new world</button><p class="goal" data-goal="grid"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find a world where only one square changes.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>Each tile is a quantum observable. Read it with its row or with its column and it can take a different color, and no fixed coloring could ever satisfy all six rules at once.</p></details>
     </div>
     <div class="qgrid-wrap"><div class="qgrid" id="qgrid" role="group" aria-label="Context grid"></div></div>
     <div class="legend" id="legend" aria-live="polite"></div>
@@ -112,7 +118,12 @@
     <div class="head">
       <span class="eyebrow">Mermin's Dare</span>
       <h2>Try to color it classically</h2>
-      <p class="muted">Give every tile a fixed value, +1 or −1. Every row must multiply to +1, columns one and two to +1, and column three to −1. Tap tiles to flip them.</p>
+    </div>
+    <div class="wall" data-wall="learn" aria-label="In plain words" role="note">
+      <p class="wall-what">A puzzle with no solution. Put a plus or a minus on each square so every row and column multiplies out to the sign it asks for. You will always break at least one rule.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>It's like a sudoku that can't be finished. The best anyone can do is 5 of the 6 rules. A quantum computer gets all 6, every time, because its squares don't carry fixed answers.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="learn">Show me a best attempt</button><p class="goal" data-goal="learn"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Get 5 of 6 rules by flipping squares yourself.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>Give every tile a fixed value, +1 or −1. Every row must multiply to +1, columns one and two to +1, and column three to −1. Tap tiles to flip them.</p></details>
     </div>
     <div class="split2">
       <div class="cgrid" id="cgrid" role="group" aria-label="Classical assignment"></div>
@@ -143,7 +154,12 @@
     <div class="head">
       <span class="eyebrow">Unity Wheel, roots of unity on the color wheel</span>
       <h2>Harmony is quantum phase</h2>
-      <p class="muted">A d-level quantum system has phases spaced evenly around a circle. Put them on the hue wheel and you get complementary, triadic, tetradic and beyond, all perfectly balanced.</p>
+    </div>
+    <div class="wall" data-wall="harmony" aria-label="In plain words" role="note">
+      <p class="wall-what">Pick how many colors you want and they spread out evenly around the color wheel, like the hours on a clock. Every other room in the Atelier uses these colors.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Choose 3 colors and a teal starting point and you get a balanced trio of teal, coral and gold, ready for a brand. Drop in a photo and the wheel starts from its main color.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="harmony">Spin a random harmony</button><p class="goal" data-goal="harmony"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Save a harmony you like to your library.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>A d-level quantum system has phases spaced evenly around a circle. Put them on the hue wheel and you get complementary, triadic, tetradic and beyond, all perfectly balanced.</p></details>
     </div>
     <div class="split2">
       <div class="wheel-box"><div class="wheel" id="wheel"></div><svg id="wheelSvg" viewBox="0 0 200 200" aria-hidden="true"></svg><div class="wheel-hole"><div><div class="big" id="wheelD">3</div><div class="eyebrow" id="wheelName">Triadic</div></div></div></div>
@@ -183,7 +199,12 @@
     <div class="head">
       <span class="eyebrow">Fringe, a Mach-Zehnder interferometer for color</span>
       <h2>Mix colors like waves</h2>
-      <p class="muted">Each color becomes a wave: hue is its phase, chroma its amplitude. Two colors meet at a beam splitter and leave through two ports. Shift the phase and the ports trade color while the total stays constant.</p>
+    </div>
+    <div class="wall" data-wall="mixer" aria-label="In plain words" role="note">
+      <p class="wall-what">Mix two colors the way waves of light mix. Turn the dial and color slides from one output to the other. Nothing is lost: what leaves one side shows up on the other.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Put a color and its opposite in, like blue and orange. At the right turn of the dial one output fades to plain gray while the other glows twice as strong.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="mixer">Use opposite colors</button><p class="goal" data-goal="mixer"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the dial until one output fades to gray.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>Each color becomes a wave: hue is its phase, chroma its amplitude. Two colors meet at a beam splitter and leave through two ports. Shift the phase and the ports trade color while the total stays constant.</p></details>
     </div>
     <div class="mix">
       <div class="side">
@@ -220,7 +241,12 @@
     <div class="head">
       <span class="eyebrow">Pentacle, the KCBS test on one qutrit</span>
       <h2>The pentagram palette</h2>
-      <p class="muted">Five quantum events where neighbours on the star can never both happen. Any classical model keeps their total chance at 2 or below. The right qutrit state reaches the square root of 5.</p>
+    </div>
+    <div class="wall" data-wall="penta" aria-label="In plain words" role="note">
+      <p class="wall-what">Five colors on a star. Colors joined by a line can never both be picked, and the size of each dot is its chance. Ordinary rules cap the total chance at 2. Quantum rules go higher.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Use it for five chart categories. Colors joined on the star sit far apart on the color wheel, so no two connected slices ever look alike.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="penta">Shake the state</button><p class="goal" data-goal="penta"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the knobs back to the top score, 2.236.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>Five quantum events where neighbours on the star can never both happen. Any classical model keeps their total chance at 2 or below. The right qutrit state reaches the square root of 5.</p></details>
     </div>
     <div class="split2">
       <div class="figure"><svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentagram palette"></svg></div>
@@ -248,7 +274,12 @@
     <div class="head">
       <span class="eyebrow">Spooky Pair, a Bell pair and the CHSH game</span>
       <h2>Entangled assets</h2>
-      <p class="muted">A light asset and a dark asset share an entangled pair. Each picks a style, and the accent it gets is its measurement outcome. Their accents agree and clash more reliably than any two independent rules allow.</p>
+    </div>
+    <div class="wall" data-wall="entangle" aria-label="In plain words" role="note">
+      <p class="wall-what">Two designs, one light and one dark, share a linked pair of quantum coins. Each design picks a style and flips its coin, and the two coins land in step more often than any two separate coins could.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>A light landing page and its dark twin. When both are calm their accent colors tend to match. When both are bold they tend to clash. Two separate dice can't keep that promise this well.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="entangle">Collapse the pair</button><p class="goal" data-goal="entangle"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Set both to Bold and catch them clashing.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>A light asset and a dark asset share an entangled pair. Each picks a style, and the accent it gets is its measurement outcome. Their accents agree and clash more reliably than any two independent rules allow.</p></details>
     </div>
     <div class="assets">
       <div class="asset light" id="assetA">
@@ -296,7 +327,12 @@
     <div class="head">
       <span class="eyebrow">Unpaintables, Kochen-Specker shape packs</span>
       <h2>Shapes no coloring can finish</h2>
-      <p class="muted">Each shape is a set of directions in space. A classical coloring must light exactly one direction in every perpendicular set and never light two perpendicular directions. For Peres 33 and Cabello 18 that is impossible, and the broken set always shows.</p>
+    </div>
+    <div class="wall" data-wall="shapes" aria-label="In plain words" role="note">
+      <p class="wall-what">3D shapes made of arrows. The rule sounds easy: in every group of arrows at right angles, light up exactly one. For two of these shapes nobody, and no computer, can follow that rule everywhere. Something always breaks.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Export one as an SVG or a 3D file and you have a logo or a small sculpture that is mathematically impossible to color in, with the broken spot showing every time.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="shapes">Try to color it</button><p class="goal" data-goal="shapes"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find the one shape that can be colored.</span></p></div>
+      <details class="wall-more"><summary>The science, for the curious</summary><p>Each shape is a set of directions in space. A classical coloring must light exactly one direction in every perpendicular set and never light two perpendicular directions. For Peres 33 and Cabello 18 that is impossible, and the broken set always shows.</p></details>
     </div>
     <div class="seg" role="group" aria-label="Shape pack" id="shapeSeg">
       <button type="button" data-shape="peres33" aria-pressed="true">Peres 33</button>
@@ -346,33 +382,71 @@
 <section class="panel" id="tab-hardware" role="tabpanel" aria-labelledby="tabbtn-hardware" hidden>
   <div class="stage">
     <div class="head">
-      <span class="eyebrow">Notary, real quantum hardware</span>
-      <h2>Measured, sealed, verifiable</h2>
-      <p class="muted">Run Probe on IBM Quantum. It measures all six grid contexts with ancilla qubits, plus the four CHSH settings, and writes a measurement pool. Load it here and every collapse draws from real shots.</p>
+      <span class="eyebrow">Notary, colors from a real quantum computer</span>
+      <h2>Prove it was real</h2>
     </div>
-    <div class="card">
-      <h3>Load a pool</h3>
-      <div class="row"><input type="file" id="poolFile" accept=".json,application/json" aria-label="Measurement pool file (JSON)"><button class="btn ghost sm" type="button" id="poolExample">Load example pool (simulated noise)</button></div>
-      <label class="field" for="poolText">Or paste pool JSON<textarea id="poolText" style="min-height:110px" placeholder='{"format": "qontext-pool/1", ...}'></textarea></label>
-      <div class="row"><button class="btn sm" type="button" id="poolLoad">Load pasted pool</button><label class="check" for="poolUse"><input type="checkbox" id="poolUse"> Use pool for collapses</label><button class="btn ghost sm" type="button" id="poolClear">Unload</button></div>
+    <div class="wall" data-wall="hardware" aria-label="In plain words" role="note">
+      <p class="wall-what">Normally your colors come from a simulation running in this browser. Notary lets you take them from a real quantum computer instead, and gives you a stamp anyone can use to check them.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Print “measured on IBM Quantum” on a poster. The stamp's fingerprint lets anyone confirm the colors came from those exact results, and nobody can quietly swap them.</p>
+      <div class="wall-do"><p class="goal" data-goal="hardware"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Get your first stamp.</span></p></div>
     </div>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Pool results by context"><table><thead><tr><th>Context</th><th>Rule</th><th>Shots</th><th>Rule held</th><th>Mean signed product</th></tr></thead><tbody id="poolTable"><tr><td colspan="5" class="muted">No pool loaded yet.</td></tr></tbody></table></div>
-    <div class="card"><h3>Run it yourself</h3><pre class="mono tiny" style="margin:0;overflow-x:auto" tabindex="0" role="region" aria-label="Probe commands">pip install './python[ibm]'
-qontext-probe --noisy              # local test with noise
-qontext-probe --ibm least_busy     # IBM Quantum</pre></div>
+    <ol class="steps">
+      <li class="step">
+        <span class="step-n" aria-hidden="true">1</span>
+        <div class="step-body">
+          <h3>See it with an example</h3>
+          <p class="muted small">Practice results made on a computer that imitates a noisy quantum chip. You get a real stamp, marked as simulated.</p>
+          <div class="row"><button class="btn" type="button" id="poolExample">Try the example</button></div>
+        </div>
+      </li>
+      <li class="step">
+        <span class="step-n" aria-hidden="true">2</span>
+        <div class="step-body">
+          <h3>Run it on a real quantum computer</h3>
+          <p class="muted small">Probe, our free command line tool, runs the same color circuits on IBM Quantum and saves the results as a file. IBM's free plan is enough.</p>
+          <details class="fold"><summary>For developers: the commands</summary>
+            <pre class="mono tiny" tabindex="0" role="region" aria-label="Probe commands">pip install './python[ibm]'
+qontext-probe --noisy              # try it on your computer first
+qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
+          </details>
+        </div>
+      </li>
+      <li class="step">
+        <span class="step-n" aria-hidden="true">3</span>
+        <div class="step-body">
+          <h3>Bring your results here</h3>
+          <label class="drop" id="poolDrop" for="poolFile">
+            <span class="drop-big">Drop your results file here</span>
+            <span class="muted small">or press to choose it. The file stays on your device.</span>
+            <input type="file" id="poolFile" accept=".json,application/json" class="sr-only">
+          </label>
+          <details class="fold"><summary>Paste the file's text instead</summary>
+            <label class="field" for="poolText">Results file text<textarea id="poolText" style="min-height:110px" placeholder='{"format": "qontext-pool/1", ...}'></textarea></label>
+            <div class="row"><button class="btn sm" type="button" id="poolLoad">Use this text</button></div>
+          </details>
+        </div>
+      </li>
+    </ol>
+    <div class="results" id="poolResults" hidden>
+      <div class="spread"><h3>What the computer measured</h3><button class="btn ghost sm" type="button" id="poolClear">Put the results away</button></div>
+      <p class="muted small">Each row is one of the six rules from Janus. A perfect quantum computer keeps every rule every time; real chips are a little noisy.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Results by rule"><table><thead><tr><th>Rule</th><th>Times measured</th><th>Rule kept</th></tr></thead><tbody id="poolTable"></tbody></table></div>
+      <label class="check" for="poolUse"><input type="checkbox" id="poolUse"> Color new measurements from these results</label>
+    </div>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Measured Mermin score</span>
-      <div class="spread"><span class="big" id="hwScore">-</span><span class="pill neutral" id="hwPill">No data</span></div>
+      <span class="eyebrow">How quantum was it?</span>
+      <div class="spread"><span class="big" id="hwScore">-</span><span class="pill neutral" id="hwPill">No results yet</span></div>
       <div class="meter"><div class="fill" id="hwFill" style="width:0"></div><div class="bound" style="left:66.67%"></div></div>
-      <div class="meter-scale"><span>0</span><span>classical max 4</span><span>6</span></div>
-      <div class="stat"><span>Measured CHSH value (classical max 2)</span><span class="val" id="hwChsh">-</span></div>
+      <div class="meter-scale"><span>0</span><span>ordinary limit 4</span><span>6</span></div>
+      <p class="muted small">Nothing ordinary can score above 4. A perfect quantum computer scores 6. Real chips land in between.</p>
+      <div class="stat"><span>Linked-coins score (ordinary limit 2)</span><span class="val" id="hwChsh">-</span></div>
     </div>
     <div class="card">
-      <span class="eyebrow">Notary seal</span>
-      <div class="seal" id="seal"><span class="muted">Load a pool to issue a seal.</span></div>
-      <button class="btn ghost sm" type="button" id="sealCopy" disabled>Copy seal</button>
+      <span class="eyebrow">Your stamp</span>
+      <div class="seal" id="seal"><div class="stamp empty" aria-hidden="true"><span>Your stamp<br>appears here</span></div></div>
+      <button class="btn ghost sm" type="button" id="sealCopy" disabled>Copy the stamp</button>
     </div>
   </aside>
 </section>
@@ -382,41 +456,57 @@ qontext-probe --ibm least_busy     # IBM Quantum</pre></div>
   <div class="stage">
     <div class="head">
       <span class="eyebrow">Handoff</span>
-      <h2>Export the system</h2>
-      <p class="muted">Contextual tokens carry both readings of every tile, so your code resolves the right color by context. Bouncer blocks exports while any tile fails contrast.</p>
+      <h2>Take your colors with you</h2>
     </div>
-    <div class="seg" role="group" aria-label="Format" id="fmtSeg">
-      <button type="button" data-fmt="css" aria-pressed="true">CSS variables</button>
-      <button type="button" data-fmt="tokens" aria-pressed="false">Design tokens</button>
-      <button type="button" data-fmt="tailwind" aria-pressed="false">Tailwind</button>
-      <button type="button" data-fmt="svg" aria-pressed="false">SVG grid</button>
+    <div class="wall" data-wall="export" aria-label="In plain words" role="note">
+      <p class="wall-what">Take your colors into your own work. Choose where they're going, then copy or download. Each square comes with both of its colors, so your project can use either reading.</p>
+      <p class="wall-eg"><span class="wall-label">For example</span>Building a website? Choose A website, press Copy, paste it into your stylesheet, and your buttons and headings use these colors right away.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="export">Copy for a website</button><p class="goal" data-goal="export"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Make your first export.</span></p></div>
     </div>
-    <textarea id="exportOut" readonly aria-label="Export output"></textarea>
-    <div class="row"><button class="btn" type="button" id="copyBtn">Copy</button><span class="muted small" id="exportNote"></span></div>
+    <div class="card">
+      <h3>Your colors</h3>
+      <p class="muted small">The harmony first, then each square of the grid, split into its row color and its column color.</p>
+      <div class="swatches" id="handoffSwatches"></div>
+    </div>
+    <div class="notice" id="handoffBlock" role="status" hidden>
+      <p><strong>Exporting is paused.</strong> Text would be hard to read on some of these colors. Bouncer can nudge the lightness until it's readable everywhere.</p>
+      <button class="btn sm" type="button" id="handoffFix">Fix it for me</button>
+    </div>
+    <div class="card">
+      <h3>Where are they going?</h3>
+      <div class="choices" role="group" aria-label="Format" id="fmtSeg">
+        <button type="button" class="choice" data-fmt="css" aria-pressed="true"><b>A website</b><span>CSS variables for your stylesheet</span></button>
+        <button type="button" class="choice" data-fmt="tokens" aria-pressed="false"><b>Figma or a design tool</b><span>Design tokens (W3C format)</span></button>
+        <button type="button" class="choice" data-fmt="tailwind" aria-pressed="false"><b>A Tailwind project</b><span>A theme for tailwind.config.js</span></button>
+        <button type="button" class="choice" data-fmt="svg" aria-pressed="false"><b>An image</b><span>The grid as an SVG picture</span></button>
+      </div>
+      <div class="row"><button class="btn" type="button" id="copyBtn">Copy</button><button class="btn ghost" type="button" id="downloadBtn">Download the file</button><span class="muted small" id="exportNote"></span></div>
+      <details class="fold" id="codeFold"><summary>Show the code</summary><textarea id="exportOut" readonly aria-label="Export output"></textarea></details>
+    </div>
 
     <div class="card">
-      <h3>Walk-By print</h3>
-      <p class="muted small">Interlaces the row view and the column view for a lenticular lens sheet, so the grid changes color as you walk past it.</p>
+      <h3>Walk-By: a print that changes as you walk past</h3>
+      <p class="muted small">Made for a lenticular sheet, the ridged plastic on 3D postcards. From one side you see the row colors, from the other the column colors.</p>
       <div class="grid2">
         <label class="field" for="lpi">Lenses per inch<input type="number" id="lpi" min="10" max="150" step="1" value="40"></label>
         <label class="field" for="dpi">Print DPI<input type="number" id="dpi" min="150" max="1200" step="50" value="600"></label>
         <label class="field" for="inches">Width in inches<input type="number" id="inches" min="1" max="8" step="0.5" value="4"></label>
       </div>
-      <div class="row"><button class="btn sm" type="button" id="lentiBtn">Render print file</button><span class="muted small" id="lentiInfo"></span></div>
+      <div class="row"><button class="btn sm" type="button" id="lentiBtn">Make the print file</button><span class="muted small" id="lentiInfo"></span></div>
       <div class="lenti-out" id="lentiOut"></div>
     </div>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Wavefunction</span>
-      <label class="field" for="projName">Name<input type="text" id="projName" maxlength="80"></label>
-      <label class="field" for="projCode">Wavefunction code<textarea id="projCode" style="min-height:90px" aria-describedby="projHelp"></textarea></label>
-      <p class="muted tiny" id="projHelp">Copy it to reproduce this exact design in Superpose or anywhere else, or paste one and load it.</p>
-      <div class="row"><button class="btn sm" type="button" id="projCopy">Copy Wavefunction</button><button class="btn ghost sm" type="button" id="projLoad">Load pasted Wavefunction</button><button class="btn ghost sm" type="button" id="projReset">Reset</button></div>
-    </div>
-    <div class="card">
-      <span class="eyebrow">What is inside</span>
-      <p class="small">The harmony palette, all 9 grid tiles with their row and column colors, and the 5 pentagram colors. Every color is gamut-mapped to sRGB from OKLCH.</p>
+      <span class="eyebrow">Your design's save code</span>
+      <label class="field" for="projName">Name your design<input type="text" id="projName" maxlength="80"></label>
+      <p class="savecode mono" id="projShort" aria-hidden="true"></p>
+      <p class="muted small">One short code holds this exact design. Paste it into the Atelier, the website or the Figma plugin to bring it back.</p>
+      <div class="row"><button class="btn sm" type="button" id="projCopy">Copy the save code</button></div>
+      <details class="fold" id="openFold"><summary>Open a saved design</summary>
+        <label class="field" for="projCode">Save code<textarea id="projCode" style="min-height:90px"></textarea></label>
+        <div class="row"><button class="btn sm" type="button" id="projLoad">Open this design</button><button class="btn ghost sm" type="button" id="projReset">Start over</button></div>
+      </details>
     </div>
   </aside>
 </section>

@@ -3,6 +3,15 @@
 ## Unreleased
 
 New
+- The Atelier explains itself. Every room opens with a Wall Card in everyday words: what the room does, a real
+  example, a Try this button and a small goal. Reaching a goal (Eureka) ticks it off, counts it in the header and
+  throws a short burst of your own colors, which stays still for anyone who asks for less motion.
+- Notary is now Prove it was real: three steps (try the example, run it on IBM Quantum, drop your results in),
+  results in plain words (Row 1 multiplies to +1, rule kept 97%), and a stamp instead of a text box. The JSON box
+  and the commands wait behind folds.
+- Handoff is now Take your colors with you: your palette first, then where it's going (a website, Figma, Tailwind,
+  an image), then Copy or Download a named file. The code waits behind Show the code, the Wavefunction is your
+  design's save code, and a Fix it for me button appears when Bouncer pauses an export.
 - Pair Production, the showcase: a sneaker drop from start to finish, told as a scroll story beside a pinned
   vitrine. One shoe's nine panels are the grid's nine tiles; the left foot reads the rows and the right foot the
   columns. Roll a world, tune the harmony, let Bouncer check the print on every panel (and fix the lightness when
