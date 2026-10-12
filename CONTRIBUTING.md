@@ -4,7 +4,7 @@
 
 ```
 npm ci
-pip install -e './python[dev]' pytest playwright
+pip install -e './python[dev]' pytest playwright pillow numpy
 python -m playwright install chromium
 ```
 

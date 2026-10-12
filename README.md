@@ -109,7 +109,7 @@ npm run build       # builds dist/ and figma-plugin/dist/
 npm run watch       # rebuilds on every change
 npm test            # engine and runtime unit tests (node:test)
 npm run lint        # ESLint
-npm run test:e2e    # browser tests (pip install pytest playwright && playwright install chromium)
+npm run test:e2e    # browser tests (pip install pytest playwright pillow numpy && playwright install chromium)
 npm run film        # makes the film from the voice and the script (needs ffmpeg and `npm ci` in film/)
 npm run perf        # measures load, hero and scrolling on a phone and a desktop profile
 npm run check       # lint + test + build
