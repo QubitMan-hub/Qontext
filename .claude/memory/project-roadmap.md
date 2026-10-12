@@ -32,7 +32,7 @@ Showcase (owner's ask, 2026-10-12): Pair Production, a sneaker drop scroll story
 3D. The owner rejected the drawn shoe as unrealistic: the shoe is a studio photo (Figma AI) recolored with a
 multiply blend, and the 3D shoe is a Meshy model generated from that photo (Weave). The logo on the shoe was
 removed at the owner's request; bring branding back only if asked. Shipped to main on 2026-10-12 together with
-the paper (`paper/qontext.pdf`, pdflatex so it can go to arXiv; it reports no hardware results yet).
+the paper (`paper/qontext.pdf`, pdflatex so it can go to arXiv; hardware results added the same day).
 
 Atelier clarity (owner's ask, 2026-10-12): every room in plain words with an example, a Try this button and a
 goal (Wall Cards, Eureka); Notary and Handoff made friendly, not scary. Atelier only, never the main website.
