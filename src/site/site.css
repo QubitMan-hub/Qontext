@@ -217,11 +217,25 @@ body.locked { overflow: hidden; }
 .vitrine svg { display: block; width: 100%; height: auto; max-height: 40vh; margin-inline: auto; }
 .pair svg .caption { font-family: var(--font-display); font-weight: 560; font-size: 54px; fill: var(--band-ink-2); }
 .pair svg .shoe { isolation: isolate; }
+.pair svg.focus-stripe .pnl:not([data-panel="stripe"]) { opacity: 0.35; }
 .pair svg .pnl { mix-blend-mode: multiply; }
-.pair svg .logo text { font-family: var(--font-display); font-weight: 800; font-size: 46px; letter-spacing: 0.01em; }
-.pair svg .logo .cut { opacity: 0.45; }
+.pair svg .brand { pointer-events: none; }
+.pair svg .brand text { font-family: var(--font-display); font-weight: 800; font-size: 50px; letter-spacing: 0.02em; }
+.pair svg .brand .word.dark { mix-blend-mode: multiply; }
+.pair svg .brand .press { fill: #fff; opacity: 0.32; }
+.pair svg .stamp .sink { fill: #000; opacity: 0.16; mix-blend-mode: multiply; }
+.pair svg .stamp .sink.half { opacity: 0.07; }
+.pair svg .stamp .lift { fill: none; stroke: #fff; stroke-width: 2.5; opacity: 0.5; }
+.pair svg .stamp .shade { fill: none; stroke: #000; stroke-width: 2.5; opacity: 0.22; mix-blend-mode: multiply; }
+.pair svg .label rect { fill: #f4f4ef; stroke: rgba(0, 0, 0, 0.18); stroke-width: 1.5; }
+.pair svg .label .mk { fill: #1d1f52; }
+.pair svg .label .mk.half { opacity: 0.45; }
+.pair svg .label text { font-size: 14px; font-weight: 800; letter-spacing: 0.01em; fill: #1d1f52; }
+.pair svg .label .st { stroke: rgba(0, 0, 0, 0.3); stroke-width: 1.2; stroke-dasharray: 3 3; }
 .pair-steps { list-style: none; margin: 0; padding: 0; }
-.pair-step { min-height: 60vh; padding-block: 36px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: center; }
+.pair-step { min-height: 60vh; padding-block: 36px; padding-left: clamp(16px, 2.4vw, 30px); border-left: 2px solid color-mix(in oklab, var(--band-ink) 16%, transparent); display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: center; }
+.pair-step.on { border-left-color: var(--band-ink); }
+.pair-step.on .n { color: var(--band-ink); }
 .pair-step h3 { display: flex; align-items: baseline; gap: 16px; font-size: var(--step-2); font-weight: 650; }
 .pair-step .n { font-weight: 850; font-variation-settings: "wdth" 132; font-size: 1.5em; line-height: 1; color: var(--band-ink-2); min-width: 1.15em; }
 .pair-step p { color: var(--band-ink-2); max-width: 48ch; }
@@ -243,7 +257,7 @@ body.locked { overflow: hidden; }
 .pair svg .pnl { cursor: pointer; transform-box: fill-box; transform-origin: center; }
 .pair svg .pnl.landed { animation: landed 420ms cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes landed { from { transform: scale(0.96); opacity: 0.55; } to { transform: none; opacity: 1; } }
-.pair svg .floor, .pair svg .logo, .pair svg .caption, .pair svg image { pointer-events: none; }
+.pair svg .floor, .pair svg .caption, .pair svg image { pointer-events: none; }
 .pair-defs { position: absolute; }
 .pair-panels { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(124px, 100%), 1fr)); gap: 8px; max-width: 460px; }
 .pair-panels button { display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 10px; background: transparent; color: var(--band-ink); border: 1.5px solid color-mix(in oklab, var(--band-ink) 28%, transparent); border-radius: var(--r); font-family: var(--font-display); font-size: var(--step--1); text-align: left; cursor: pointer; }
@@ -266,6 +280,17 @@ body.locked { overflow: hidden; }
 .pair-drop button:hover svg { transform: translateY(-3px); }
 .pair-drop .w { font-size: var(--step--1); font-weight: 600; }
 .pair-drop .d { font-size: 0.8rem; color: var(--band-ink-2); }
+/* The tag: a paper hang tag on a string, the one light object on the band. */
+.pair-tag { position: relative; max-width: 430px; margin-top: 26px; padding: 36px 24px 20px; background: #fafbfd; color: #1d1f52; border-radius: 12px 12px 4px 4px; transform: rotate(-1.4deg); box-shadow: 0 22px 44px -26px #000; font-family: var(--font-display); }
+.pair-tag .hole { position: absolute; top: 13px; left: 50%; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: var(--band); box-shadow: inset 0 0 0 2px #c8ccdc; }
+.pair-tag .hole::before { content: ""; position: absolute; left: 5.5px; bottom: 7px; width: 2px; height: 46px; background: var(--band-ink-2); transform: rotate(14deg); transform-origin: bottom; }
+.tag-brand { font-weight: 800; font-size: var(--step-1); letter-spacing: -0.01em; line-height: 1.15; }
+.pair-tag dl { margin: 14px 0 0; display: grid; gap: 8px; }
+.pair-tag dl div { display: grid; grid-template-columns: 6.8em minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.pair-tag dt { color: #4b4e7c; font-size: var(--step--1); }
+.pair-tag dd { margin: 0; font-weight: 600; }
+.pair-tag code { font-size: 0.78rem; font-weight: 400; word-break: break-all; }
+.tag-note { margin-top: 14px; font-family: var(--font-body); font-size: 0.84rem; color: #4b4e7c; }
 .pair .btn { background: var(--band-ink); border-color: var(--band-ink); color: var(--band); }
 .pair .btn:hover { background: var(--band-ink-2); border-color: var(--band-ink-2); }
 .pair .btn:disabled { opacity: 0.45; cursor: default; }

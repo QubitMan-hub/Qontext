@@ -28,6 +28,7 @@ const legend = new Map();
 let built = false;
 let dropShown = false;
 let printTicket = 0;
+let step = 1;
 const GLASS_L = 0.27;
 
 /** The world's palette with the showcase's own harmony and lightness on top. */
@@ -68,17 +69,49 @@ function gradient(defs, side, id) {
   stops[side].set(id, [a, b]);
 }
 
-/** The logo on the stripe: the split tile and the word Qontext, mirrored back on the mirrored foot so it reads. */
-function logo(flip) {
-  const k = LOGO.size;
-  const turn = `rotate(${flip ? -LOGO.angle : LOGO.angle})`;
-  const mark = svg('g', { class: 'logo', transform: `translate(${LOGO.x} ${LOGO.y}) ${flip ? 'scale(-1 1) ' : ''}${turn} translate(${-(k * 2.4)} ${k / 2})` });
-  const tile = svg('path', { d: `M0 ${-k}H${k}L0 0Z` });
-  const cut = svg('path', { d: `M${k} ${-k}V0H0Z`, class: 'cut' });
-  const word = svg('text', { x: k * 1.3, y: -k * 0.12 }, 'Qontext');
-  mark.append(tile, cut, word);
-  logos.push({ tile, cut, word });
-  return mark;
+/**
+ * The branding, where a real sneaker carries it: the wordmark printed along the stripe's curve (ink multiplied
+ * into the leather, with a faint pressed edge), a stamped mark on the heel, and a woven label on the tongue. On
+ * the mirrored foot it is drawn in unmirrored coordinates, so it reads the right way round.
+ */
+function brand(side, flip) {
+  const fx = (x) => (flip ? W - x : x);
+  // The stripe's center line through its widest part, left to right on either foot.
+  const [a, c, b] = [[312, 324], [445, 297], [580, 281]].map(([x, y]) => [fx(x), y]);
+  const [p0, p2] = flip ? [b, a] : [a, b];
+  const pathId = `pairLogo-${side}`;
+  const g = svg('g', { class: 'brand', transform: flip ? `translate(${W} 0) scale(-1 1)` : '' });
+  g.append(svg('path', { id: pathId, d: `M${p0[0]} ${p0[1]} Q${c[0]} ${c[1]} ${p2[0]} ${p2[1]}`, fill: 'none' }));
+  const along = (cls, dy) =>
+    svg('text', { class: cls, dy }, svg('textPath', { href: `#${pathId}`, startOffset: '50%', 'text-anchor': 'middle' }, 'Qontext'));
+  const edge = along('press', 2.2);
+  const word = along('word', 0);
+  // The heel: the split-tile mark pressed into the leather.
+  const k = 58;
+  const [hx, hy] = [fx(125), 382];
+  const heel = svg(
+    'g',
+    { class: 'stamp', transform: `translate(${hx - k / 2} ${hy - k / 2}) rotate(${flip ? 6 : -6} ${k / 2} ${k / 2})` },
+    svg('path', { class: 'sink', d: `M0 0H${k}L0 ${k}Z` }),
+    svg('path', { class: 'sink half', d: `M${k} 0V${k}H0Z` }),
+    // Pressed in: light from above catches the lower and right inner edges.
+    svg('path', { class: 'lift', d: `M${k - 1} 2V${k - 1}H2` }),
+    svg('path', { class: 'shade', d: `M1 ${k - 2}V1H${k - 2}` }),
+  );
+  // The tongue: a woven label across it.
+  const [tx, ty] = [fx(551), 84];
+  const label = svg(
+    'g',
+    { class: 'label', transform: `translate(${tx} ${ty}) rotate(${flip ? -17 : 17})` },
+    svg('rect', { x: -54, y: -21, width: 108, height: 42, rx: 5 }),
+    svg('path', { class: 'mk', d: 'M-44 -8H-28L-44 8Z' }),
+    svg('path', { class: 'mk half', d: 'M-28 -8V8H-44Z' }),
+    svg('text', { x: -22, y: 5.5 }, 'Qontext'),
+    svg('path', { class: 'st', d: 'M-49 -17V17M49 -17V17' }),
+  );
+  g.append(edge, word, heel, label);
+  logos.push({ word, edge });
+  return g;
 }
 
 function build() {
@@ -90,7 +123,7 @@ function build() {
     for (const p of PANELS) gradient(defs, side, p.id);
     root.append(svg('text', { class: 'caption', x: 28, y: s.y - 26 }, s.caption));
     const g = foot(`translate(${s.flip ? W : 0} ${s.y})${s.flip ? ' scale(-1 1)' : ''}`, (id) => `url(#pg-${side}-${id})`, side);
-    g.append(logo(s.flip));
+    g.append(brand(side, s.flip));
     root.append(g);
   }
   built = true;
@@ -346,23 +379,50 @@ export function render() {
   renderControls(pal, logo);
   renderPaint(p, site.result.outcomes);
   if (!built) return;
-  for (const l of logos) for (const el of [l.tile, l.cut, l.word]) el.setAttribute('fill', logo.ink);
+  for (const l of logos) {
+    l.word.setAttribute('fill', logo.ink);
+    l.word.classList.toggle('dark', logo.ink === INKS.dark);
+  }
   for (const side of ['L', 'R']) {
     const foot = side === 'L' || pair.match ? p.left : p.right;
     for (const panel of PANELS) {
       const [a, b] = stops[side].get(panel.id);
       const [plus, minus] = p.both.get(panel.id);
-      a.setAttribute('stop-color', washed(plus));
-      b.setAttribute('stop-color', washed(minus));
+      // In step 3 the stripe shows both of its outcomes at full strength: they are what the logo must read on.
+      const full = step === 3 && panel.id === 'stripe';
+      a.setAttribute('stop-color', full ? plus : washed(plus));
+      b.setAttribute('stop-color', full ? minus : washed(minus));
       paths[side].get(panel.id).setAttribute('fill', pair.painted.has(panel.id) ? foot.get(panel.id) : `url(#pg-${side}-${panel.id})`);
     }
   }
+}
+
+/** The step in the middle of the screen is the one the pair answers to. */
+function setStep(n, steps) {
+  if (n === step) return;
+  step = n;
+  for (const li of steps) li.classList.toggle('on', Number(li.dataset.step) === n);
+  $('pairStage').dataset.step = String(n);
+  $('pairSvg').classList.toggle('focus-stripe', n === 3);
+  render();
+}
+
+function followSteps() {
+  const steps = [...$('pairSteps').children];
+  steps[0].classList.add('on');
+  if (typeof IntersectionObserver !== 'function') return;
+  // A thin band just under the middle of the screen; on a phone that is just below the pinned vitrine.
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) setStep(Number(e.target.dataset.step), steps);
+  }, { rootMargin: '-52% 0px -40% 0px' });
+  for (const li of steps) io.observe(li);
 }
 
 export function initPair() {
   const sec = $('pair');
   if (!sec) return;
   defineShared(sec);
+  followSteps();
   $('pairPanels').replaceChildren(
     ...PANELS.map((panel) => {
       const b = h('button', { type: 'button', 'data-panel': panel.id, 'aria-pressed': 'false' }, h('i', { 'aria-hidden': 'true' }), panel.name);
