@@ -34,6 +34,12 @@ multiply blend, and the 3D shoe is a Meshy model generated from that photo (Weav
 removed at the owner's request; bring branding back only if asked. Shipped to main on 2026-10-12 together with
 the paper (`paper/qontext.pdf`, pdflatex so it can go to arXiv; it reports no hardware results yet).
 
+Atelier clarity (owner's ask, 2026-10-12): every room in plain words with an example, a Try this button and a
+goal (Wall Cards, Eureka); Notary and Handoff made friendly, not scary. Atelier only, never the main website.
+The owner then said the Atelier looked like AI slop next to the site, so it was hung like the site after an
+Impeccable critique (28/40): no card kit, vinyl room names, Literata, plain rail labels, keys 1 to 9 and T.
+Shipped to main on 2026-10-12.
+
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
 Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the
 Impeccable pass.
