@@ -115,7 +115,7 @@ def test_edit_this_world_opens_the_same_world_in_the_atelier(site):
 
 
 def test_film_section(site):
-    assert site.locator("#chapters button").count() == 8
+    assert site.locator("#chapters button").count() == 10
     assert site.get_attribute("#video source", "src") == "media/qontext-film.mp4"
     # Nothing of the film is fetched until the visitor gets near it.
     assert site.evaluate("document.getElementById('video').getAttribute('poster')") is None

@@ -1,34 +1,42 @@
 [
   [
     0,
-    "Arrival: the page collapses"
+    "One square, two colors"
   ],
   [
-    9,
-    "Floor plan"
+    11,
+    "The big idea"
   ],
   [
-    16,
-    "Janus flips its reading"
-  ],
-  [
-    24,
+    35,
     "Mermin's Dare"
   ],
   [
-    29,
-    "Unity Wheel and Fringe"
+    53,
+    "Your own world"
   ],
   [
-    40,
-    "Spooky Pair and Unpaintables"
+    66,
+    "The rooms"
   ],
   [
-    49,
-    "Many Worlds"
+    86,
+    "Phase Dial"
   ],
   [
-    56,
-    "Inside the Atelier"
+    97,
+    "The Atelier"
+  ],
+  [
+    117,
+    "Observer and Superpose"
+  ],
+  [
+    131,
+    "Probe and Notary"
+  ],
+  [
+    142,
+    "Make your own world"
   ]
 ]

@@ -46,6 +46,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -e './python[dev]'
-      - run: ruff check python scripts tests
-      - run: ruff format --check python scripts tests
+      - run: ruff check python scripts tests film/scripts
+      - run: ruff format --check python scripts tests film/scripts
       - run: pytest python -q

@@ -2,7 +2,7 @@
 
 import { $, $$ } from '../../app/dom.js';
 import { h, whenNear } from '../lib.js';
-// Written by scripts/record-film.py from the real recording, so the times always match the film.
+// Written by scripts/film.py from the voice's own timing, so the chapters always match the film.
 import chapters from '../film-chapters.json';
 
 const stamp = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;

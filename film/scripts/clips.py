@@ -38,7 +38,8 @@ CURSOR = """
   if (document.getElementById('film-cursor')) return;
   const c = document.createElement('div');
   c.id = 'film-cursor';
-  c.style.cssText = 'position:fixed;left:-40px;top:-40px;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;' +
+  c.style.cssText = 'position:fixed;left:-40px;top:-40px;width:28px;height:28px;margin:-14px 0 0 -14px;' +
+    'border-radius:50%;' +
     'border:3px solid #1d1f52;background:rgba(255,255,255,.55);box-shadow:0 0 0 2px rgba(255,255,255,.9);' +
     'z-index:2147483647;pointer-events:none;transition:transform .12s ease;';
   document.documentElement.appendChild(c);
@@ -203,9 +204,31 @@ def encode(clip, length_ms, out):
     (tmp / "list.txt").write_text("\n".join(lines))
     out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(tmp / "list.txt"),
-         "-vf", f"fps=30,scale={W}:{H}:flags=lanczos,format=yuv420p", "-t", f"{length_ms / 1000:.3f}",
-         "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-movflags", "+faststart", str(out)],
+        [
+            "ffmpeg",
+            "-y",
+            "-loglevel",
+            "error",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(tmp / "list.txt"),
+            "-vf",
+            f"fps=30,scale={W}:{H}:flags=lanczos,format=yuv420p",
+            "-t",
+            f"{length_ms / 1000:.3f}",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "slow",
+            "-crf",
+            "18",
+            "-movflags",
+            "+faststart",
+            str(out),
+        ],
         check=True,
     )
     shutil.rmtree(tmp)
