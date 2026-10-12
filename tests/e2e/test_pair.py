@@ -215,3 +215,62 @@ def test_jumping_straight_to_the_drop_paints_the_pair(site):
     site.wait_for_function(
         "() => [...document.querySelectorAll('#pairSvg path[data-panel]')].every((p) => !p.getAttribute('fill').startsWith('url('))"
     )
+
+
+def decode_wavefunction(code):
+    import base64
+    import json
+
+    body = code.split("QX1.", 1)[1]
+    return json.loads(base64.urlsafe_b64decode(body + "=" * (-len(body) % 4)))
+
+
+def test_the_tag_carries_a_fingerprint(site):
+    enter_pair(site, 6)
+    site.wait_for_function("() => /^[0-9a-f]{64}$/.test(document.getElementById('pairPrint').textContent)")
+    assert site.inner_text("#pairTagWorld") == site.inner_text("#worldNum")
+    assert site.inner_text("#pairTagRules").startswith("6 of 6")
+
+
+def test_the_tag_survives_without_subtlecrypto(browser):
+    from conftest import SITE, _new_page
+
+    errors = []
+    ctx, page = _new_page(browser, {"width": 1440, "height": 900}, errors)
+    page.add_init_script("Object.defineProperty(Crypto.prototype, 'subtle', { get: () => undefined })")
+    page.goto(SITE)
+    page.wait_for_selector("#plan .cellwrap")
+    enter_pair(page, 6)
+    page.wait_for_function("() => document.getElementById('pairPrint').textContent === 'unavailable in this browser'")
+    assert page.inner_text("#pairTagWorld") == page.inner_text("#worldNum")
+    ctx.close()
+    assert errors == []
+
+
+def test_open_in_the_atelier_is_the_same_design(site):
+    enter_pair(site, 2)
+    plain = decode_wavefunction(site.get_attribute("#pairAtelier", "href"))
+    turn(site, 90)
+    href = site.get_attribute("#pairAtelier", "href")
+    tuned = decode_wavefunction(href)
+    assert round((tuned["base"] - plain["base"]) % 360) == 90
+    site.goto(site.url.rsplit("/", 1)[0] + "/" + href)
+    site.wait_for_selector("#cell00")
+    site.click("#tabbtn-export")  # the Wavefunction field lives in Handoff
+    site.wait_for_function("() => document.getElementById('projCode').value.startsWith('QX1.')")
+    opened = decode_wavefunction(site.input_value("#projCode"))
+    assert (opened["base"], opened["d"], opened["L"]) == (tuned["base"], tuned["d"], tuned["L"])
+
+
+def test_the_paint_sheet_is_an_svg_with_both_feet(site):
+    enter_pair(site, 6)
+    with site.expect_download() as dl:
+        site.click("#pairSheet")
+    download = dl.value
+    assert download.suggested_filename.startswith("qontext-pair-world-") and download.suggested_filename.endswith(".svg")
+    text = open(download.path(), encoding="utf-8").read()
+    assert text.startswith("<svg")
+    assert len(re.findall(r"#[0-9a-f]{6}", text)) >= 18
+    assert text.count("oklch(") == 18
+    for name in ["Laces", "Tongue", "Collar", "Toe box", "Stripe", "Heel counter", "Toe bumper", "Midsole", "Heel sole"]:
+        assert name in text

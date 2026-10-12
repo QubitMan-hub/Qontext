@@ -4,7 +4,7 @@
 // The section sleeps until a visitor is near. The SVG is built once from text nodes; after that only fill and
 // stop-color attributes change. Every color comes from the engine through pair-shape.js.
 
-import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA } from '../../engine/index.js';
+import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA, encodeProject, xmlEscape } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
 import { h, svg, whenNear, onVisible, reduced } from '../lib.js';
 import { collapse } from '../../runtime/qontext-runtime.js';
@@ -22,6 +22,7 @@ const logos = [];
 const legend = new Map();
 let built = false;
 let dropShown = false;
+let printTicket = 0;
 
 /** The world's palette with the showcase's own harmony and lightness on top. */
 export function palette() {
@@ -181,6 +182,7 @@ function renderPaint(p, outcomes) {
   $('pairVerdict').textContent = pair.match
     ? `Matched, ${held} of 6 rules hold. No matching pair can do better than 5, so the pair has to differ.`
     : `${held} of 6 rules hold. ${p.differ.length} of 9 panels differ between the feet.`;
+  renderTag(p, held);
 }
 
 /** One pair from another world, painted, toes out, for the drop's shelves. */
@@ -209,6 +211,77 @@ function renderDrop() {
       return h('li', {}, h('button', { type: 'button', 'data-seed': seed, 'aria-label': `Make it yours: ${label}` }, root, h('span', { class: 'w' }, `World ${worldNumber(seed)}`), h('span', { class: 'd' }, `${differ} of 9 differ`)));
     }),
   );
+}
+
+/** This exact design as a Wavefunction: the world's measurement with the showcase's harmony and lightness. */
+function designCode() {
+  return encodeProject({ name: `Pair, world ${worldNumber()}`, ...palette(), state: 'random', stateSeed: 7, measureSeed: site.seed });
+}
+
+const listOf = (names) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
+
+/** Step 6: the hang tag, its fingerprint (SHA-256 of the Wavefunction) and the link into the Atelier. */
+function renderTag(p, held) {
+  const code = designCode();
+  $('pairTagWorld').textContent = worldNumber();
+  $('pairTagRules').textContent = pair.match ? `${held} of 6, matched` : `${held} of 6`;
+  const names = PANELS.filter((x) => p.differ.includes(x.id)).map((x) => x.name);
+  $('pairTagDiffer').textContent = pair.match ? 'none, the feet were forced to match' : names.length ? listOf(names) : 'none in this world';
+  $('pairAtelier').href = `studio.html#${code}`;
+  const ticket = ++printTicket;
+  const show = (text) => ticket === printTicket && ($('pairPrint').textContent = text);
+  try {
+    crypto.subtle
+      .digest('SHA-256', new TextEncoder().encode(code))
+      .then((buf) => show(Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('')))
+      .catch(() => show('unavailable in this browser'));
+  } catch {
+    show('unavailable in this browser'); // SubtleCrypto needs a secure context
+  }
+}
+
+const lch = (hex) => {
+  const c = hexToOklch(hex);
+  return `oklch(${c.L.toFixed(3)} ${c.C.toFixed(3)} ${c.h.toFixed(1)})`;
+};
+
+/** The paint sheet: both feet and every panel's color for each, so an artist can mix paint from it. */
+function paintSheet() {
+  const pal = palette();
+  const p = pairOf(pal, site.result.outcomes);
+  const font = 'font-family="Anybody, Arial Narrow, Arial, sans-serif"';
+  const mono = 'font-family="IBM Plex Mono, Menlo, monospace"';
+  const foot = (colors, transform) =>
+    `<g transform="${transform}">` +
+    PANELS.map((x) => `<path d="${x.d}" fill="${colors.get(x.id)}" stroke="#eef0f4" stroke-width="3" stroke-linejoin="round"/>`).join('') +
+    `</g>`;
+  const rows = PANELS.map((x, i) => {
+    const y = 420 + i * 50;
+    const [l, r] = [p.left.get(x.id), p.right.get(x.id)];
+    const differs = l !== r ? ' (differs)' : '';
+    return (
+      `<text x="60" y="${y + 24}" ${font} font-size="20" fill="#1d1f52">${xmlEscape(x.name + differs)}</text>` +
+      `<rect x="380" y="${y}" width="34" height="34" rx="4" fill="${l}"/><text x="426" y="${y + 23}" ${mono} font-size="15" fill="#1d1f52">${l} ${lch(l)}</text>` +
+      `<rect x="780" y="${y}" width="34" height="34" rx="4" fill="${r}"/><text x="826" y="${y + 23}" ${mono} font-size="15" fill="#1d1f52">${r} ${lch(r)}</text>`
+    );
+  }).join('');
+  const title = xmlEscape(`Qontext Pair Production, world ${worldNumber()}`);
+  const text =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">` +
+    `<rect width="1200" height="900" fill="#eef0f4"/>` +
+    `<text x="60" y="64" ${font} font-size="34" font-weight="800" fill="#1d1f52">${title}</text>` +
+    `<text x="60" y="98" ${font} font-size="18" fill="#4b4e7c">Paint sheet. The left foot reads the rows, the right foot the columns. ${p.differ.length} of 9 panels differ.</text>` +
+    foot(p.left, 'translate(570 110) scale(-0.9 0.9)') +
+    foot(p.right, 'translate(630 110) scale(0.9)') +
+    `<text x="380" y="404" ${font} font-size="17" fill="#4b4e7c">Left foot</text><text x="780" y="404" ${font} font-size="17" fill="#4b4e7c">Right foot</text>` +
+    rows +
+    `</svg>\n`;
+  const url = URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }));
+  const a = h('a', { href: url, download: `qontext-pair-world-${site.seed}.svg` });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
 /** Paints the pair from the current world and the showcase's state. */
@@ -255,6 +328,7 @@ export function initPair() {
     if (el) paint(el.dataset.panel);
   });
   $('pairPaintAll').addEventListener('click', paintRest);
+  $('pairSheet').addEventListener('click', paintSheet);
   $('pairDrop').addEventListener('click', (e) => {
     const b = e.target.closest('[data-seed]');
     if (b) goToWorld(Number(b.dataset.seed));
