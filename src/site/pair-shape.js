@@ -5,38 +5,31 @@
 // one foot and another on the other. No DOM here: the section module draws it, and node:test checks it.
 
 import { tileColor, rowValue, colValue, CONTEXTS, hashSeed } from '../engine/index.js';
+import { PHOTO } from './pair-photo.js';
 
 export const BANDS = ['Top band', 'Body band', 'Sole band'];
 export const ZONES = ['Toe zone', 'Mid zone', 'Heel zone'];
 
-/** One shoe, toe to the right, in a 600 by 300 box. Panels share their edges, so seams are drawn as strokes. */
-export const SHOE_VIEWBOX = '0 0 600 300';
+/**
+ * One shoe: a studio photo of a plain white sneaker, toe to the right (PHOTO, made by scripts/pair_photo.py), and
+ * its nine panels traced from the photo's own seams. The site lays each panel's color over the photo with a
+ * multiply blend, so the leather's shading, stitching and laces show through. Everything else stays white.
+ */
+export { PHOTO };
+export const SHOE_VIEWBOX = `0 0 ${PHOTO.width} ${PHOTO.height}`;
 
-export const PANELS = [
-  // Top band
-  { id: 'laces', name: 'Laces', r: 0, c: 0, d: 'M232 104 C280 116 330 132 372 150 C368 160 364 170 358 178 L282 153 L224 134 Z' },
-  { id: 'tongue', name: 'Tongue', r: 0, c: 1, d: 'M166 108 C168 92 174 78 190 74 L212 72 C224 72 230 86 232 104 L224 134 L166 140 Z' },
-  { id: 'collar', name: 'Collar', r: 0, c: 2, d: 'M48 104 C80 108 104 124 124 123 C144 122 158 112 166 108 L166 140 L140 146 C110 152 70 148 42 140 C44 128 46 116 48 104 Z' },
-  // Body band
-  { id: 'toebox', name: 'Toe box', r: 1, c: 0, d: 'M372 150 C440 158 520 166 556 182 C578 192 586 210 582 226 L440 220 L424 219 C370 198 320 168 282 153 L358 178 C364 170 368 160 372 150 Z' },
-  { id: 'stripe', name: 'Stripe', r: 1, c: 1, d: 'M140 146 L166 140 L224 134 L282 153 C320 168 370 198 424 219 L300 214 C250 196 190 162 140 146 Z' },
-  { id: 'heel', name: 'Heel counter', r: 1, c: 2, d: 'M42 140 C70 148 110 152 140 146 C190 162 250 196 300 214 L196 213 L34 212 C30 190 34 160 42 140 Z' },
-  // Sole band
-  { id: 'bumper', name: 'Toe bumper', r: 2, c: 0, d: 'M440 220 L582 226 C590 234 588 248 576 253 C560 259 520 260 452 261 Z' },
-  { id: 'midsole', name: 'Midsole', r: 2, c: 1, d: 'M196 213 L300 214 L424 219 L440 220 L452 261 L180 262 Z' },
-  { id: 'heelsole', name: 'Heel sole', r: 2, c: 2, d: 'M34 212 L196 213 L180 262 L60 262 C44 262 32 254 30 240 C29 228 31 218 34 212 Z' },
+const NAMES = [
+  ['laces', 'Laces'], ['tongue', 'Tongue'], ['collar', 'Collar'],
+  ['toebox', 'Toe box'], ['stripe', 'Stripe'], ['heel', 'Heel counter'],
+  ['bumper', 'Toe bumper'], ['midsole', 'Midsole'], ['heelsole', 'Heel sole'],
 ];
+export const PANELS = NAMES.map(([id, name], k) => ({ id, name, r: Math.floor(k / 3), c: k % 3, d: PHOTO.panels[id] }));
 
-/** Where the logo sits on the stripe: a split tile and the word Qontext. */
-export const LOGO = { x: 240, y: 173, size: 14 };
-
-/** Laces across the lace panel, eyelets, a toe-cap seam and the tread under the sole. Decoration only. */
-export const LACES = [0.14, 0.31, 0.48, 0.65, 0.82].map((t) => {
-  const [x, y] = [228 + t * 137, 119 + t * 45];
-  return `M${(x - 5).toFixed(1)} ${(y - 11).toFixed(1)} L${(x + 5).toFixed(1)} ${(y + 11).toFixed(1)}`;
-});
-export const SEAMS = ['M470 222 C484 200 508 190 540 194', 'M38 236 L578 240'];
-export const TREAD = Array.from({ length: 36 }, (_, k) => `M${70 + k * 14} 254 L${66 + k * 14} 262`);
+/**
+ * Where the logo sits on the stripe (photo pixels), and how bright the white leather is there (0 to 1). Colors
+ * are multiplied by the leather, so Bouncer checks the logo against the stripe as it really shows.
+ */
+export const LOGO = { x: 446, y: 304, angle: -9, size: 46, shade: 0.87 };
 
 /** Every grid value a world measured, as the two feet read them: rows on the left, columns on the right. */
 export function footValues(outcomes) {

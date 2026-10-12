@@ -1,21 +1,26 @@
 // Pair Production: a sneaker drop, start to finish. The pair stands in a vitrine that stays pinned while six
 // steps scroll past. The left foot reads the visitor's grid by its rows, the right foot by its columns.
 //
-// The section sleeps until a visitor is near. The SVG is built once from text nodes; after that only fill and
-// stop-color attributes change. Every color comes from the engine through pair-shape.js.
+// Each foot is a studio photo of a plain white sneaker with its nine panels traced from the photo's seams. A
+// panel's color is laid over the photo with a multiply blend, so the leather's own shading, stitching and laces
+// show through, all on the visitor's device. The section sleeps until a visitor is near; the SVG is built once
+// from text nodes, and after that only fill and stop-color attributes change.
 
-import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA, encodeProject, xmlEscape } from '../../engine/index.js';
+import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, INKS, WCAG_AA, encodeProject, xmlEscape } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
 import { h, svg, whenNear, onVisible, reduced } from '../lib.js';
 import { collapse } from '../../runtime/qontext-runtime.js';
 import { goToWorld } from './worlds.js';
 import { site, onWorld, worldNumber, paletteFor } from '../world.js';
-import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf, footValues, pairChecks, dropSeeds } from '../pair-shape.js';
+import { PANELS, PHOTO, LOGO, pairOf, footValues, pairChecks, dropSeeds } from '../pair-shape.js';
 
 /** What the visitor has done to the pair in this world. A new world starts it over. */
 export const pair = { nudge: 0, d: 3, L: null, painted: new Set(), match: false };
 
-const SIDES = { L: { x: 610, y: 18, flip: true, caption: 'Left foot reads the rows' }, R: { x: 10, y: 330, flip: false, caption: 'Right foot reads the columns' } };
+const W = PHOTO.width;
+const H = PHOTO.height;
+// The two feet stacked in the vitrine, the left one mirrored so the pair stands toes out.
+const SIDES = { L: { y: 80, flip: true, caption: 'Left foot reads the rows' }, R: { y: 800, flip: false, caption: 'Right foot reads the columns' } };
 const paths = { L: new Map(), R: new Map() };
 const stops = { L: new Map(), R: new Map() };
 const logos = [];
@@ -23,11 +28,37 @@ const legend = new Map();
 let built = false;
 let dropShown = false;
 let printTicket = 0;
+const GLASS_L = 0.27;
 
 /** The world's palette with the showcase's own harmony and lightness on top. */
 export function palette() {
   const p = site.palette;
   return { base: p.base + pair.nudge, d: pair.d, L: pair.L ?? p.L, C: p.C };
+}
+
+/** Shared by the vitrine and the drop: the shoe's outline as a clip, and the soft shadow it stands on. */
+function defineShared(root) {
+  const defs = svg(
+    'defs',
+    {},
+    svg('clipPath', { id: 'pairSil', clipPathUnits: 'userSpaceOnUse' }, svg('path', { d: PHOTO.silhouette })),
+    svg('radialGradient', { id: 'pairFloor' }, svg('stop', { offset: '0', 'stop-color': '#000', 'stop-opacity': '0.6' }), svg('stop', { offset: '1', 'stop-color': '#000', 'stop-opacity': '0' })),
+  );
+  root.append(svg('svg', { width: 0, height: 0, 'aria-hidden': 'true', focusable: 'false', class: 'pair-defs' }, defs));
+}
+
+/** One foot: shadow, photo clipped to the shoe, and the nine panels multiplied over it. */
+function foot(transform, fillFor, side = null) {
+  const g = svg('g', { transform, ...(side ? { 'data-side': side } : {}) });
+  g.append(svg('ellipse', { class: 'floor', cx: W / 2, cy: H - 26, rx: W * 0.5, ry: 34, fill: 'url(#pairFloor)' }));
+  const body = svg('g', { class: 'shoe', 'clip-path': 'url(#pairSil)' }, svg('image', { href: PHOTO.src, width: W, height: H, preserveAspectRatio: 'none' }));
+  for (const p of PANELS) {
+    const el = svg('path', { class: 'pnl', d: p.d, 'data-panel': p.id, fill: fillFor(p.id) });
+    if (side) paths[side].set(p.id, el);
+    body.append(el);
+  }
+  g.append(body);
+  return g;
 }
 
 function gradient(defs, side, id) {
@@ -37,29 +68,17 @@ function gradient(defs, side, id) {
   stops[side].set(id, [a, b]);
 }
 
-function shoe(defs, side) {
-  const s = SIDES[side];
-  const g = svg('g', { 'data-side': side, transform: `translate(${s.x} ${s.y})${s.flip ? ' scale(-1 1)' : ''}` });
-  g.append(svg('ellipse', { class: 'floor', cx: 305, cy: 266, rx: 262, ry: 10 }));
-  for (const p of PANELS) {
-    gradient(defs, side, p.id);
-    const el = svg('path', { class: 'pnl', d: p.d, 'data-panel': p.id });
-    paths[side].set(p.id, el);
-    g.append(el);
-  }
-  for (const d of SEAMS) g.append(svg('path', { class: 'seam', d }));
-  for (const d of TREAD) g.append(svg('path', { class: 'tread', d }));
-  for (const d of LACES) g.append(svg('path', { class: 'lace', d }));
-  // The logo reads the right way round on both feet, so the mirrored foot mirrors it back.
+/** The logo on the stripe: the split tile and the word Qontext, mirrored back on the mirrored foot so it reads. */
+function logo(flip) {
   const k = LOGO.size;
-  const mark = svg('g', { class: 'logo', transform: `translate(${LOGO.x} ${LOGO.y})${s.flip ? ` translate(${k + 70} 0) scale(-1 1)` : ''}` });
-  const tile = svg('path', { d: `M0 0H${k}L0 ${k}Z` });
-  const cut = svg('path', { d: `M${k} 0V${k}H0Z`, class: 'cut' });
-  const word = svg('text', { x: k + 6, y: k - 1 }, 'Qontext');
+  const turn = `rotate(${flip ? -LOGO.angle : LOGO.angle})`;
+  const mark = svg('g', { class: 'logo', transform: `translate(${LOGO.x} ${LOGO.y}) ${flip ? 'scale(-1 1) ' : ''}${turn} translate(${-(k * 2.4)} ${k / 2})` });
+  const tile = svg('path', { d: `M0 ${-k}H${k}L0 0Z` });
+  const cut = svg('path', { d: `M${k} ${-k}V0H0Z`, class: 'cut' });
+  const word = svg('text', { x: k * 1.3, y: -k * 0.12 }, 'Qontext');
   mark.append(tile, cut, word);
   logos.push({ tile, cut, word });
-  g.append(mark);
-  return g;
+  return mark;
 }
 
 function build() {
@@ -67,28 +86,38 @@ function build() {
   const defs = svg('defs');
   root.append(defs);
   for (const side of ['L', 'R']) {
-    root.append(svg('text', { class: 'caption', x: 18, y: SIDES[side].y + 22 }, SIDES[side].caption));
-    root.append(shoe(defs, side));
+    const s = SIDES[side];
+    for (const p of PANELS) gradient(defs, side, p.id);
+    root.append(svg('text', { class: 'caption', x: 28, y: s.y - 26 }, s.caption));
+    const g = foot(`translate(${s.flip ? W : 0} ${s.y})${s.flip ? ' scale(-1 1)' : ''}`, (id) => `url(#pg-${side}-${id})`, side);
+    g.append(logo(s.flip));
+    root.append(g);
   }
   built = true;
 }
 
-const GLASS_L = 0.27;
-
-/** An unmeasured outcome, washed toward the glass (as the site washes swatches toward the paper), so a panel
- * reads as undecided until it is painted, and painting is the moment it comes to full color. */
+/** An unmeasured outcome: a pale tint of it, so an unpainted shoe looks white with a hint of both colors, and
+ * painting is the moment it comes to full color. */
 function washed(hex) {
   const c = hexToOklch(hex);
-  return oklch(c.L + (GLASS_L - c.L) * 0.42, c.C * 0.55, c.h).hex;
+  return oklch(c.L + (0.97 - c.L) * 0.62, c.C * 0.42, c.h).hex;
+}
+
+/** A color as it shows on the white leather under the logo: multiplied by the leather's brightness. */
+function onLeather(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * LOGO.shade));
+  return `#${ch.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
 const ratio = (ink, fill) => wcagContrast(hexToLin(ink), hexToLin(fill));
 
 /**
- * Bouncer on the logo: the stripe can come out in either of its two colors, so the logo takes whichever of the
- * two inks reads better on the weaker of them. Returns { ink, ratio, stripe }.
+ * Bouncer on the logo: the stripe can come out in either of its two colors (as they show on the leather), so the
+ * logo takes whichever of the two inks reads better on the weaker of them. Returns { ink, ratio, stripe }.
  */
-function logoInk(stripe) {
+function logoInk(stripeColors) {
+  const stripe = stripeColors.map(onLeather);
   const rate = (ink) => Math.min(...stripe.map((c) => ratio(ink, c)));
   const dark = rate(INKS.dark);
   const light = rate(INKS.light);
@@ -116,14 +145,20 @@ function renderControls(pal, logo) {
   stage.dataset.ink = logo.ink;
 }
 
-/** Fix: the lightness closest to today's at which the logo's ink reads on every color the pair can take. */
+/** Fix: the lightness closest to today's at which the logo reads on both stripe colors, in 0.01 steps. */
 function fix() {
   const pal = palette();
-  const { ink } = logoInk(pairOf(pal, site.result.outcomes).both.get('stripe'));
-  const other = ink === INKS.dark ? INKS.light : INKS.dark;
-  const L = fixLightness(pal, ink) ?? fixLightness(pal, other);
-  if (L !== null) pair.L = L;
-  render();
+  const reads = (L) => logoInk(pairOf({ ...pal, L }, site.result.outcomes).both.get('stripe')).ratio >= WCAG_AA;
+  for (let step = 0; step <= 60; step++) {
+    for (const dir of [1, -1]) {
+      const L = Math.round((pal.L + dir * step * 0.01) * 100) / 100;
+      if (L >= 0.35 && L <= 0.92 && reads(L)) {
+        pair.L = L;
+        render();
+        return;
+      }
+    }
+  }
 }
 
 /** A panel is measured: it lands on its row color on the left foot and its column color on the right. */
@@ -189,15 +224,8 @@ function renderPaint(p, outcomes) {
 function miniPair(seed) {
   const pal = paletteFor(seed);
   const p = pairOf(pal, collapse({ ...pal, state: 'random', stateSeed: 7, seed }).outcomes);
-  const root = svg('svg', { viewBox: '0 0 1220 290', 'aria-hidden': 'true', focusable: 'false' });
-  for (const [side, flip] of [['L', true], ['R', false]]) {
-    const foot = side === 'L' ? p.left : p.right;
-    const g = svg('g', { transform: `translate(610 0)${flip ? ' scale(-1 1)' : ''}` });
-    g.append(svg('ellipse', { class: 'floor', cx: 305, cy: 266, rx: 262, ry: 10 }));
-    for (const panel of PANELS) g.append(svg('path', { class: 'pnl', d: panel.d, fill: foot.get(panel.id) }));
-    for (const d of LACES) g.append(svg('path', { class: 'lace', d }));
-    root.append(g);
-  }
+  const root = svg('svg', { viewBox: `0 0 ${W * 2 + 60} ${H}`, 'aria-hidden': 'true', focusable: 'false' });
+  root.append(foot(`translate(${W} 0) scale(-1 1)`, (id) => p.left.get(id)), foot(`translate(${W + 60} 0)`, (id) => p.right.get(id)));
   return { root, differ: p.differ.length };
 }
 
@@ -245,16 +273,38 @@ const lch = (hex) => {
   return `oklch(${c.L.toFixed(3)} ${c.C.toFixed(3)} ${c.h.toFixed(1)})`;
 };
 
-/** The paint sheet: both feet and every panel's color for each, so an artist can mix paint from it. */
-function paintSheet() {
+/** The photo as a data URL, drawn through a canvas (the page's policy allows images from the site, not fetches). */
+async function photoData() {
+  const img = new Image();
+  img.src = PHOTO.src;
+  await img.decode();
+  const cv = document.createElement('canvas');
+  cv.width = W;
+  cv.height = H;
+  cv.getContext('2d').drawImage(img, 0, 0);
+  return cv.toDataURL('image/jpeg', 0.9);
+}
+
+/** The paint sheet: both feet, painted, and every panel's color for each, so an artist can mix paint from it. */
+async function paintSheet() {
   const pal = palette();
   const p = pairOf(pal, site.result.outcomes);
+  let photo = '';
+  try {
+    photo = await photoData();
+  } catch {
+    /* no photo: the sheet still has every color */
+  }
   const font = 'font-family="Anybody, Arial Narrow, Arial, sans-serif"';
   const mono = 'font-family="IBM Plex Mono, Menlo, monospace"';
-  const foot = (colors, transform) =>
-    `<g transform="${transform}">` +
-    PANELS.map((x) => `<path d="${x.d}" fill="${colors.get(x.id)}" stroke="#eef0f4" stroke-width="3" stroke-linejoin="round"/>`).join('') +
-    `</g>`;
+  const scale = 540 / W;
+  const sheetFoot = (colors, x, flip) =>
+    `<g transform="translate(${x} 120) scale(${flip ? -scale : scale} ${scale})">` +
+    `<clipPath id="sil${flip ? 'L' : 'R'}"><path d="${PHOTO.silhouette}"/></clipPath>` +
+    `<g clip-path="url(#sil${flip ? 'L' : 'R'})">` +
+    (photo ? `<image href="${photo}" width="${W}" height="${H}"/>` : `<path d="${PHOTO.silhouette}" fill="#ffffff"/>`) +
+    PANELS.map((x) => `<path d="${x.d}" fill="${colors.get(x.id)}" style="mix-blend-mode:multiply"/>`).join('') +
+    `</g></g>`;
   const rows = PANELS.map((x, i) => {
     const y = 420 + i * 50;
     const [l, r] = [p.left.get(x.id), p.right.get(x.id)];
@@ -271,8 +321,8 @@ function paintSheet() {
     `<rect width="1200" height="900" fill="#eef0f4"/>` +
     `<text x="60" y="64" ${font} font-size="34" font-weight="800" fill="#1d1f52">${title}</text>` +
     `<text x="60" y="98" ${font} font-size="18" fill="#4b4e7c">Paint sheet. The left foot reads the rows, the right foot the columns. ${p.differ.length} of 9 panels differ.</text>` +
-    foot(p.left, 'translate(570 110) scale(-0.9 0.9)') +
-    foot(p.right, 'translate(630 110) scale(0.9)') +
+    sheetFoot(p.left, 590, true) +
+    sheetFoot(p.right, 610, false) +
     `<text x="380" y="404" ${font} font-size="17" fill="#4b4e7c">Left foot</text><text x="780" y="404" ${font} font-size="17" fill="#4b4e7c">Right foot</text>` +
     rows +
     `</svg>\n`;
@@ -312,6 +362,7 @@ export function render() {
 export function initPair() {
   const sec = $('pair');
   if (!sec) return;
+  defineShared(sec);
   $('pairPanels').replaceChildren(
     ...PANELS.map((panel) => {
       const b = h('button', { type: 'button', 'data-panel': panel.id, 'aria-pressed': 'false' }, h('i', { 'aria-hidden': 'true' }), panel.name);
