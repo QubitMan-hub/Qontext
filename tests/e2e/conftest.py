@@ -8,7 +8,6 @@ import pytest
 if "PLAYWRIGHT_BROWSERS_PATH" not in os.environ and pathlib.Path("/opt/pw-browsers").exists():
     os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/opt/pw-browsers"
 
-from localfonts import install as install_fonts  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 from server import base_url, serve  # noqa: E402
 
@@ -33,8 +32,6 @@ def browser():
 def _new_page(browser, viewport, errors):
     ctx = browser.new_context(viewport=viewport)
     page = ctx.new_page()
-    # Fonts come from Google Fonts in production; tests serve the same faces from node_modules.
-    install_fonts(page)
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on(
         "console",

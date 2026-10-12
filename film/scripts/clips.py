@@ -22,7 +22,6 @@ sys.path.insert(0, str(ROOT / "tests" / "e2e"))
 if "PLAYWRIGHT_BROWSERS_PATH" not in os.environ and pathlib.Path("/opt/pw-browsers").exists():
     os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/opt/pw-browsers"
 
-from localfonts import install as install_fonts  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 from server import base_url, serve  # noqa: E402
 
@@ -241,7 +240,6 @@ def main():
         browser = p.chromium.launch()
         for name, make, path in [("world", world_clip, "/index.html"), ("atelier", atelier_clip, "/studio.html")]:
             ctx = browser.new_context(viewport={"width": W, "height": H}, color_scheme="light")
-            install_fonts(ctx)
             ctx.add_init_script(f"sessionStorage.setItem('qontext-site-world', '{WORLD_SEED}')")
             page = ctx.new_page()
             print(name)

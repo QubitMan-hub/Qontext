@@ -16,6 +16,11 @@ New
   at all 360 angles, on every wall and every Wall Wash, and a test sweeps them all. A Moon in the bar, lit
   by the Moon's own phase law, opens the dial; the angle is kept per visitor.
 
+Private
+- The typefaces are served by the site itself instead of Google Fonts, so no third party sees a visit,
+  and the Content Security Policy now allows fonts only from the site. One Latin face per family keeps phone
+  scrolling as light as before.
+
 Quieter
 - The site is hung like a gallery. Each room is one wall: its name in tall vinyl lettering, a short wall text
   that credits where the idea comes from, and the exhibit straight on the wall instead of in a card.

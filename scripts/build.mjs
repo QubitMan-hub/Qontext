@@ -6,12 +6,13 @@
 //   dist/artifact.html           Website as a page fragment, for hosts that add their own document shell
 //   dist/qontext-runtime.min.js  Observer runtime, browser global `Qontext`
 //   dist/qontext-runtime.esm.js  Observer runtime, ES module
+//   dist/fonts/                  The typefaces, self-hosted (src/fonts.css names them)
 //   dist/ icons, link-preview image, robots.txt, sitemap.xml, and Cloudflare's _headers and _redirects
 //   figma-plugin/dist/code.js    Superpose, the Figma plugin
 // Usage: node scripts/build.mjs [--watch]
 
 import { build, transform } from 'esbuild';
-import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, cp, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { watch } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -30,7 +31,7 @@ const PAGES = ['/', '/studio', '/privacy'];
 
 /**
  * Content Security Policy for the standalone pages. Scripts run only if they are the exact inline bundle
- * (pinned by hash), nothing can be fetched or framed, and the only third parties are Google Fonts.
+ * (pinned by hash), nothing can be fetched or framed, and there are no third parties: fonts come from the site.
  * Inline styles stay allowed: the pages set colors through style attributes, and styles cannot run code.
  * Pages without a bundle get no script-src at all, so `default-src 'none'` refuses every script.
  */
@@ -40,8 +41,8 @@ function csp(html, bundles) {
   return [
     "default-src 'none'",
     ...(bundles ? [`script-src ${scripts.join(' ')}`] : []),
-    "style-src 'unsafe-inline' https://fonts.googleapis.com",
-    'font-src https://fonts.gstatic.com',
+    "style-src 'unsafe-inline'",
+    "font-src 'self'",
     "img-src 'self' data: blob:",
     "media-src 'self'",
     "base-uri 'none'",
@@ -76,10 +77,14 @@ function share(head, path) {
   ].join('\n');
 }
 
-/** Bundles a page: template + CSS + JS entry (none for the static pages). Returns { full, fragment }. */
-async function buildPage({ entry, css, template, version, path }) {
+/**
+ * Bundles a page: the typefaces + template + CSS + JS entry (none for the static pages). Pages read their faces
+ * from `fonts/` beside them; Vacuum is served at any depth, so it reads them from `/fonts/`. Returns { full, fragment }.
+ */
+async function buildPage({ entry, css, template, version, path, fonts = 'fonts/' }) {
   const js = entry && (await build({ entryPoints: [p(entry)], bundle: true, format: 'iife', target: ['es2020'], minify: !DEV, write: false, legalComments: 'none' }));
-  const style = await transform(await readFile(p(css), 'utf8'), { loader: 'css', minify: true });
+  const faces = (await readFile(p('src/fonts.css'), 'utf8')).replaceAll('url(fonts/', `url(${fonts}`);
+  const style = await transform(faces + (await readFile(p(css), 'utf8')), { loader: 'css', minify: true });
   let html = await readFile(p(template), 'utf8');
   const replacements = {
     '/*__CSS__*/': style.code.trim(),
@@ -100,6 +105,14 @@ async function buildPage({ entry, css, template, version, path }) {
   const full = `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${csp(body, js ? 1 : 0)}">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n${head}${meta}\n</head>\n<body>\n${body}\n</body>\n</html>\n`;
   // The fragment is for hosts that wrap pages in their own document, and their own policy.
   return { full, fragment: html.trim() + '\n' };
+}
+
+/** Copies every face src/fonts.css names from its npm package (anybody-latin-... comes from @fontsource-variable/anybody). */
+async function copyFonts() {
+  await mkdir(p('dist/fonts'), { recursive: true });
+  const names = [...(await readFile(p('src/fonts.css'), 'utf8')).matchAll(/url\(fonts\/([^)]+)\)/g)].map((m) => m[1]);
+  const pkg = (name) => (name.startsWith('ibm-plex-mono') ? '@fontsource/ibm-plex-mono' : `@fontsource-variable/${name.split('-latin')[0]}`);
+  await Promise.all(names.map((name) => copyFile(p('node_modules', pkg(name), 'files', name), p('dist/fonts', name))));
 }
 
 async function buildRuntime() {
@@ -124,9 +137,10 @@ async function buildAll() {
     buildPage({ entry: 'src/site/main.js', css: 'src/site/site.css', template: 'src/site/index.html', version, path: PAGES[0] }),
     buildPage({ entry: 'src/app/main.js', css: 'src/app/styles.css', template: 'src/app/index.html', version, path: PAGES[1] }),
     buildPage({ ...page('src/site/pages/privacy.html'), path: PAGES[2] }),
-    buildPage(page('src/site/pages/404.html')),
+    buildPage({ ...page('src/site/pages/404.html'), fonts: '/fonts/' }),
     buildRuntime(),
     buildFigma(),
+    copyFonts(),
   ]);
   await writeFile(p('dist/index.html'), site.full);
   await writeFile(p('dist/artifact.html'), site.fragment);

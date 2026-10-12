@@ -96,7 +96,7 @@ The browser tests hold the site to a performance budget (`tests/e2e/test_perform
 Open `dist/index.html` (the site) or `dist/studio.html` (the Atelier) in any modern browser.
 
 ```
-npm ci              # dev tools: esbuild, eslint, local fonts for browser tests
+npm ci              # dev tools: esbuild, eslint, axe-core, and the typeface packages the build copies
 npm run build       # builds dist/ and figma-plugin/dist/
 npm run watch       # rebuilds on every change
 npm test            # engine and runtime unit tests (node:test)
@@ -158,15 +158,16 @@ qontext-probe --dry-run --ibm least_busy
 
 ## Privacy and network use
 
-The site, the Atelier and Observer make no network requests of their own. The pages load fonts from Google
-Fonts without blocking the first paint, and fall back to system fonts when that is blocked. Images used for
+The site, the Atelier and Observer make no network requests of their own, and nothing loads from a third party:
+the typefaces are served by the site itself (`src/fonts.css`, copied into `dist/fonts/` from the npm packages)
+and never block the first paint. Images used for
 palette extraction never leave the device. Settings and your world number are stored in the browser only. No
 cookies, no analytics, no tracking. Unobserved says the same to visitors.
 
 ## Security
 
 - The standalone pages carry a Content Security Policy: the only script that runs is the page's own bundle,
-  pinned by its SHA-256 hash; nothing can be fetched, framed or posted; the only third party is Google Fonts.
+  pinned by its SHA-256 hash; nothing can be fetched, framed or posted; fonts come only from the site itself.
   Vacuum and Unobserved run no script at all. On Cloudflare, `_headers` also forbids framing.
 - A Wavefunction code can come from anyone, so everything in it is sanitized on the way in (numbers clamped,
   names reduced to one printable line) and escaped on the way out: a project name cannot break out of a CSS

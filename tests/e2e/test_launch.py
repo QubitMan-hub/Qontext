@@ -76,6 +76,31 @@ def test_static_pages_run_no_script(page):
     assert "<script" not in html
 
 
+@pytest.mark.parametrize("page", ["index.html", "artifact.html", "studio.html", "privacy.html", "404.html"])
+def test_fonts_come_from_the_site_itself(page):
+    html = (DIST / page).read_text()
+    assert "googleapis" not in html
+    assert "gstatic" not in html
+    if page != "artifact.html":  # the fragment leaves its policy to the host
+        assert "font-src 'self'" in html
+    faces = re.findall(r"url\(/?fonts/([^)]+)\)", html)
+    assert faces
+    for name in faces:
+        assert (DIST / "fonts" / name).is_file(), name
+
+
+@pytest.mark.parametrize("url", [SITE, f"{BASE}/studio.html", f"{BASE}/privacy.html"])
+def test_pages_render_in_their_own_typefaces(browser, url):
+    errors = []
+    ctx, page = _new_page(browser, {"width": 1440, "height": 900}, errors)
+    page.goto(url)
+    page.wait_for_function("() => document.fonts.status === 'loaded'")
+    loaded = page.evaluate("[...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family)")
+    assert "Anybody" in [f.strip("\"'") for f in loaded]
+    ctx.close()
+    assert errors == []
+
+
 @pytest.mark.parametrize("width", [390, 1440])
 @pytest.mark.parametrize("page,name", [("404.html", "Vacuum"), ("privacy.html", "Unobserved")])
 def test_static_pages_fit_and_link_home(browser, page, name, width):

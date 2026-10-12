@@ -15,19 +15,10 @@ import { initFrame } from './features/frame.js';
 import { initFilm } from './features/film.js';
 import { initWorlds } from './features/worlds.js';
 import { initTraverse } from './features/traverse.js';
-import { h } from './lib.js';
-
-const FONTS =
-  'https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Literata:opsz,wght@7..72,300..700&display=swap';
-
-/** Typefaces load without blocking the first paint; until they arrive the fallback stack is used. */
-function loadFonts() {
-  if (document.querySelector('link[data-fonts]')) return;
-  document.head.append(h('link', { rel: 'stylesheet', href: FONTS, 'data-fonts': '' }));
-}
+// Typefaces are self-hosted @font-face rules in the page's CSS (src/fonts.css) with font-display: swap, so they
+// never block the first paint.
 
 function boot() {
-  loadFonts();
   initPhase();
   setWorld(initialSeed());
   initRooms();
