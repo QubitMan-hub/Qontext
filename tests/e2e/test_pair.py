@@ -107,3 +107,65 @@ def test_mid_tone_paint_fails_the_logo_and_fix_brings_it_back(site):
     ink = site.get_attribute("#pairStage", "data-ink")
     assert min(wcag(ink, c) for c in stripe) >= 4.5
     assert site.eval_on_selector("#pairLight", "(el) => el.value") != failing
+
+
+def feet(page):
+    left = dict(fills(page, "L"))
+    right = dict(fills(page, "R"))
+    return left, right
+
+
+def paint_all(page):
+    page.click("#pairPaintAll")
+    page.wait_for_function(
+        "() => [...document.querySelectorAll('#pairSvg path[data-panel]')].every((p) => !p.getAttribute('fill').startsWith('url('))"
+    )
+
+
+def test_painting_collapses_panels_on_both_feet(site):
+    enter_pair(site, 4)
+    first = site.locator("#pairPanels button").first
+    panel = first.get_attribute("data-panel")
+    first.focus()
+    site.keyboard.press("Enter")
+    left, right = feet(site)
+    assert re.fullmatch(r"#[0-9a-f]{6}", left[panel]) and re.fullmatch(r"#[0-9a-f]{6}", right[panel])
+    assert all(f.startswith("url(") for k, f in left.items() if k != panel)
+    assert first.get_attribute("aria-pressed") == "true"
+    # A tap on the shoe paints too.
+    site.locator('#pairSvg g[data-side="R"] path[data-panel="midsole"]').click()
+    assert re.fullmatch(r"#[0-9a-f]{6}", feet(site)[0]["midsole"])
+
+
+def test_painted_pair_differs_exactly_on_contextual_tiles(site):
+    enter_pair(site, 4)
+    paint_all(site)
+    left, right = feet(site)
+    differ = [k for k in left if left[k] != right[k]]
+    assert len(differ) == int(site.inner_text("#planDiff").split()[0])
+    assert site.locator('#pairChecks li[data-ok="true"]').count() == 6
+    assert site.inner_text("#pairVerdict").startswith("6 of 6")
+
+
+def test_trying_to_match_breaks_a_rule(site):
+    enter_pair(site, 4)
+    site.click("#pairMatch")
+    site.wait_for_function("() => document.getElementById('pairMatch').getAttribute('aria-pressed') === 'true'")
+    left, right = feet(site)
+    assert left == right
+    assert site.locator('#pairChecks li[data-ok="false"]').count() >= 1
+    assert "has to differ" in site.inner_text("#pairVerdict")
+    # Painting (or pressing it again) lets the feet differ, and every rule holds again.
+    site.locator("#pairPanels button").first.click()
+    assert site.get_attribute("#pairMatch", "aria-pressed") == "false"
+    assert site.locator('#pairChecks li[data-ok="true"]').count() == 6
+
+
+def test_harmony_size_repaints_painted_panels(site):
+    enter_pair(site, 4)
+    paint_all(site)
+    before = feet(site)[0]
+    site.click('#pairD [data-d="5"]')
+    after = feet(site)[0]
+    assert all(re.fullmatch(r"#[0-9a-f]{6}", f) for f in after.values())
+    assert after != before

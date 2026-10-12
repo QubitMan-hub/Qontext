@@ -6,9 +6,9 @@
 
 import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
-import { h, svg, whenNear } from '../lib.js';
+import { h, svg, whenNear, reduced } from '../lib.js';
 import { site, onWorld, worldNumber } from '../world.js';
-import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf } from '../pair-shape.js';
+import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf, footValues, pairChecks } from '../pair-shape.js';
 
 /** What the visitor has done to the pair in this world. A new world starts it over. */
 export const pair = { nudge: 0, d: 3, L: null, painted: new Set(), match: false };
@@ -17,6 +17,7 @@ const SIDES = { L: { x: 610, y: 18, flip: true, caption: 'Left foot reads the ro
 const paths = { L: new Map(), R: new Map() };
 const stops = { L: new Map(), R: new Map() };
 const logos = [];
+const legend = new Map();
 let built = false;
 
 /** The world's palette with the showcase's own harmony and lightness on top. */
@@ -121,6 +122,64 @@ function fix() {
   render();
 }
 
+/** A panel is measured: it lands on its row color on the left foot and its column color on the right. */
+function paint(id) {
+  pair.match = false;
+  const fresh = !pair.painted.has(id);
+  pair.painted.add(id);
+  render();
+  if (fresh && !reduced()) {
+    for (const side of ['L', 'R']) {
+      const el = paths[side].get(id);
+      el.classList.remove('landed');
+      void el.getBoundingClientRect(); // restart the settle
+      el.classList.add('landed');
+    }
+  }
+}
+
+/** The rest of the panels, one after another, the way a measurement sweeps a grid. */
+function paintRest() {
+  const seed = site.seed;
+  const rest = PANELS.map((p) => p.id).filter((id) => !pair.painted.has(id));
+  if (reduced()) {
+    for (const id of rest) pair.painted.add(id);
+    pair.match = false;
+    render();
+    return;
+  }
+  rest.forEach((id, k) => setTimeout(() => site.seed === seed && paint(id), k * 70));
+}
+
+/** Try to match: the right foot copies the left. One of the six rules always breaks. */
+function toggleMatch() {
+  if (!pair.match) for (const p of PANELS) pair.painted.add(p.id);
+  pair.match = !pair.match;
+  render();
+}
+
+/** Step 4: the legend, the six rules and the verdict. */
+function renderPaint(p, outcomes) {
+  const { left, right } = footValues(outcomes);
+  const checks = pairChecks(left, pair.match ? left : right);
+  const held = checks.filter((c) => c.ok).length;
+  for (const panel of PANELS) {
+    const b = legend.get(panel.id);
+    const on = pair.painted.has(panel.id);
+    b.setAttribute('aria-pressed', String(on));
+    const [plus, minus] = p.both.get(panel.id);
+    const [l, r] = on ? [p.left.get(panel.id), pair.match ? p.left.get(panel.id) : p.right.get(panel.id)] : [plus, minus];
+    b.style.setProperty('--l', l);
+    b.style.setProperty('--r', r);
+  }
+  $('pairChecks').replaceChildren(...checks.map((c) => h('li', { 'data-ok': String(c.ok), 'data-ctx': c.ctx }, h('span', { class: 'mark', 'aria-hidden': 'true' }), c.label, h('span', { class: 'sr-only' }, c.ok ? ', holds' : ', broken'))));
+  $('pairMatch').setAttribute('aria-pressed', String(pair.match));
+  $('pairPaintAll').disabled = pair.painted.size === PANELS.length;
+  $('pairVerdict').textContent = pair.match
+    ? `Matched, ${held} of 6 rules hold. No matching pair can do better than 5, so the pair has to differ.`
+    : `${held} of 6 rules hold. ${p.differ.length} of 9 panels differ between the feet.`;
+}
+
 /** Paints the pair from the current world and the showcase's state. */
 export function render() {
   const sec = $('pair');
@@ -131,10 +190,11 @@ export function render() {
   const p = pairOf(pal, site.result.outcomes);
   const logo = logoInk(p.both.get('stripe'));
   renderControls(pal, logo);
+  renderPaint(p, site.result.outcomes);
   if (!built) return;
   for (const l of logos) for (const el of [l.tile, l.cut, l.word]) el.setAttribute('fill', logo.ink);
   for (const side of ['L', 'R']) {
-    const foot = side === 'L' ? p.left : p.right;
+    const foot = side === 'L' || pair.match ? p.left : p.right;
     for (const panel of PANELS) {
       const [a, b] = stops[side].get(panel.id);
       const [plus, minus] = p.both.get(panel.id);
@@ -148,11 +208,23 @@ export function render() {
 export function initPair() {
   const sec = $('pair');
   if (!sec) return;
-  render();
-  whenNear(sec, () => {
-    build();
-    render();
-  }, '600px 0px');
+  $('pairPanels').replaceChildren(
+    ...PANELS.map((panel) => {
+      const b = h('button', { type: 'button', 'data-panel': panel.id, 'aria-pressed': 'false' }, h('i', { 'aria-hidden': 'true' }), panel.name);
+      legend.set(panel.id, b);
+      return h('li', {}, b);
+    }),
+  );
+  $('pairPanels').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-panel]');
+    if (b) paint(b.dataset.panel);
+  });
+  $('pairSvg').addEventListener('click', (e) => {
+    const el = e.target.closest('path[data-panel]');
+    if (el) paint(el.dataset.panel);
+  });
+  $('pairPaintAll').addEventListener('click', paintRest);
+  $('pairMatch').addEventListener('click', toggleMatch);
   $('pairTurn').addEventListener('input', (e) => {
     pair.nudge = Number(e.target.value);
     render();
@@ -168,6 +240,11 @@ export function initPair() {
     render();
   });
   $('pairFix').addEventListener('click', fix);
+  render();
+  whenNear(sec, () => {
+    build();
+    render();
+  }, '600px 0px');
   onWorld((kind) => {
     if (kind !== 'world') return;
     Object.assign(pair, { nudge: 0, d: 3, L: null, match: false });

@@ -133,6 +133,11 @@
       <li class="pair-step" data-step="4">
         <h3><span class="n" aria-hidden="true">4</span>Paint the pair</h3>
         <p>Tap a panel to measure it. It lands on its row color on the left foot and its column color on the right. Most panels match. A few cannot, and the maths says no paint job could make them all match and still follow every rule.</p>
+        <ul class="pair-panels" id="pairPanels" aria-label="Panels to paint"></ul>
+        <div class="pair-row"><button class="btn small" type="button" id="pairPaintAll">Paint the rest</button><button class="btn small ghost" type="button" id="pairMatch" aria-pressed="false">Try to match the feet</button></div>
+        <p class="pair-rules-head" id="pairRulesHead">The six rules, in shoe terms. Every panel has a home color and a flipped one, its opposite on the wheel.</p>
+        <ul class="pair-checks" id="pairChecks" aria-labelledby="pairRulesHead"></ul>
+        <p class="pair-verdict" id="pairVerdict" aria-live="polite"></p>
       </li>
       <li class="pair-step" data-step="5">
         <h3><span class="n" aria-hidden="true">5</span>The drop</h3>
