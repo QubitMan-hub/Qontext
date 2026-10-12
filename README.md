@@ -179,6 +179,11 @@ qontext-probe --dry-run --ibm least_busy
 
 `qontext-hw` still works as the old command name. See `python/README.md`.
 
+A real run is on record: `data/hardware/ibm_kingston-2026-10-12.json`, 20,480 shots on IBM's `ibm_kingston`.
+Each of the square's six rules held on 93 to 95% of shots (Mermin score 5.286 ± 0.026, classical limit 4) and the
+CHSH value was 2.732 ± 0.032 (classical limit 2). The Atelier's Notary opens it with **Open the real
+ibm_kingston run**; `node scripts/pack-run.mjs <file>` repacks a new run for it.
+
 ## Privacy and network use
 
 The site, the Atelier and Observer make no network requests of their own, and nothing loads from a third party:

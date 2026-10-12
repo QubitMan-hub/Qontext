@@ -423,3 +423,20 @@ def test_fringe_marker_stays_on_the_band_and_ports_are_in_view(page):
     assert band["x"] - 0.5 <= mark["x"] and mark["x"] + mark["width"] <= band["x"] + band["width"] + 0.5
     assert band["y"] - 0.5 <= mark["y"] and mark["y"] + mark["height"] <= band["y"] + band["height"] + 0.5
     assert page.locator("#outA").bounding_box()["y"] < 900
+
+
+IBM_FINGERPRINT = "91bf9f705b18ad2a72a0c4ca67c0ebce5181454d32af786592c78e51e45dcdd0"
+
+
+def test_notary_opens_the_real_ibm_kingston_run(page):
+    # The run recorded on 12 October 2026, shipped inside the page. Its stamp is a real one, and its fingerprint
+    # matches the raw file in data/hardware/, so anyone can check the paper's numbers.
+    open_tab(page, "hardware")
+    page.click("#poolReal")
+    page.wait_for_function("() => document.querySelector('#seal').innerText.includes('SHA-256')")
+    seal = page.inner_text("#seal")
+    assert "ibm_kingston" in seal and "simulated" not in seal
+    assert IBM_FINGERPRINT in seal
+    assert page.inner_text("#hwScore") == "5.29"
+    assert page.locator("#seal .stamp.sim").count() == 0
+    assert "real hardware" in page.inner_text("#seal .stamp-mid")

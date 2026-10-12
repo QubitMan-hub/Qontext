@@ -128,3 +128,47 @@ export function examplePool({ seed = 7, shots = 512, flip = 0.035, noiseSeed = 4
 export function canonicalShots(pool) {
   return JSON.stringify({ contexts: pool.contexts, chsh: pool.chsh || null });
 }
+
+/* Packing: a pool's shots as bits (+1 is 0, -1 is 1), contexts then CHSH settings in a fixed order, in base64.
+   A real run of 20,480 shots is 172 KB as JSON and about 9 KB packed, small enough to ship inside the page. */
+const PACKED_FORMAT = 'qontext-pool-packed/1';
+const META = ['format', 'backend', 'simulated', 'job_ids', 'created', 'shots', 'state_seed'];
+const blocks = (pool) => [
+  ...CONTEXTS.map((c) => [c.id, pool.contexts[c.id]]),
+  ...(pool.chsh ? SETTING_KEYS.map((k) => [k, pool.chsh[k]]) : []),
+];
+
+export function packPool(pool) {
+  const bits = [];
+  const counts = {};
+  for (const [id, shots] of blocks(pool)) {
+    counts[id] = shots.length;
+    for (const shot of shots) for (const v of shot) bits.push(v < 0 ? 1 : 0);
+  }
+  const bytes = new Uint8Array(Math.ceil(bits.length / 8));
+  bits.forEach((b, i) => (bytes[i >> 3] |= b << (i & 7)));
+  let bin = '';
+  for (const byte of bytes) bin += String.fromCharCode(byte);
+  const meta = {};
+  for (const k of META) if (k in pool) meta[k] = pool[k];
+  return { format: PACKED_FORMAT, meta, counts, chsh: !!pool.chsh, bits: btoa(bin) };
+}
+
+export function unpackPool(packed) {
+  if (!packed || packed.format !== PACKED_FORMAT) throw new PoolError('That is not a packed Qontext pool.');
+  const bin = atob(packed.bits);
+  let i = 0;
+  const bit = () => ((bin.charCodeAt(i >> 3) >> (i++ & 7)) & 1 ? -1 : 1);
+  const pool = { ...packed.meta, contexts: {} };
+  if (packed.chsh) pool.chsh = {};
+  const shape = [
+    ...CONTEXTS.map((c) => [c.id, 3, 'contexts']),
+    ...(packed.chsh ? SETTING_KEYS.map((k) => [k, 2, 'chsh']) : []),
+  ];
+  for (const [id, width, group] of shape) {
+    const shots = [];
+    for (let n = 0; n < packed.counts[id]; n++) shots.push(Array.from({ length: width }, bit));
+    pool[group][id] = shots;
+  }
+  return validatePool(pool);
+}

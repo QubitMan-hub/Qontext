@@ -40,6 +40,11 @@ The owner then said the Atelier looked like AI slop next to the site, so it was 
 Impeccable critique (28/40): no card kit, vinyl room names, Literata, plain rail labels, keys 1 to 9 and T.
 Shipped to main on 2026-10-12.
 
+Hardware (2026-10-12): the owner ran Probe on IBM's free Open Plan from their own Windows machine (the cloud
+workspace cannot reach IBM; never take the owner's API key in chat). ibm_kingston: Mermin 5.286, CHSH 2.732.
+Probe must use a noise-aware layout (optimization level 2); level 1 put CHSH on a bad qubit and gave S about 1.1.
+The run lives in data/hardware/ and is bundled into the Notary; the paper has a section on it.
+
 **Why:** the owner picked these from a list after installing new plugins (frontend-design, security guidance,
 Remotion, Playwright, memory, Ponytail, Superpowers, Context7, Axe), then asked for the voice-over and the
 Impeccable pass.

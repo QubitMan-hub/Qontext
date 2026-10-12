@@ -1,7 +1,8 @@
 // Notary: colors from a real quantum computer. Load the results Probe wrote (or a practice example), see each of
 // the six rules in plain words, and get a stamp whose fingerprint lets anyone check the results.
 
-import { CONTEXTS, parsePool, examplePool, poolSummary, canonicalShots, PoolError } from '../../engine/index.js';
+import { CONTEXTS, parsePool, examplePool, poolSummary, canonicalShots, PoolError, unpackPool } from '../../engine/index.js';
+import { IBM_RUN } from '../ibm-run.js';
 import { $, copyText, esc, toast } from '../dom.js';
 import { store, setPool, setUsePool } from '../store.js';
 import { reach } from '../guide.js';
@@ -71,6 +72,7 @@ function readFile(f) {
 
 export function init() {
   $('poolExample').addEventListener('click', () => load(examplePool({ seed: store.project.stateSeed })));
+  $('poolReal').addEventListener('click', () => load(unpackPool(IBM_RUN)));
   $('poolLoad').addEventListener('click', () => {
     try {
       load(parsePool($('poolText').value));

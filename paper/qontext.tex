@@ -102,8 +102,9 @@ Qontext turns the square into a color system. Each of its nine tiles holds two c
 row and one when it is read with its column, and hue plays the role of quantum phase. We show that the two readings
 always differ on an odd number of tiles, and on 3 to 4 tiles on average for any pure state. We describe a contrast
 checker that tests text against every color a tile can take, a theme dial built from an interferometer model, and a
-case study in which the nine panels of a sneaker are the nine tiles. Everything runs as exact simulation in a web
-browser, and we claim no quantum advantage.
+case study in which the nine panels of a sneaker are the nine tiles. On IBM's \texttt{ibm\_kingston} each of the six
+rules held on 93 to 95\% of shots, a score of 5.29 where no fixed table can pass 4. Everything else runs as exact
+simulation in a web browser, and we claim no quantum advantage.
 
 \vspace{10pt}
 \begin{tcolorbox}[enhanced,colback=qpaper,colframe=qpaper,boxrule=0pt,arc=1.5pt,left=10pt,right=10pt,top=8pt,bottom=8pt,
@@ -112,7 +113,8 @@ browser, and we claim no quantum advantage.
 {\sffamily\bfseries\color{qink}The idea} & A color token may have two true values, one per context, with a proof that
 no single palette can stand in for it. \\[4pt]
 {\sffamily\bfseries\color{qink}What we show} & The two readings of the grid differ on an odd number of tiles, never
-zero, and on 3 to 4 on average (Results~\ref{res:odd} and~\ref{res:mean}). \\[4pt]
+zero, and on 3 to 4 on average (Results~\ref{res:odd} and~\ref{res:mean}). On IBM hardware the square scores 5.29
+against a classical limit of 4 (Section~\ref{sec:hardware}). \\[4pt]
 {\sffamily\bfseries\color{qink}What it is not} & Two qubits are easy to simulate. The physics gives a grammar for color
 with a guarantee, not speed or power (Section~\ref{sec:limits}).
 \end{tabular}
@@ -162,6 +164,8 @@ hardware. This paper describes the ideas and their limits. Its contributions are
         (Section~\ref{sec:pair}).
   \item An implementation in which every classical limit shown to the user is checked by exhaustive search in the
         test suite (Section~\ref{sec:impl}).
+  \item A run on IBM's \texttt{ibm\_kingston}, where every rule of the square held on at least 93\% of shots
+        (Section~\ref{sec:hardware}).
 \end{itemize}
 We are careful about one point throughout. Two qubits are easy to simulate, so nothing here needs a quantum computer.
 What the physics gives is a grammar for color that comes with a proof (Section~\ref{sec:limits}).
@@ -461,7 +465,7 @@ SVG. The website, the Atelier, the runtime and the Figma plugin are built from i
 turning seeds into measurements, so a world looks the same everywhere.
 
 Every classical limit the interface shows has a test that finds it by exhaustive search (Table~\ref{tab:limits}). The
-unit tests (90 at the time of writing) cover the engine and runtime. The browser tests (127) drive the website and
+unit tests (92 at the time of writing) cover the engine and runtime. The browser tests (145) drive the website and
 the Atelier in Chromium: they check, for example, that the pair's two feet differ exactly on the contextual tiles,
 that forcing a match breaks a rule, that the Turntable shows the same colors as the 2D pair, and that the pages have
 no accessibility violations under axe-core at phone and desktop sizes in light and dark. A separate check holds the
@@ -472,8 +476,56 @@ its own ancilla qubit. The three values of a context are therefore measured sepa
 as it does on real devices. In the tool's noisy simulation the Mermin score is about 4.7, between the classical limit
 of 4 and the ideal 6. On IBM's public devices, Dikme et al.\ measured a comparable violation using a single ancilla
 per context \citep{dikme2020}. Recorded hardware shots can be saved as a pool and replayed by the website in place of
-the simulator, which gives physically random worlds and a job record that serves as provenance. We do not report
-new hardware results in this paper.
+the simulator, which gives physically random worlds and a job record that serves as provenance.
+
+\section{A run on IBM hardware}
+\label{sec:hardware}
+
+We ran the tool once on IBM's \texttt{ibm\_kingston} on 12 October 2026, on the free Open Plan. One job held ten
+circuits, the six contexts of the square and the four CHSH settings, at 2{,}048 shots each: 20{,}480 measurements
+in all. The state is the same seeded random state the website uses. Table~\ref{tab:hardware} gives the results.
+
+\begin{table}[tb]
+\centering
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Context & row 1 & row 2 & row 3 & column 1 & column 2 & column 3 \\
+\midrule
+Rule held & 93.8\% & 92.9\% & 95.3\% & 93.8\% & 93.4\% & 95.0\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{8pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Score & classical limit & ideal quantum & measured \\
+\midrule
+Mermin-Peres score & 4 & 6 & $5.286 \pm 0.026$ \\
+CHSH value $S$ & 2 & $2\sqrt2 \approx 2.828$ & $2.732 \pm 0.032$ \\
+\bottomrule
+\end{tabular}
+\caption{The run on \texttt{ibm\_kingston}, job \texttt{db6cbpslf4us73c54gk0}. Each rule held on 93 to 95\% of its
+2{,}048 shots. Errors are one standard error from the shot counts.}
+\label{tab:hardware}
+\end{table}
+
+Both scores lie far above their classical limits: the Mermin-Peres score by 50 standard errors and the CHSH value by
+23. Every one of the six rules held on at least 92.9\% of shots, where no fixed table of values can keep more than five
+of the six. These are the expected results for a working device. They are not new physics; they show that the
+colors Qontext draws from hardware come from measurements that broke the classical limit.
+
+A first attempt taught us one practical lesson. At Qiskit's light optimization level the transpiler placed the
+two-qubit CHSH circuits on the first two qubits of the chip whenever they fitted, without looking at their quality.
+On \texttt{ibm\_kingston} one of them misread 17\% of its results, and two runs gave CHSH values of 1.11 and 1.05,
+below the classical limit. IBM's simulated copy of the device reproduced the drop. The tool now uses a noise-aware
+layout for every circuit, and the value rose to 2.73. A test on the simulated device now guards against the
+mistake.
+
+The shots are stored in the repository as \nolinkurl{data/hardware/ibm_kingston-2026-10-12.json}. The Atelier ships
+the same run and stamps it. The SHA-256 fingerprint of its shot data is
+\begin{center}\small\texttt{91bf9f705b18ad2a72a0c4ca67c0ebce5181454d32af786592c78e51e45dcdd0}\end{center}
+so anyone can check that the numbers above come from those shots.
 
 \section{Related work}
 \label{sec:related}

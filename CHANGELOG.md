@@ -3,6 +3,10 @@
 ## Unreleased
 
 New
+- A real run on IBM hardware. On `ibm_kingston`, each of the square's six rules held on 93 to 95% of 2,048 shots:
+  Mermin score 5.286 ± 0.026 against a classical limit of 4, and CHSH 2.732 ± 0.032 against 2. The shots are in
+  `data/hardware/`, the Notary opens them with a real stamp (Open the real ibm_kingston run), and the paper has a
+  section on the run. Pools can be packed to about 9 KB (`packPool`, `unpackPool`, `scripts/pack-run.mjs`).
 - The Atelier explains itself. Every room opens with a Wall Card in everyday words: what the room does, a real
   example, a Try this button and a small goal. Reaching a goal (Eureka) ticks it off, counts it in the header and
   throws a short burst of your own colors, which stays still for anyone who asks for less motion.
