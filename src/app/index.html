@@ -28,15 +28,15 @@
     </div>
     <div class="tabs-wrap">
       <div class="tabs" role="tablist" aria-label="Studio modules" id="tabs">
-        <button class="tab" role="tab" id="tabbtn-grid" aria-controls="tab-grid" data-tab="grid" aria-selected="true"><span class="tn">Janus</span><span class="td">context grid</span></button>
-        <button class="tab" role="tab" id="tabbtn-learn" aria-controls="tab-learn" data-tab="learn" aria-selected="false" tabindex="-1"><span class="tn">Mermin's Dare</span><span class="td">try it classically</span></button>
-        <button class="tab" role="tab" id="tabbtn-harmony" aria-controls="tab-harmony" data-tab="harmony" aria-selected="false" tabindex="-1"><span class="tn">Unity Wheel</span><span class="td">harmony</span></button>
-        <button class="tab" role="tab" id="tabbtn-mixer" aria-controls="tab-mixer" data-tab="mixer" aria-selected="false" tabindex="-1"><span class="tn">Fringe</span><span class="td">interference</span></button>
-        <button class="tab" role="tab" id="tabbtn-penta" aria-controls="tab-penta" data-tab="penta" aria-selected="false" tabindex="-1"><span class="tn">Pentacle</span><span class="td">five colors</span></button>
-        <button class="tab" role="tab" id="tabbtn-entangle" aria-controls="tab-entangle" data-tab="entangle" aria-selected="false" tabindex="-1"><span class="tn">Spooky Pair</span><span class="td">entangled assets</span></button>
-        <button class="tab" role="tab" id="tabbtn-shapes" aria-controls="tab-shapes" data-tab="shapes" aria-selected="false" tabindex="-1"><span class="tn">Unpaintables</span><span class="td">impossible shapes</span></button>
-        <button class="tab" role="tab" id="tabbtn-hardware" aria-controls="tab-hardware" data-tab="hardware" aria-selected="false" tabindex="-1"><span class="tn">Notary</span><span class="td">prove it was real</span></button>
-        <button class="tab" role="tab" id="tabbtn-export" aria-controls="tab-export" data-tab="export" aria-selected="false" tabindex="-1"><span class="tn">Handoff</span><span class="td">take your colors</span></button>
+        <button class="tab" role="tab" id="tabbtn-grid" aria-keyshortcuts="1" aria-controls="tab-grid" data-tab="grid" aria-selected="true"><span class="tn">Janus</span><span class="td">context grid</span></button>
+        <button class="tab" role="tab" id="tabbtn-learn" aria-keyshortcuts="2" aria-controls="tab-learn" data-tab="learn" aria-selected="false" tabindex="-1"><span class="tn">Mermin's Dare</span><span class="td">try it classically</span></button>
+        <button class="tab" role="tab" id="tabbtn-harmony" aria-keyshortcuts="3" aria-controls="tab-harmony" data-tab="harmony" aria-selected="false" tabindex="-1"><span class="tn">Unity Wheel</span><span class="td">harmony</span></button>
+        <button class="tab" role="tab" id="tabbtn-mixer" aria-keyshortcuts="4" aria-controls="tab-mixer" data-tab="mixer" aria-selected="false" tabindex="-1"><span class="tn">Fringe</span><span class="td">interference</span></button>
+        <button class="tab" role="tab" id="tabbtn-penta" aria-keyshortcuts="5" aria-controls="tab-penta" data-tab="penta" aria-selected="false" tabindex="-1"><span class="tn">Pentacle</span><span class="td">five colors</span></button>
+        <button class="tab" role="tab" id="tabbtn-entangle" aria-keyshortcuts="6" aria-controls="tab-entangle" data-tab="entangle" aria-selected="false" tabindex="-1"><span class="tn">Spooky Pair</span><span class="td">entangled assets</span></button>
+        <button class="tab" role="tab" id="tabbtn-shapes" aria-keyshortcuts="7" aria-controls="tab-shapes" data-tab="shapes" aria-selected="false" tabindex="-1"><span class="tn">Unpaintables</span><span class="td">impossible shapes</span></button>
+        <button class="tab" role="tab" id="tabbtn-hardware" aria-keyshortcuts="8" aria-controls="tab-hardware" data-tab="hardware" aria-selected="false" tabindex="-1"><span class="tn">Notary</span><span class="td">prove it was real</span></button>
+        <button class="tab" role="tab" id="tabbtn-export" aria-keyshortcuts="9" aria-controls="tab-export" data-tab="export" aria-selected="false" tabindex="-1"><span class="tn">Handoff</span><span class="td">take your colors</span></button>
       </div>
     </div>
   </div>
@@ -46,17 +46,20 @@
 
 <!-- CONTEXT GRID -->
 <section class="panel" id="tab-grid" role="tabpanel" aria-labelledby="tabbtn-grid">
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Janus, the Mermin-Peres square on two qubits</span>
-      <h2>One tile, two true colors</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Janus</h2>
+      <p class="room-what">One tile, two true colors</p>
     </div>
     <div class="wall" data-wall="grid" aria-label="In plain words" role="note">
+      <p class="source">The Mermin-Peres square on two qubits</p>
       <p class="wall-what">Every square here has two true colors. Read it along its row and it shows one color. Read it down its column and it can show another. At least one square always changes, and the physics guarantees it.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Your website's Buy button uses one of these squares. One visitor sees it teal, the next sees it coral, and both pages still follow all six color rules, so the design never breaks.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="grid">Roll a new world</button><p class="goal" data-goal="grid"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find a world where only one square changes.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Your website's Buy button uses one of these squares. One visitor sees it teal, the next sees it coral, and both pages still follow all six color rules, so the design never breaks.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="grid" aria-keyshortcuts="t">Roll a new world</button><p class="goal" data-goal="grid"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find a world where only one square changes.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>Each tile is a quantum observable. Read it with its row or with its column and it can take a different color, and no fixed coloring could ever satisfy all six rules at once.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="qgrid-wrap"><div class="qgrid" id="qgrid" role="group" aria-label="Context grid"></div></div>
     <div class="legend" id="legend" aria-live="polite"></div>
     <div class="row">
@@ -76,14 +79,14 @@
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Impossibility meter</span>
+      <h3 class="rail-h">How quantum is it?</h3>
       <div class="spread"><span class="big" id="gridScore">6.00</span><span class="pill good" id="gridPill">Beyond classical</span></div>
       <div class="meter" role="meter" aria-label="Mermin score" aria-valuemin="0" aria-valuemax="6" id="gridMeter"><div class="fill" id="gridFill"></div><div class="bound" style="left:66.67%"></div></div>
-      <div class="meter-scale"><span>0</span><span>classical max 4</span><span>6</span></div>
+      <div class="meter-scale"><span>0</span><span>ordinary limit 4</span><span>6</span></div>
       <p class="muted small" id="gridScoreNote"></p>
     </div>
     <div class="card">
-      <span class="eyebrow">Quantum state</span>
+      <h3 class="rail-h">Starting state</h3>
       <label class="field" for="stateSel">Prepared state
         <select class="inp" id="stateSel">
           <option value="random">Seeded random state</option>
@@ -95,7 +98,7 @@
       <p class="muted small">The rules hold for every state. The state only changes which colorings show up and how often.</p>
     </div>
     <div class="card">
-      <span class="eyebrow">Bouncer</span>
+      <h3 class="rail-h">Bouncer, readable labels</h3>
       <label class="field" for="inkSel">Label ink
         <select class="inp" id="inkSel"><option value="dark">Dark ink</option><option value="light">Light ink</option></select>
       </label>
@@ -105,7 +108,7 @@
       <button class="btn ghost sm" id="cgFix" type="button">Fix lightness automatically</button>
     </div>
     <div class="card">
-      <span class="eyebrow">Measurement source</span>
+      <h3 class="rail-h">Where measurements come from</h3>
       <p id="poolStatus" class="small">Exact simulation in your browser.</p>
       <button class="btn ghost sm" type="button" data-goto="hardware">Load hardware shots</button>
     </div>
@@ -114,17 +117,20 @@
 
 <!-- LEARN -->
 <section class="panel" id="tab-learn" role="tabpanel" aria-labelledby="tabbtn-learn" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Mermin's Dare</span>
-      <h2>Try to color it classically</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Mermin's Dare</h2>
+      <p class="room-what">Try to color it classically</p>
     </div>
     <div class="wall" data-wall="learn" aria-label="In plain words" role="note">
+      <p class="source">After N. David Mermin, 1990</p>
       <p class="wall-what">A puzzle with no solution. Put a plus or a minus on each square so every row and column multiplies out to the sign it asks for. You will always break at least one rule.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>It's like a sudoku that can't be finished. The best anyone can do is 5 of the 6 rules. A quantum computer gets all 6, every time, because its squares don't carry fixed answers.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="learn">Show me a best attempt</button><p class="goal" data-goal="learn"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Get 5 of 6 rules by flipping squares yourself.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> It's like a sudoku that can't be finished. The best anyone can do is 5 of the 6 rules. A quantum computer gets all 6, every time, because its squares don't carry fixed answers.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="learn" aria-keyshortcuts="t">Show me a best attempt</button><p class="goal" data-goal="learn"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Get 5 of 6 rules by flipping squares yourself.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>Give every tile a fixed value, +1 or −1. Every row must multiply to +1, columns one and two to +1, and column three to −1. Tap tiles to flip them.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="split2">
       <div class="cgrid" id="cgrid" role="group" aria-label="Classical assignment"></div>
       <div class="rules" id="rules" aria-live="polite"></div>
@@ -137,12 +143,12 @@
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Why it fails</span>
+      <h3 class="rail-h">Why it fails</h3>
       <p class="small">Multiply all nine values row by row and you get +1. Multiply them column by column and you get −1. Same nine numbers, two answers, so one rule always breaks.</p>
       <p class="small">Quantum measurement escapes this because a tile has no value until it is read, and the value it gets depends on its partners. That is contextuality, and Qontext turns it into color.</p>
     </div>
     <div class="card">
-      <span class="eyebrow">Checked by computer</span>
+      <h3 class="rail-h">Checked by computer</h3>
       <p class="small">All 512 fixed assignments were searched. The best any of them can do is <strong id="learnOpt">5</strong> of 6 rules.</p>
     </div>
   </aside>
@@ -150,19 +156,22 @@
 
 <!-- HARMONY -->
 <section class="panel" id="tab-harmony" role="tabpanel" aria-labelledby="tabbtn-harmony" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Unity Wheel, roots of unity on the color wheel</span>
-      <h2>Harmony is quantum phase</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Unity Wheel</h2>
+      <p class="room-what">Harmony is quantum phase</p>
     </div>
     <div class="wall" data-wall="harmony" aria-label="In plain words" role="note">
+      <p class="source">Roots of unity on the color wheel</p>
       <p class="wall-what">Pick how many colors you want and they spread out evenly around the color wheel, like the hours on a clock. Every other room in the Atelier uses these colors.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Choose 3 colors and a teal starting point and you get a balanced trio of teal, coral and gold, ready for a brand. Drop in a photo and the wheel starts from its main color.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="harmony">Spin a random harmony</button><p class="goal" data-goal="harmony"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Save a harmony you like to your library.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Choose 3 colors and a teal starting point and you get a balanced trio of teal, coral and gold, ready for a brand. Drop in a photo and the wheel starts from its main color.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="harmony" aria-keyshortcuts="t">Spin a random harmony</button><p class="goal" data-goal="harmony"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Save a harmony you like to your library.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>A d-level quantum system has phases spaced evenly around a circle. Put them on the hue wheel and you get complementary, triadic, tetradic and beyond, all perfectly balanced.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="split2">
-      <div class="wheel-box"><div class="wheel" id="wheel"></div><svg id="wheelSvg" viewBox="0 0 200 200" aria-hidden="true"></svg><div class="wheel-hole"><div><div class="big" id="wheelD">3</div><div class="eyebrow" id="wheelName">Triadic</div></div></div></div>
+      <div class="wheel-box"><div class="wheel" id="wheel"></div><svg id="wheelSvg" viewBox="0 0 200 200" aria-hidden="true"></svg><div class="wheel-hole"><div><div class="big" id="wheelD">3</div><div class="wheel-name" id="wheelName">Triadic</div></div></div></div>
       <div class="chips" id="harmChips"></div>
     </div>
     <div class="card">
@@ -174,10 +183,10 @@
   </div>
   <aside class="rail">
     <div class="card">
-      <label class="field" for="dIn"><span class="field-top"><span>Quantum levels</span><span class="val" id="dVal">3</span></span><input type="range" id="dIn" min="2" max="8" step="1"></label>
-      <label class="field" for="hIn"><span class="field-top"><span>Base phase (hue)</span><span class="val" id="hVal">200°</span></span><input type="range" id="hIn" min="0" max="359" step="1"></label>
+      <label class="field" for="dIn"><span class="field-top"><span>Number of colors (quantum levels)</span><span class="val" id="dVal">3</span></span><input type="range" id="dIn" min="2" max="8" step="1"></label>
+      <label class="field" for="hIn"><span class="field-top"><span>Starting hue (base phase)</span><span class="val" id="hVal">200°</span></span><input type="range" id="hIn" min="0" max="359" step="1"></label>
       <label class="field" for="lIn"><span class="field-top"><span>Lightness</span><span class="val" id="lVal">0.72</span></span><input type="range" id="lIn" min="0.30" max="0.92" step="0.01"></label>
-      <label class="field" for="cIn"><span class="field-top"><span>Amplitude (chroma)</span><span class="val" id="cVal">0.13</span></span><input type="range" id="cIn" min="0" max="0.30" step="0.005"></label>
+      <label class="field" for="cIn"><span class="field-top"><span>Color strength (chroma)</span><span class="val" id="cVal">0.13</span></span><input type="range" id="cIn" min="0" max="0.30" step="0.005"></label>
       <div class="row">
         <button class="btn ghost sm" type="button" id="motionBtn" aria-pressed="false">Start phase motion</button>
         <button class="btn ghost sm" type="button" id="randBtn">Random phase</button>
@@ -185,7 +194,7 @@
       <p class="muted tiny">Everything here drives Janus, Pentacle, Spooky Pair, Unpaintables and Handoff.</p>
     </div>
     <div class="card">
-      <span class="eyebrow">Library</span>
+      <h3 class="rail-h">Library</h3>
       <div class="row"><button class="btn sm" type="button" id="saveBtn">Save this harmony</button><button class="btn ghost sm" type="button" id="clearLib">Clear</button></div>
       <div class="lib" id="lib"></div>
       <p class="muted tiny" id="libNote">Saved in this browser only.</p>
@@ -195,59 +204,65 @@
 
 <!-- MIXER -->
 <section class="panel" id="tab-mixer" role="tabpanel" aria-labelledby="tabbtn-mixer" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Fringe, a Mach-Zehnder interferometer for color</span>
-      <h2>Mix colors like waves</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Fringe</h2>
+      <p class="room-what">Mix colors like waves</p>
     </div>
     <div class="wall" data-wall="mixer" aria-label="In plain words" role="note">
+      <p class="source">A Mach-Zehnder interferometer for color</p>
       <p class="wall-what">Mix two colors the way waves of light mix. Turn the dial and color slides from one output to the other. Nothing is lost: what leaves one side shows up on the other.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Put a color and its opposite in, like blue and orange. At the right turn of the dial one output fades to plain gray while the other glows twice as strong.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="mixer">Use opposite colors</button><p class="goal" data-goal="mixer"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the dial until one output fades to gray.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Put a color and its opposite in, like blue and orange. At the right turn of the dial one output fades to plain gray while the other glows twice as strong.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="mixer" aria-keyshortcuts="t">Use opposite colors</button><p class="goal" data-goal="mixer"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the dial until one output fades to gray.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>Each color becomes a wave: hue is its phase, chroma its amplitude. Two colors meet at a beam splitter and leave through two ports. Shift the phase and the ports trade color while the total stays constant.</p></details>
     </div>
-    <div class="mix">
-      <div class="side">
-        <label class="field" for="mixA">Input A<input type="color" id="mixA"></label>
-        <label class="field" for="mixB">Input B<input type="color" id="mixB"></label>
-      </div>
-      <div class="bs"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="8" width="48" height="48" rx="6" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="56" x2="56" y2="8" stroke="currentColor" stroke-width="1.5"/></svg><span>beam splitter</span></div>
-      <div class="side">
-        <div><div class="swatch-lg" id="outA"></div><div class="mono tiny" id="outAtxt"></div></div>
-        <div><div class="swatch-lg" id="outB"></div><div class="mono tiny" id="outBtxt"></div></div>
-      </div>
+  </header>
+  <div class="stage">
+    <div class="inputs">
+      <label class="field inline" for="mixA">Input A<input type="color" id="mixA"></label>
+      <label class="field inline" for="mixB">Input B<input type="color" id="mixB"></label>
+      <button class="btn ghost sm" type="button" id="mixSwap">Swap inputs</button>
     </div>
-    <label class="field" for="phiIn"><span class="field-top"><span>Relative phase</span><span class="val" id="phiVal">0°</span></span><input type="range" id="phiIn" min="0" max="360" step="1"></label>
-    <div class="head"><h3>Interference fringe</h3><p class="muted small">Port 1 across a full phase sweep. The marker is the current phase.</p></div>
-    <div class="fringe" id="fringe"><div class="mk" id="fringeMk"></div></div>
+    <div class="fringe-wall">
+      <div class="fringe" id="fringe" aria-hidden="true"><div class="mk" id="fringeMk"></div></div>
+      <p class="muted small">Port 1 across a full turn of the dial. Drag along the band, or use the dial below.</p>
+    </div>
+    <label class="field" for="phiIn"><span class="field-top"><span>The dial (relative phase)</span><span class="val" id="phiVal">0°</span></span><input type="range" id="phiIn" min="0" max="360" step="1"></label>
+    <div class="ports">
+      <div class="port" id="outA"><span class="port-tag" id="outAtxt"></span></div>
+      <div class="port" id="outB"><span class="port-tag" id="outBtxt"></span></div>
+    </div>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Energy check</span>
-      <div class="stat"><span>Chroma energy in</span><span class="val" id="eIn">-</span></div>
-      <div class="stat"><span>Chroma energy out</span><span class="val" id="eOut">-</span></div>
-      <div class="stat"><span>Port 1 share</span><span class="val" id="eShare">-</span></div>
+      <h3 class="rail-h">Color in, color out</h3>
+      <div class="stat"><span>Color going in</span><span class="val" id="eIn">-</span></div>
+      <div class="stat"><span>Color coming out</span><span class="val" id="eOut">-</span></div>
+      <div class="stat"><span>Share in port 1</span><span class="val" id="eShare">-</span></div>
       <p class="muted small">Energy is conserved, so color removed from one port appears in the other. Opposite phases cancel to neutral gray in one port and double up in the other.</p>
     </div>
     <div class="card">
-      <div class="row"><button class="btn sm" type="button" id="mixToHarm">Use port 1 as base phase</button><button class="btn ghost sm" type="button" id="mixSwap">Swap inputs</button></div>
+      <div class="row"><button class="btn sm" type="button" id="mixToHarm">Start the Unity Wheel from port 1</button></div>
     </div>
   </aside>
 </section>
 
 <!-- PENTAGRAM -->
 <section class="panel" id="tab-penta" role="tabpanel" aria-labelledby="tabbtn-penta" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Pentacle, the KCBS test on one qutrit</span>
-      <h2>The pentagram palette</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Pentacle</h2>
+      <p class="room-what">The pentagram palette</p>
     </div>
     <div class="wall" data-wall="penta" aria-label="In plain words" role="note">
+      <p class="source">The KCBS test on one qutrit</p>
       <p class="wall-what">Five colors on a star. Colors joined by a line can never both be picked, and the size of each dot is its chance. Ordinary rules cap the total chance at 2. Quantum rules go higher.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Use it for five chart categories. Colors joined on the star sit far apart on the color wheel, so no two connected slices ever look alike.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="penta">Shake the state</button><p class="goal" data-goal="penta"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the knobs back to the top score, 2.236.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Use it for five chart categories. Colors joined on the star sit far apart on the color wheel, so no two connected slices ever look alike.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="penta" aria-keyshortcuts="t">Shake the state</button><p class="goal" data-goal="penta"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Turn the knobs back to the top score, 2.236.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>Five quantum events where neighbours on the star can never both happen. Any classical model keeps their total chance at 2 or below. The right qutrit state reaches the square root of 5.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="split2">
       <div class="figure"><svg id="pentaSvg" viewBox="0 0 300 300" role="img" aria-label="Pentagram palette"></svg></div>
       <div class="chips" id="pentaChips"></div>
@@ -255,14 +270,14 @@
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">KCBS sum</span>
+      <h3 class="rail-h">Total chance</h3>
       <div class="spread"><span class="big" id="kcbsSum">2.236</span><span class="pill neutral" id="kcbsPill">-</span></div>
       <div class="meter" role="meter" aria-label="KCBS sum" aria-valuemin="0" aria-valuemax="2.236" id="kcbsMeter"><div class="fill" id="kcbsFill"></div><div class="bound" id="kcbsBound"></div></div>
-      <div class="meter-scale"><span>0</span><span>classical max 2</span><span>2.236</span></div>
+      <div class="meter-scale"><span>0</span><span>ordinary limit 2</span><span>2.236</span></div>
     </div>
     <div class="card">
-      <label class="field" for="tIn"><span class="field-top"><span>State tilt</span><span class="val" id="tVal">0°</span></span><input type="range" id="tIn" min="0" max="90" step="1"></label>
-      <label class="field" for="pIn"><span class="field-top"><span>State turn</span><span class="val" id="pVal">0°</span></span><input type="range" id="pIn" min="0" max="360" step="1"></label>
+      <label class="field" for="tIn"><span class="field-top"><span>Tilt the state</span><span class="val" id="tVal">0°</span></span><input type="range" id="tIn" min="0" max="90" step="1"></label>
+      <label class="field" for="pIn"><span class="field-top"><span>Turn the state</span><span class="val" id="pVal">0°</span></span><input type="range" id="pIn" min="0" max="360" step="1"></label>
       <p class="muted small">Point size shows each event's chance. Tilt to zero for the maximum. Linked hues sit 144 degrees apart, so neighbouring colors never look alike.</p>
     </div>
   </aside>
@@ -270,52 +285,49 @@
 
 <!-- ENTANGLED -->
 <section class="panel" id="tab-entangle" role="tabpanel" aria-labelledby="tabbtn-entangle" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Spooky Pair, a Bell pair and the CHSH game</span>
-      <h2>Entangled assets</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Spooky Pair</h2>
+      <p class="room-what">Entangled assets</p>
     </div>
     <div class="wall" data-wall="entangle" aria-label="In plain words" role="note">
+      <p class="source">A Bell pair and the CHSH game</p>
       <p class="wall-what">Two designs, one light and one dark, share a linked pair of quantum coins. Each design picks a style and flips its coin, and the two coins land in step more often than any two separate coins could.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>A light landing page and its dark twin. When both are calm their accent colors tend to match. When both are bold they tend to clash. Two separate dice can't keep that promise this well.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="entangle">Collapse the pair</button><p class="goal" data-goal="entangle"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Set both to Bold and catch them clashing.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> A light landing page and its dark twin. When both are calm their accent colors tend to match. When both are bold they tend to clash. Two separate dice can't keep that promise this well.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="entangle" aria-keyshortcuts="t">Collapse the pair</button><p class="goal" data-goal="entangle"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Set both to Bold and catch them clashing.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>A light asset and a dark asset share an entangled pair. Each picks a style, and the accent it gets is its measurement outcome. Their accents agree and clash more reliably than any two independent rules allow.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="assets">
       <div class="asset light" id="assetA">
-        <div class="spread"><strong>Asset A, light</strong><span class="mono tiny" id="assetAOut"></span></div>
-        <div class="bar" id="assetABar"></div>
-        <div class="line" style="background:currentColor;width:80%"></div>
-        <div class="line" style="background:currentColor;width:60%"></div>
-        <button class="cta" type="button" tabindex="-1" id="assetACta">Get started</button>
+        <p class="asset-k">Asset A, a light page</p>
+        <div class="poster" id="assetABar"><span class="poster-w" id="assetAWord">Calm</span></div>
+        <p class="mono asset-out" id="assetAOut"></p>
+        <label class="field inline" for="styleA">Style<select class="inp" id="styleA"><option value="0">Calm</option><option value="1">Bold</option></select></label>
       </div>
       <div class="asset dark" id="assetB">
-        <div class="spread"><strong>Asset B, dark</strong><span class="mono tiny" id="assetBOut"></span></div>
-        <div class="bar" id="assetBBar"></div>
-        <div class="line" style="background:currentColor;width:80%"></div>
-        <div class="line" style="background:currentColor;width:60%"></div>
-        <button class="cta" type="button" tabindex="-1" id="assetBCta">Get started</button>
+        <p class="asset-k">Asset B, a dark page</p>
+        <div class="poster" id="assetBBar"><span class="poster-w" id="assetBWord">Calm</span></div>
+        <p class="mono asset-out" id="assetBOut"></p>
+        <label class="field inline" for="styleB">Style<select class="inp" id="styleB"><option value="0">Calm</option><option value="1">Bold</option></select></label>
       </div>
     </div>
-    <div class="row">
-      <label class="field" for="styleA">Asset A style<select class="inp" id="styleA"><option value="0">Calm</option><option value="1">Bold</option></select></label>
-      <label class="field" for="styleB">Asset B style<select class="inp" id="styleB"><option value="0">Calm</option><option value="1">Bold</option></select></label>
-      <button class="btn" type="button" id="pairBtn">Collapse the pair</button>
-    </div>
+    <div class="row"><button class="btn" type="button" id="pairBtn">Collapse the pair</button></div>
     <div class="head"><h3>Pair gallery</h3><p class="muted small">Twelve pairs with random styles. Calm with anything tends to match; bold with bold tends to clash.</p></div>
     <div class="pairs" id="pairs"></div>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">CHSH value</span>
+      <h3 class="rail-h">How linked are the coins?</h3>
       <div class="spread"><span class="big" id="chshS">2.83</span><span class="pill neutral" id="chshPill">-</span></div>
       <div class="meter" role="meter" aria-label="CHSH value" aria-valuemin="0" aria-valuemax="2.83" id="chshMeter"><div class="fill" id="chshFill"></div><div class="bound" style="left:70.71%"></div></div>
-      <div class="meter-scale"><span>0</span><span>classical max 2</span><span>2.83</span></div>
-      <div class="stat"><span>Game win rate (classical max 75%)</span><span class="val" id="chshWin">-</span></div>
+      <div class="meter-scale"><span>0</span><span>ordinary limit 2</span><span>2.83</span></div>
+      <div class="stat"><span>Game wins (ordinary limit 75%)</span><span class="val" id="chshWin">-</span></div>
       <p class="muted tiny" id="chshSource"></p>
     </div>
     <div class="card">
-      <span class="eyebrow">Agreement by style</span>
+      <h3 class="rail-h">Agreement by style</h3>
       <div class="table-wrap" tabindex="0" role="region" aria-label="CHSH results by setting"><table><thead><tr><th>A / B</th><th>Ideal</th><th>Measured</th></tr></thead><tbody id="chshTable"></tbody></table></div>
     </div>
   </aside>
@@ -323,17 +335,20 @@
 
 <!-- SHAPES -->
 <section class="panel" id="tab-shapes" role="tabpanel" aria-labelledby="tabbtn-shapes" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Unpaintables, Kochen-Specker shape packs</span>
-      <h2>Shapes no coloring can finish</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Unpaintables</h2>
+      <p class="room-what">Shapes no coloring can finish</p>
     </div>
     <div class="wall" data-wall="shapes" aria-label="In plain words" role="note">
+      <p class="source">Kochen-Specker shape packs</p>
       <p class="wall-what">3D shapes made of arrows. The rule sounds easy: in every group of arrows at right angles, light up exactly one. For two of these shapes nobody, and no computer, can follow that rule everywhere. Something always breaks.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Export one as an SVG or a 3D file and you have a logo or a small sculpture that is mathematically impossible to color in, with the broken spot showing every time.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="shapes">Try to color it</button><p class="goal" data-goal="shapes"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find the one shape that can be colored.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Export one as an SVG or a 3D file and you have a logo or a small sculpture that is mathematically impossible to color in, with the broken spot showing every time.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="shapes" aria-keyshortcuts="t">Try to color it</button><p class="goal" data-goal="shapes"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Find the one shape that can be colored.</span></p></div>
       <details class="wall-more"><summary>The science, for the curious</summary><p>Each shape is a set of directions in space. A classical coloring must light exactly one direction in every perpendicular set and never light two perpendicular directions. For Peres 33 and Cabello 18 that is impossible, and the broken set always shows.</p></details>
     </div>
+  </header>
+  <div class="stage">
     <div class="seg" role="group" aria-label="Shape pack" id="shapeSeg">
       <button type="button" data-shape="peres33" aria-pressed="true">Peres 33</button>
       <button type="button" data-shape="cabello18" aria-pressed="false">Cabello 18</button>
@@ -361,7 +376,7 @@
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow" id="shapeName">Peres 33</span>
+      <h3 class="rail-h" id="shapeName">Peres 33</h3>
       <div class="stat"><span>Directions</span><span class="val" id="shapeN">-</span></div>
       <div class="stat"><span>Complete perpendicular sets</span><span class="val" id="shapeB">-</span></div>
       <div class="stat"><span>Perpendicular pairs</span><span class="val" id="shapeP">-</span></div>
@@ -369,10 +384,10 @@
       <div class="stat"><span>Best attempt</span><span class="val" id="shapeBest">-</span></div>
     </div>
     <div class="card" id="yuohCard" hidden>
-      <span class="eyebrow">Yu-Oh inequality</span>
+      <h3 class="rail-h">Yu-Oh inequality</h3>
       <div class="spread"><span class="big">8.33</span><span class="pill good">Every state</span></div>
       <div class="meter"><div class="fill" style="width:100%"></div><div class="bound" style="left:96%"></div></div>
-      <div class="meter-scale"><span>0</span><span>classical max 8</span><span>8.33</span></div>
+      <div class="meter-scale"><span>0</span><span>ordinary limit 8</span><span>8.33</span></div>
       <p class="muted small">This set can be colored, yet every quantum state scores 25/3 on its inequality, above the classical 8. The violation does not depend on the state at all.</p>
     </div>
   </aside>
@@ -380,16 +395,19 @@
 
 <!-- HARDWARE -->
 <section class="panel" id="tab-hardware" role="tabpanel" aria-labelledby="tabbtn-hardware" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Notary, colors from a real quantum computer</span>
-      <h2>Prove it was real</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Notary</h2>
+      <p class="room-what">Prove it was real</p>
     </div>
     <div class="wall" data-wall="hardware" aria-label="In plain words" role="note">
+      <p class="source">Colors from a real quantum computer</p>
       <p class="wall-what">Normally your colors come from a simulation running in this browser. Notary lets you take them from a real quantum computer instead, and gives you a stamp anyone can use to check them.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Print “measured on IBM Quantum” on a poster. The stamp's fingerprint lets anyone confirm the colors came from those exact results, and nobody can quietly swap them.</p>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Print “measured on IBM Quantum” on a poster. The stamp's fingerprint lets anyone confirm the colors came from those exact results, and nobody can quietly swap them.</p>
       <div class="wall-do"><p class="goal" data-goal="hardware"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Get your first stamp.</span></p></div>
     </div>
+  </header>
+  <div class="stage">
     <ol class="steps">
       <li class="step">
         <span class="step-n" aria-hidden="true">1</span>
@@ -436,7 +454,7 @@ qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">How quantum was it?</span>
+      <h3 class="rail-h">How quantum was it?</h3>
       <div class="spread"><span class="big" id="hwScore">-</span><span class="pill neutral" id="hwPill">No results yet</span></div>
       <div class="meter"><div class="fill" id="hwFill" style="width:0"></div><div class="bound" style="left:66.67%"></div></div>
       <div class="meter-scale"><span>0</span><span>ordinary limit 4</span><span>6</span></div>
@@ -444,7 +462,7 @@ qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
       <div class="stat"><span>Linked-coins score (ordinary limit 2)</span><span class="val" id="hwChsh">-</span></div>
     </div>
     <div class="card">
-      <span class="eyebrow">Your stamp</span>
+      <h3 class="rail-h">Your stamp</h3>
       <div class="seal" id="seal"><div class="stamp empty" aria-hidden="true"><span>Your stamp<br>appears here</span></div></div>
       <button class="btn ghost sm" type="button" id="sealCopy" disabled>Copy the stamp</button>
     </div>
@@ -453,16 +471,19 @@ qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
 
 <!-- EXPORT -->
 <section class="panel" id="tab-export" role="tabpanel" aria-labelledby="tabbtn-export" hidden>
-  <div class="stage">
-    <div class="head">
-      <span class="eyebrow">Handoff</span>
-      <h2>Take your colors with you</h2>
+  <header class="room-head">
+    <div class="room-title">
+      <h2 class="room-name">Handoff</h2>
+      <p class="room-what">Take your colors with you</p>
     </div>
     <div class="wall" data-wall="export" aria-label="In plain words" role="note">
+      <p class="source">Your colors, ready for your own work</p>
       <p class="wall-what">Take your colors into your own work. Choose where they're going, then copy or download. Each square comes with both of its colors, so your project can use either reading.</p>
-      <p class="wall-eg"><span class="wall-label">For example</span>Building a website? Choose A website, press Copy, paste it into your stylesheet, and your buttons and headings use these colors right away.</p>
-      <div class="wall-do"><button class="btn sm" type="button" data-try="export">Copy for a website</button><p class="goal" data-goal="export"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Make your first export.</span></p></div>
+      <p class="wall-eg"><span class="wall-label">For example:</span> Building a website? Choose A website, press Copy, paste it into your stylesheet, and your buttons and headings use these colors right away.</p>
+      <div class="wall-do"><button class="btn sm" type="button" data-try="export" aria-keyshortcuts="t">Copy for a website</button><p class="goal" data-goal="export"><span class="goal-mark" aria-hidden="true"></span><span><span class="goal-k">Goal:</span> Make your first export.</span></p></div>
     </div>
+  </header>
+  <div class="stage">
     <div class="card">
       <h3>Your colors</h3>
       <p class="muted small">The harmony first, then each square of the grid, split into its row color and its column color.</p>
@@ -498,7 +519,7 @@ qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
   </div>
   <aside class="rail">
     <div class="card">
-      <span class="eyebrow">Your design's save code</span>
+      <h3 class="rail-h">Your design's save code</h3>
       <label class="field" for="projName">Name your design<input type="text" id="projName" maxlength="80"></label>
       <p class="savecode mono" id="projShort" aria-hidden="true"></p>
       <p class="muted small">One short code holds this exact design. Paste it into the Atelier, the website or the Figma plugin to bring it back.</p>
@@ -512,6 +533,6 @@ qontext-probe --ibm least_busy     # run on IBM Quantum</pre>
 </section>
 
 </main>
-<footer>Qontext Atelier v/*__VERSION__*/ runs exact quantum simulation on your device. Hardware shots come from Probe. Your work stays in this browser. <a href="index.html">Back to the site</a> <a href="privacy.html">Privacy</a> <a href="https://github.com/QubitMan-hub/Qontext/issues">Contact</a></footer>
+<footer><p class="keys">Keys: <kbd>1</kbd> to <kbd>9</kbd> open a room, <kbd>T</kbd> does the room's first idea, <kbd>Space</kbd> measures again in Janus.</p>Qontext Atelier v/*__VERSION__*/ runs exact quantum simulation on your device. Hardware shots come from Probe. Your work stays in this browser. <a href="index.html">Back to the site</a> <a href="privacy.html">Privacy</a> <a href="https://github.com/QubitMan-hub/Qontext/issues">Contact</a></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>/*__JS__*/</script>

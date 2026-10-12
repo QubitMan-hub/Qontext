@@ -311,3 +311,104 @@ def test_handoff_pauses_and_fixes_unreadable_colors(page):
     page.click("#handoffFix")
     assert page.locator("#handoffBlock").is_hidden()
     assert page.is_enabled("#copyBtn")
+
+
+# The gallery look: the Atelier hangs like the site, no card kit (Impeccable critique, 2026-10-12).
+
+STYLE_PROBE = """() => {
+  const out = { small: [], stripes: [], fonts: new Set(), boxed: [] };
+  const sec = document.querySelector('main > section:not([hidden])');
+  for (const el of sec.querySelectorAll('*')) {
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    const s = getComputedStyle(el);
+    const skip = '.sr-only, [aria-hidden="true"], details:not([open]) > :not(summary)';
+    if (s.visibility === 'hidden' || el.closest(skip)) continue;
+    const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+    if (own) {
+      out.fonts.add(s.fontFamily.split(',')[0].replaceAll('"', '').trim());
+      const svg = el.closest('svg');
+      const vb = svg && svg.viewBox.baseVal;
+      const scale = vb && vb.width ? svg.getBoundingClientRect().width / vb.width : 1;
+      const px = parseFloat(s.fontSize) * scale;
+      if (px < 12) out.small.push(`${el.getAttribute('class') || el.tagName} ${px.toFixed(1)}px`);
+    }
+    const left = parseFloat(s.borderLeftWidth);
+    if (left >= 3 && left > parseFloat(s.borderRightWidth) + 1) out.stripes.push(el.getAttribute('class'));
+    const bordered = ['Top', 'Right', 'Bottom', 'Left'].every((k) => parseFloat(s[`border${k}Width`]) > 0);
+    if (bordered && el.parentElement.classList.contains('rail')) out.boxed.push(el.getAttribute('class'));
+  }
+  return { ...out, fonts: [...out.fonts] };
+}"""
+
+
+def test_rooms_hang_like_the_site(page):
+    for name in TABS:
+        open_tab(page, name)
+        probe = page.evaluate(STYLE_PROBE)
+        assert probe["small"] == [], f"{name}: text under 12 px {probe['small']}"
+        assert probe["stripes"] == [], f"{name}: side stripes {probe['stripes']}"
+        assert probe["boxed"] == [], f"{name}: boxed rail cards {probe['boxed']}"
+        assert "Instrument Sans" not in probe["fonts"], f"{name}: {probe['fonts']}"
+        name_el = page.locator(f"#tab-{name} h2.room-name")
+        assert name_el.is_visible()
+        assert name_el.evaluate("e => getComputedStyle(e).fontWeight") == "330"
+    reading = page.evaluate("getComputedStyle(document.querySelector('.wall-what')).fontFamily")
+    assert reading.replace('"', "").startswith("Literata")
+
+
+def test_wall_text_beside_the_name_keeps_the_exhibit_high(page):
+    # Desktop: the wall label sits beside the room name, so Fringe's band starts in the first screen.
+    open_tab(page, "mixer")
+    assert page.locator("#fringe").bounding_box()["y"] < 900
+    name = page.locator("#tab-mixer h2").bounding_box()
+    wall = page.locator("#tab-mixer .wall").bounding_box()
+    assert wall["x"] > name["x"] + name["width"] - 1
+
+
+def test_number_keys_open_rooms_and_t_tries(page):
+    page.locator("body").click(position={"x": 5, "y": 5})
+    page.keyboard.press("4")
+    page.wait_for_selector("#tab-mixer:not([hidden])")
+    page.keyboard.press("9")
+    page.wait_for_selector("#tab-export:not([hidden])")
+    page.keyboard.press("3")
+    page.wait_for_selector("#tab-harmony:not([hidden])")
+    before = page.input_value("#hIn")
+    page.keyboard.press("t")
+    page.wait_for_function(f"() => document.getElementById('hIn').value !== '{before}'")
+    # Typing in a field never switches rooms.
+    page.keyboard.press("9")
+    open_tab(page, "export")
+    page.fill("#projName", "")
+    page.locator("#projName").type("1 2")
+    assert page.locator("#tab-export").is_visible()
+
+
+def test_fringe_band_turns_the_dial_when_dragged(page):
+    open_tab(page, "mixer")
+    band = page.locator("#fringe").bounding_box()
+    page.mouse.click(band["x"] + band["width"] * 0.5, band["y"] + band["height"] / 2)
+    assert abs(int(page.input_value("#phiIn")) - 180) <= 3
+    assert page.locator("#fringe").bounding_box()["height"] >= 120
+
+
+def test_spooky_pair_hangs_as_two_posters(page):
+    open_tab(page, "entangle")
+    assert page.locator("#tab-entangle .cta").count() == 0
+    for side in "AB":
+        word = page.inner_text(f"#asset{side}Word")
+        assert word in ("Calm", "Bold")
+        ratio = page.evaluate(
+            f"""() => {{
+              const e = document.getElementById('asset{side}Word');
+              const lum = (c) => {{ const v = c.match(/\\d+(\\.\\d+)?/g).slice(0, 3).map((x) => x / 255)
+                .map((x) => (x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+                return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; }};
+              const a = lum(getComputedStyle(e).color), b = lum(getComputedStyle(e.parentElement).backgroundColor);
+              return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+            }}"""
+        )
+        assert ratio >= 4.5
+    page.select_option("#styleA", "1")
+    assert page.inner_text("#assetAWord") == "Bold"

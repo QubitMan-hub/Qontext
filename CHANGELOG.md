@@ -12,6 +12,12 @@ New
 - Handoff is now Take your colors with you: your palette first, then where it's going (a website, Figma, Tailwind,
   an image), then Copy or Download a named file. The code waits behind Show the code, the Wavefunction is your
   design's save code, and a Fix it for me button appears when Bouncer pauses an export.
+- The Atelier now hangs like the site. Each room's name is set in the site's tall vinyl letters with its wall
+  label beside it, exhibits sit straight on the wall, and the controls run down a quiet column split by thin
+  rules instead of a stack of boxes. Reading text is Literata, controls are Anybody. Fringe's band is tall and
+  can be dragged to turn the dial, Spooky Pair shows two posters on a split light and dark wall, and the rails
+  speak plainly (How quantum is it?, Total chance, How linked are the coins?). Keys 1 to 9 open a room and T
+  does the room's first idea. No text is smaller than 12 px.
 - Pair Production, the showcase: a sneaker drop from start to finish, told as a scroll story beside a pinned
   vitrine. One shoe's nine panels are the grid's nine tiles; the left foot reads the rows and the right foot the
   columns. Roll a world, tune the harmony, let Bouncer check the print on every panel (and fix the lightness when

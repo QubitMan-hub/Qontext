@@ -74,10 +74,21 @@ function initGlobal() {
   $('vision').addEventListener('change', (e) => {
     $('work').className = e.target.value === 'none' ? '' : `cvd-${e.target.value}`;
   });
+  // Shortcuts: 1 to 9 open a room, T does the room's "Try this", Space measures again in Janus.
   document.addEventListener('keydown', (e) => {
-    if (e.code !== 'Space' || store.tab !== 'grid' || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     const tag = (e.target && e.target.tagName ? e.target.tagName : '').toLowerCase();
-    if (['input', 'textarea', 'select', 'button', 'canvas'].includes(tag) || (e.target && e.target.isContentEditable)) return;
+    if (['input', 'textarea', 'select'].includes(tag) || (e.target && e.target.isContentEditable)) return;
+    if (/^[1-9]$/.test(e.key)) {
+      showTab(TABS[Number(e.key) - 1]);
+      return;
+    }
+    if (e.key === 't' || e.key === 'T') {
+      const go = document.querySelector('main > section:not([hidden]) [data-try]');
+      if (go) go.click();
+      return;
+    }
+    if (e.code !== 'Space' || store.tab !== 'grid' || ['button', 'canvas'].includes(tag)) return;
     e.preventDefault();
     remeasure();
   });

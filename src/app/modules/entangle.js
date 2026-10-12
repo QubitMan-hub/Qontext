@@ -57,11 +57,12 @@ export function init() {
 
 function paintAsset(prefix, outcome, style, dark) {
   const acc = assetAccent(palette(), outcome, style, dark);
-  $(`${prefix}Bar`).style.background = acc.hex;
-  const cta = $(`${prefix}Cta`);
-  const fill = legibleOn(acc.hex); // Bouncer: the button text reads at 4.5 : 1 or better
-  cta.style.background = fill.fill;
-  cta.style.color = fill.ink;
+  // Bouncer: the poster keeps the accent's hue and the word on it reads at 4.5 : 1 or better.
+  const fill = legibleOn(acc.hex);
+  const poster = $(`${prefix}Bar`);
+  poster.style.background = fill.fill;
+  poster.style.color = fill.ink;
+  $(`${prefix}Word`).textContent = STYLE_NAMES[style];
   $(`${prefix}Out`).textContent = `${STYLE_NAMES[style]}, ${sign(outcome)}, ${acc.hex}`;
 }
 
