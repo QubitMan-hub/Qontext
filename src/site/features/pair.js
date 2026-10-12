@@ -6,9 +6,11 @@
 
 import { oklch, hexToOklch, hexToLin, wcagContrast, harmony, fixLightness, INKS, WCAG_AA } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
-import { h, svg, whenNear, reduced } from '../lib.js';
-import { site, onWorld, worldNumber } from '../world.js';
-import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf, footValues, pairChecks } from '../pair-shape.js';
+import { h, svg, whenNear, onVisible, reduced } from '../lib.js';
+import { collapse } from '../../runtime/qontext-runtime.js';
+import { goToWorld } from './worlds.js';
+import { site, onWorld, worldNumber, paletteFor } from '../world.js';
+import { PANELS, LOGO, LACES, SEAMS, TREAD, pairOf, footValues, pairChecks, dropSeeds } from '../pair-shape.js';
 
 /** What the visitor has done to the pair in this world. A new world starts it over. */
 export const pair = { nudge: 0, d: 3, L: null, painted: new Set(), match: false };
@@ -19,6 +21,7 @@ const stops = { L: new Map(), R: new Map() };
 const logos = [];
 const legend = new Map();
 let built = false;
+let dropShown = false;
 
 /** The world's palette with the showcase's own harmony and lightness on top. */
 export function palette() {
@@ -128,7 +131,7 @@ function paint(id) {
   const fresh = !pair.painted.has(id);
   pair.painted.add(id);
   render();
-  if (fresh && !reduced()) {
+  if (fresh && built && !reduced()) {
     for (const side of ['L', 'R']) {
       const el = paths[side].get(id);
       el.classList.remove('landed');
@@ -180,6 +183,34 @@ function renderPaint(p, outcomes) {
     : `${held} of 6 rules hold. ${p.differ.length} of 9 panels differ between the feet.`;
 }
 
+/** One pair from another world, painted, toes out, for the drop's shelves. */
+function miniPair(seed) {
+  const pal = paletteFor(seed);
+  const p = pairOf(pal, collapse({ ...pal, state: 'random', stateSeed: 7, seed }).outcomes);
+  const root = svg('svg', { viewBox: '0 0 1220 290', 'aria-hidden': 'true', focusable: 'false' });
+  for (const [side, flip] of [['L', true], ['R', false]]) {
+    const foot = side === 'L' ? p.left : p.right;
+    const g = svg('g', { transform: `translate(610 0)${flip ? ' scale(-1 1)' : ''}` });
+    g.append(svg('ellipse', { class: 'floor', cx: 305, cy: 266, rx: 262, ry: 10 }));
+    for (const panel of PANELS) g.append(svg('path', { class: 'pnl', d: panel.d, fill: foot.get(panel.id) }));
+    for (const d of LACES) g.append(svg('path', { class: 'lace', d }));
+    root.append(g);
+  }
+  return { root, differ: p.differ.length };
+}
+
+/** Step 5: twelve pairs from twelve other worlds, picked from this one, so the wall stays put until a roll. */
+function renderDrop() {
+  if (!dropShown) return;
+  $('pairDrop').replaceChildren(
+    ...dropSeeds(site.seed).map((seed) => {
+      const { root, differ } = miniPair(seed);
+      const label = `World ${worldNumber(seed)}, ${differ} of 9 panels differ`;
+      return h('li', {}, h('button', { type: 'button', 'data-seed': seed, 'aria-label': `Make it yours: ${label}` }, root, h('span', { class: 'w' }, `World ${worldNumber(seed)}`), h('span', { class: 'd' }, `${differ} of 9 differ`)));
+    }),
+  );
+}
+
 /** Paints the pair from the current world and the showcase's state. */
 export function render() {
   const sec = $('pair');
@@ -224,6 +255,19 @@ export function initPair() {
     if (el) paint(el.dataset.panel);
   });
   $('pairPaintAll').addEventListener('click', paintRest);
+  $('pairDrop').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-seed]');
+    if (b) goToWorld(Number(b.dataset.seed));
+  });
+  const dropStep = $('pairSteps').querySelector('[data-step="5"]');
+  whenNear(dropStep, () => {
+    dropShown = true;
+    renderDrop();
+  }, '400px 0px');
+  // Reaching the drop with nothing painted: the pair paints itself, so the drop and the tag have a pair to show.
+  onVisible(dropStep, (seen) => {
+    if (seen && pair.painted.size === 0) paintRest();
+  }, '-45% 0px -45% 0px');
   $('pairMatch').addEventListener('click', toggleMatch);
   $('pairTurn').addEventListener('input', (e) => {
     pair.nudge = Number(e.target.value);
@@ -250,5 +294,6 @@ export function initPair() {
     Object.assign(pair, { nudge: 0, d: 3, L: null, match: false });
     pair.painted.clear();
     render();
+    renderDrop();
   });
 }

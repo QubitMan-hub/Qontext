@@ -30,7 +30,7 @@ export const tileOf = (id) => [Number(id[1]) - 1, Number(id[3]) - 1];
 export const newSeed = () => 1 + (freshSeed() % 9999999);
 
 /** A palette for a world: its own base phase, a triad, and a lightness Bouncer has cleared for dark text. */
-function paletteFor(seed) {
+export function paletteFor(seed) {
   const pal = { base: hashSeed(seed, 11) % 360, d: 3, L: 0.76, C: 0.13 };
   const L = fixLightness(pal, INKS.dark);
   if (L !== null) pal.L = L;

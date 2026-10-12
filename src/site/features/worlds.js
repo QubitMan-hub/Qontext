@@ -25,9 +25,9 @@ function apply(seed) {
   toast(`Welcome to world ${worldNumber(seed)}`);
 }
 
-function manyWorlds() {
+/** Many Worlds: the wipe to `seed`, or to a fresh world when none is given. */
+export function goToWorld(seed = newSeed()) {
   if (switching) return;
-  const seed = newSeed();
   if (reduced()) {
     apply(seed);
     return;
@@ -93,5 +93,5 @@ function manyWorlds() {
 }
 
 export function initWorlds() {
-  for (const b of $$('#worldBtn, [data-many]')) b.addEventListener('click', manyWorlds);
+  for (const b of $$('#worldBtn, [data-many]')) b.addEventListener('click', () => goToWorld());
 }

@@ -169,3 +169,49 @@ def test_harmony_size_repaints_painted_panels(site):
     after = feet(site)[0]
     assert all(re.fullmatch(r"#[0-9a-f]{6}", f) for f in after.values())
     assert after != before
+
+
+def world_seed(page):
+    return int(page.inner_text("#worldNum").replace(",", ""))
+
+
+def drop_seeds(page):
+    page.wait_for_function("() => document.querySelectorAll('#pairDrop button[data-seed]').length === 12")
+    return [int(s) for s in page.eval_on_selector_all("#pairDrop button[data-seed]", "els => els.map((b) => b.dataset.seed)")]
+
+
+def test_the_drop_is_twelve_different_worlds(site):
+    enter_pair(site, 5)
+    seeds = drop_seeds(site)
+    assert len(set(seeds)) == 12
+    assert world_seed(site) not in seeds
+
+
+def test_choosing_a_pair_from_the_drop_makes_it_your_world(site):
+    enter_pair(site, 5)
+    seeds = drop_seeds(site)
+    site.locator("#pairDrop button[data-seed]").nth(2).click()
+    site.wait_for_function("() => document.getElementById('toast').innerText.startsWith('Welcome')")
+    site.wait_for_function(f"() => document.getElementById('worldNum').textContent.replace(/,/g, '') === '{seeds[2]}'")
+    assert all(f.startswith("url(") for _, f in fills(site))
+    assert drop_seeds(site) != seeds
+
+
+def test_a_world_change_resets_a_half_painted_pair(site):
+    enter_pair(site, 4)
+    buttons = site.locator("#pairPanels button")
+    buttons.nth(0).click()
+    buttons.nth(4).click()
+    site.click("#worldBtn")
+    site.wait_for_function("() => document.getElementById('toast').innerText.startsWith('Welcome')")
+    assert all(f.startswith("url(") for _, f in fills(site))
+    assert site.locator('#pairPanels button[aria-pressed="true"]').count() == 0
+
+
+def test_jumping_straight_to_the_drop_paints_the_pair(site):
+    site.goto(site.url.split("#")[0] + "#pairDrop")
+    site.wait_for_selector("#plan .cellwrap")
+    enter_pair(site, 5)
+    site.wait_for_function(
+        "() => [...document.querySelectorAll('#pairSvg path[data-panel]')].every((p) => !p.getAttribute('fill').startsWith('url('))"
+    )

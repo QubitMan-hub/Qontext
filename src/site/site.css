@@ -260,6 +260,14 @@ body.locked { overflow: hidden; }
 .pair-checks li[data-ok="false"] { color: var(--band-ink); }
 .pair-checks li[data-ok="false"] .mark { background: #ff8f86; border-radius: 2px; }
 .pair-verdict { font-family: var(--font-display); font-weight: 600; font-size: var(--step-1); color: var(--band-ink); max-width: 40ch; }
+/* The drop: pairs on shelves, not cards. */
+.pair-drop { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 22px 18px; }
+.pair-drop button { display: grid; gap: 2px; width: 100%; padding: 0 0 8px; background: none; border: 0; border-bottom: 2px solid color-mix(in oklab, var(--band-ink) 30%, transparent); color: var(--band-ink); text-align: left; cursor: pointer; font-family: var(--font-display); }
+.pair-drop button:hover { border-bottom-color: var(--band-ink); }
+.pair-drop svg { width: 100%; height: auto; display: block; margin-bottom: 6px; transition: transform 200ms ease; }
+.pair-drop button:hover svg { transform: translateY(-3px); }
+.pair-drop .w { font-size: var(--step--1); font-weight: 600; }
+.pair-drop .d { font-size: 0.8rem; color: var(--band-ink-2); }
 .pair .btn { background: var(--band-ink); border-color: var(--band-ink); color: var(--band); }
 .pair .btn:hover { background: var(--band-ink-2); border-color: var(--band-ink-2); }
 .pair .btn:disabled { opacity: 0.45; cursor: default; }
@@ -505,5 +513,6 @@ pre.code { background: var(--sheet); border: 1px solid var(--rule); border-radiu
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .q.sup::after, .q.seen, .jtile.flipping, .spooky.zap .thread path, .spooky.zap .bar, .caret::after, .field-layer, .pair svg .pnl.landed { animation: none !important; }
+  .pair-drop svg { transition: none; }
   .btn, .hero h1 .w, .wash i, .nav, .compass, .cmp, .meter .fill, .mark i, .world .dot { transition: none; }
 }
