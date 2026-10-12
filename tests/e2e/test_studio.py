@@ -412,3 +412,14 @@ def test_spooky_pair_hangs_as_two_posters(page):
         assert ratio >= 4.5
     page.select_option("#styleA", "1")
     assert page.inner_text("#assetAWord") == "Bold"
+
+
+def test_fringe_marker_stays_on_the_band_and_ports_are_in_view(page):
+    open_tab(page, "mixer")
+    page.fill("#phiIn", "0")
+    page.dispatch_event("#phiIn", "input")
+    band = page.locator("#fringe").bounding_box()
+    mark = page.locator("#fringeMk").bounding_box()
+    assert band["x"] - 0.5 <= mark["x"] and mark["x"] + mark["width"] <= band["x"] + band["width"] + 0.5
+    assert band["y"] - 0.5 <= mark["y"] and mark["y"] + mark["height"] <= band["y"] + band["height"] + 0.5
+    assert page.locator("#outA").bounding_box()["y"] < 900

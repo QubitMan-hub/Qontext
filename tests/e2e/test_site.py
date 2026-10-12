@@ -58,9 +58,13 @@ def test_many_worlds_switches_and_persists(site):
     assert after != before
     assert re.fullmatch(HEX, css_var(site, "--q-harmony-1"))
     site.wait_for_timeout(1300)
-    site.reload()
+    # Following a link (or coming back) keeps the world; a refresh rolls a new one.
+    site.goto(SITE)
     site.wait_for_selector("#plan .cellwrap")
     assert world(site) == after
+    site.reload()
+    site.wait_for_selector("#plan .cellwrap")
+    assert world(site) != after
 
 
 def test_janus_flips_reading_with_scroll(site):
@@ -316,3 +320,36 @@ def test_phase_dial_buttons_and_line(site):
     site.click("#phaseSystem")
     assert site.evaluate("localStorage.getItem('qontext:phase')") is None
     assert phase_of(site) == "0"
+
+
+def test_the_janus_explainer_always_shows_two_colors(browser):
+    # Any world has an odd number of tiles whose two readings differ, so the explainer can always show one.
+    errors = []
+    for seed in (1000, 4227792, 7143691, 5591513, 31):
+        ctx, page = open_site(browser, errors, init=f"sessionStorage.setItem('qontext-site-world', '{seed}')")
+        halves = page.evaluate(
+            "[...document.querySelectorAll('#janusBig .half')].map((h) => h.style.getPropertyValue('--tone'))"
+        )
+        assert halves[0] != halves[1], seed
+        tile = page.get_attribute("#janusBig .half", "data-q")
+        assert page.get_attribute("#janusBig .half + .half", "data-q") == tile
+        assert page.inner_text("#janusTile") in ("X₁", "X₂", "X₁X₂", "Z₂", "Z₁", "Z₁Z₂", "X₁Z₂", "Z₁X₂", "Y₁Y₂")
+        ctx.close()
+    assert errors == []
+
+
+def test_fringe_band_reaches_gray_and_its_needle_stays_on_it(site):
+    enter(site, "fringe", "center")
+    shares = []
+    for i in range(0, 37):
+        # Rooms above finish laying out after the jump, so the band is measured at every click.
+        band = site.locator("#band").bounding_box()
+        site.locator("#band").click(
+            position={"x": band["width"] * i / 36 - (1 if i == 36 else 0), "y": band["height"] / 2}
+        )
+        band = site.locator("#band").bounding_box()
+        shares.append(int(re.search(r"(\d+)%", site.inner_text("#port1t")).group(1)))
+        needle = site.locator("#needle").bounding_box()
+        assert band["x"] - 0.5 <= needle["x"] and needle["x"] + needle["width"] <= band["x"] + band["width"] + 0.5
+    assert min(shares) <= 2 and max(shares) >= 98, shares
+    assert "0.0" not in site.inner_text("#fEnergy")

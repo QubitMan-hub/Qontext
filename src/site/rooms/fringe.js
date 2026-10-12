@@ -1,12 +1,14 @@
 // Fringe: two colors meet at a beam splitter. The needle moves with a transform; text changes per whole degree.
+// Wave B starts as wave A's opposite, so the band shows interference at its clearest: somewhere on it port 1
+// cancels to gray, and half a turn later it holds all the color.
 
-import { interfere, normalizeHex } from '../../engine/index.js';
+import { interfere, normalizeHex, hexToOklch, oklch } from '../../engine/index.js';
 import { $ } from '../../app/dom.js';
 import { reduced } from '../lib.js';
 import { site } from '../world.js';
 import { onScroll } from '../scroll.js';
 
-const state = { phi: 0, touched: false, shown: null, bandWidth: 0 };
+const state = { phi: 90, touched: false, shown: null, bandWidth: 0 };
 
 function paintBand() {
   const a = $('fA').value;
@@ -19,7 +21,9 @@ function paintBand() {
 }
 
 function needle() {
-  $('needle').style.transform = `translateX(${((state.phi / 360) * state.bandWidth - 1.5).toFixed(1)}px)`;
+  // Kept on the band at both ends, so the needle never hides off its edge.
+  const x = Math.max(0, Math.min(state.bandWidth - 3, (state.phi / 360) * state.bandWidth - 1.5));
+  $('needle').style.transform = `translateX(${x.toFixed(1)}px)`;
   const deg = Math.round(state.phi);
   if (deg === state.shown) return;
   state.shown = deg;
@@ -27,9 +31,9 @@ function needle() {
   $('band').setAttribute('aria-valuenow', String(deg));
   $('port1').style.background = r.port1.hex;
   $('port2').style.background = r.port2.hex;
-  $('port1t').textContent = `Port 1, ${Math.round(r.share1 * 100)}% of the energy`;
+  $('port1t').textContent = `Port 1, ${Math.round(r.share1 * 100)}%`;
   $('port2t').textContent = `Port 2, ${Math.round((1 - r.share1) * 100)}%`;
-  $('fEnergy').textContent = `Phase ${deg}°. Energy in ${r.energyIn.toFixed(4)}, out ${r.energyOut.toFixed(4)}.`;
+  $('fEnergy').textContent = `Phase ${deg}°. Whatever color leaves port 1 turns up in port 2, so the total never changes.`;
 }
 
 function set(phi) {
@@ -73,8 +77,10 @@ export default {
     });
   },
   paint() {
-    $('fA').value = normalizeHex(site.result.harmony[0]);
-    $('fB').value = normalizeHex(site.result.harmony[1]);
+    const a = normalizeHex(site.result.harmony[0]);
+    const c = hexToOklch(a);
+    $('fA').value = a;
+    $('fB').value = normalizeHex(oklch(c.L, c.C, c.h + 180).hex);
     paintBand();
   },
 };

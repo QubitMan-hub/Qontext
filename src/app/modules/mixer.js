@@ -47,5 +47,6 @@ export function render() {
   $('eShare').textContent = `${Math.round(r.share1 * 100)}%`;
   const cols = fringe(mixA, mixB, 36);
   $('fringe').style.background = `linear-gradient(90deg, ${cols.map((c, i) => `${c} ${((i / 36) * 100).toFixed(1)}%`).join(',')})`;
-  $('fringeMk').style.left = `calc(${(phi / 360) * 100}% - 1.5px)`;
+  // Kept on the band at both ends.
+  $('fringeMk').style.left = `clamp(0px, calc(${(phi / 360) * 100}% - 1.5px), calc(100% - 3px))`;
 }

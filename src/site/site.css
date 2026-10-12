@@ -393,6 +393,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .band .needle { position: absolute; top: 0; bottom: 0; left: 0; width: 3px; background: var(--sheet); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2); pointer-events: none; will-change: transform; }
 .ports { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .port { padding: 16px var(--gutter); min-height: clamp(96px, 12vw, 160px); display: grid; align-content: end; transition: background-color 120ms linear; }
+/* Port 1's label sits by the seam, clear of the room map in the left margin. */
+#port1 span { justify-self: end; }
 .port span { background: var(--sheet); justify-self: start; padding: 3px 8px; border-radius: 2px; font-family: var(--font-ui); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
 .inputs { display: flex; gap: 12px 18px; flex-wrap: wrap; align-items: center; font-size: var(--step--1); }
 .inputs label { display: inline-flex; gap: 8px; align-items: center; }

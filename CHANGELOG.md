@@ -69,6 +69,16 @@ Accessible
   `legibleOn`), so button text reads at 4.5 : 1 whatever a collapse produces.
 - Wall-name letters no longer catch clicks while they fly in over an exhibit.
 
+Fixed
+- The Janus picture in The idea always showed tile X₁, which keeps one color in more than half of all worlds,
+  under a caption saying its colors differ. It now shows a tile whose readings really differ in your world and
+  names it.
+- A refresh rolls a new world. Following a link or going back still keeps yours.
+- Fringe on the site starts with wave B opposite wave A, so the band shows interference clearly: gray, full
+  color, gray. The needle stays on the band at both ends, port 1's label sits clear of the room map, and the
+  caption says what happens in words instead of energy figures. In the Atelier the marker stays on the band and
+  the two ports sit right under it.
+
 Sturdier
 - Probe's pool validator agrees with the Atelier on the size limit per context; duplicate helpers and dead
   exports removed.

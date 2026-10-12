@@ -189,10 +189,10 @@ kbd { font-family: var(--font-mono); font-size: 0.8125rem; border: 1px solid var
 .inputs { display: flex; gap: 12px 20px; flex-wrap: wrap; align-items: center; }
 input[type="color"] { width: 48px; height: 34px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--panel); padding: 2px; cursor: pointer; }
 .fringe-wall { display: grid; gap: 8px; }
-.fringe { height: clamp(140px, 18vw, 230px); border-radius: var(--radius); position: relative; cursor: ew-resize; touch-action: pan-y; }
-.fringe .mk { position: absolute; top: -8px; bottom: -8px; width: 3px; background: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--paper); pointer-events: none; }
+.fringe { height: clamp(110px, 12vw, 160px); border-radius: var(--radius); position: relative; cursor: ew-resize; touch-action: pan-y; }
+.fringe .mk { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--panel); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25); pointer-events: none; }
 .ports { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-.port { min-height: clamp(110px, 12vw, 160px); border-radius: var(--radius); display: grid; align-content: end; padding: 12px; transition: background-color 120ms linear; }
+.port { min-height: clamp(96px, 10vw, 140px); border-radius: var(--radius); display: grid; align-content: end; padding: 12px; transition: background-color 120ms linear; }
 .port-tag { justify-self: start; background: var(--panel); color: var(--ink); padding: 3px 8px; border-radius: 2px; font-family: var(--font-mono); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 @media (max-width: 560px) { .ports { grid-template-columns: 1fr; } }
 

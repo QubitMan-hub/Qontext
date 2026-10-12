@@ -41,7 +41,18 @@ export function wavefunction() {
   return encodeProject({ name: `World ${worldNumber()}`, ...site.palette, state: 'random', stateSeed: 7, measureSeed: site.seed });
 }
 
+/** A refresh is a new observation, so it rolls a new world. Following a link or going back keeps yours. */
+function reloaded() {
+  try {
+    const nav = performance.getEntriesByType('navigation')[0];
+    return !!nav && nav.type === 'reload';
+  } catch {
+    return false;
+  }
+}
+
 export function initialSeed() {
+  if (reloaded()) return newSeed();
   try {
     const v = Number(window.sessionStorage.getItem(WORLD_KEY));
     if (Number.isInteger(v) && v > 0 && v < 1e7) return v;
@@ -87,7 +98,7 @@ function contextOf(el) {
   return host ? host.dataset.qContext : 'row';
 }
 
-function tone(el) {
+export function tone(el) {
   const t = tones(el.dataset.q, contextOf(el));
   el.style.setProperty('--tone', t.tone);
   el.style.setProperty('--tone-a', t.a);
