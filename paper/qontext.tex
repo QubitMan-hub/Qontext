@@ -3,55 +3,121 @@
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
 \usepackage[scaled=0.92]{helvet}
-\usepackage[margin=1in]{geometry}
+\usepackage[a4paper,left=30mm,right=30mm,top=30mm,bottom=32mm,headsep=9mm]{geometry}
 \usepackage{microtype}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{pgf}
+\usepackage{tikz}
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{caption}
-\usepackage[hidelinks]{hyperref}
+\usepackage{subcaption}
 \usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{xurl}
+\usepackage[colorlinks,linkcolor=qink,citecolor=qink2,urlcolor=qink]{hyperref}
 \graphicspath{{figures/}}
 \usepackage{placeins}
-\renewcommand{\topfraction}{0.85}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.6}
 \renewcommand{\textfraction}{0.1}
-\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
 
+% Qontext's print ink and paper (the website's own colors).
 \definecolor{qink}{HTML}{1D1F52}
-\captionsetup{font=small,labelfont=bf,margin=0.5em}
-\setlist{itemsep=2pt,topsep=4pt}
-\renewcommand{\sectionmark}[1]{}
+\definecolor{qink2}{HTML}{4B4E7C}
+\definecolor{qrule}{HTML}{C8CCDC}
+\definecolor{qpaper}{HTML}{EEF0F4}
+
+% Headings in the sans, in ink; paragraph heads run into their text.
+\titleformat{\section}{\sffamily\Large\bfseries\color{qink}}{\thesection}{0.75em}{}
+\titlespacing*{\section}{0pt}{3.2ex plus 1ex minus .3ex}{1.4ex plus .3ex}
+\titleformat{\paragraph}[runin]{\sffamily\bfseries\color{qink}}{}{}{}
+\titlespacing*{\paragraph}{0pt}{1.6ex plus .6ex minus .2ex}{0.6em}
+
+% Running head: the title on the left, the page on the right, a hairline under both.
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{qink2}One Tile, Two True Colors}
+\fancyhead[R]{\sffamily\footnotesize\color{qink2}\thepage}
+\renewcommand{\headrule}{{\color{qrule}\hrule height 0.4pt}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrule}{}\fancyfoot[C]{\sffamily\footnotesize\color{qink2}\thepage}}
+
+\captionsetup{font=small,labelfont={sf,bf,color=qink},labelsep=period,margin=0pt}
+\captionsetup[sub]{font=small,labelfont={sf,bf,color=qink}}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\parskip}{0pt}
 \newcommand{\figwidth}{\linewidth}
 \newcommand{\ket}[1]{\lvert #1\rangle}
 \newcommand{\expect}[1]{\langle #1\rangle}
 
-\title{\sffamily\bfseries\color{qink}One Tile, Two True Colors:\\[2pt]
-  \large\mdseries Quantum Contextuality as a Design Material}
-\author{Lakshmi Monish\\[2pt]
-  \small\url{https://github.com/QubitMan-hub/Qontext}}
-\date{October 2026}
+% Results: a statement on a pale paper ground with an ink rule, then its proof in plain text.
+\newtheoremstyle{qresult}{0pt}{0pt}{\itshape}{}{\sffamily\bfseries\color{qink}}{.}{0.6em}{\thmname{#1} \thmnumber{#2}\thmnote{: #3}}
+\theoremstyle{qresult}
+\newtheorem{result}{Result}
+\tcolorboxenvironment{result}{enhanced,breakable,colback=qpaper,colframe=qpaper,boxrule=0pt,arc=1.5pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,before skip=12pt,after skip=8pt,
+  borderline north={0.8pt}{0pt}{qink},borderline south={0.8pt}{0pt}{qink}}
+\renewcommand{\qedsymbol}{\textcolor{qink2}{$\square$}}
+
+% The mark: the world's nine tiles, each split on the diagonal into its row color and its column color.
+\newcommand{\qtile}[4]{\fill[#3] (#1,#2) -- ++(1,0) -- ++(-1,1) -- cycle; \fill[#4] (#1+1,#2) -- ++(0,1) -- ++(-1,0) -- cycle;}
+\newcommand{\qmark}{\begin{tikzpicture}[x=5.2mm,y=5.2mm]
+  \definecolor{tA}{HTML}{ADA3FF}\definecolor{tB}{HTML}{3FC0F2}\definecolor{tC}{HTML}{48CBA1}
+  \definecolor{tO}{HTML}{F49665}\definecolor{tP}{HTML}{ED8EC0}\definecolor{tY}{HTML}{B9B74B}
+  \foreach \px/\py/\cr/\cc in {0/2/tA/tA,1.12/2/tB/tB,2.24/2/tC/tC,0/0.88/tA/tA,1.12/0.88/tO/tB,2.24/0.88/tP/tC,0/-0.24/tY/tY,1.12/-0.24/tB/tB,2.24/-0.24/tP/tC}
+    {\qtile{\px}{\py}{\cr}{\cc}}
+\end{tikzpicture}}
+
+\hypersetup{pdftitle={One Tile, Two True Colors: Quantum Contextuality as a Design Material},pdfauthor={Lakshmi Monish}}
 
 \begin{document}
-\maketitle
+\thispagestyle{plain}
 
-\begin{abstract}
-\noindent Design systems assume that a token has one value. A brand color is one color wherever it appears. Quantum
-mechanics has a family of results, the Kochen-Specker theorem and one of its simplest forms, the Mermin-Peres square,
-which say that some quantities cannot be given one value that holds whatever else is measured with them. We use that
-result as a design material. In Qontext, each of the nine tiles of the Mermin-Peres square holds two colors: one when
-it is read with its row and one when it is read with its column. Hue is treated as quantum phase, so the colors come
-from an even harmony on the OKLCH wheel, and every reading obeys the square's six product rules. No fixed table of
-colors can do this. An exhaustive search over all 512 tables confirms that at most five of the six rules can hold. We
-show that the two readings always differ on an odd number of tiles, and that the expected number is between 3 and 4
-for any pure two-qubit state. We describe the engine, a contrast checker that tests text against every color a tile
-can take, a theme dial built from the interferometer model, and a case study in which the nine panels of a sneaker
-are the nine tiles and the two feet are the two readings. Everything runs as exact simulation in a web browser. We
-say plainly what this is and is not: the system is small enough to simulate on a phone, and we claim no quantum
-advantage.
-\end{abstract}
+\noindent\begin{minipage}[b]{0.78\linewidth}
+  {\sffamily\bfseries\color{qink}\fontsize{25}{28}\selectfont One Tile, Two True Colors\par}
+  \vspace{5pt}
+  {\sffamily\color{qink2}\large Quantum contextuality as a design material\par}
+  \vspace{14pt}
+  {\sffamily\color{qink}Lakshmi Monish\par}
+  \vspace{2pt}
+  {\sffamily\small\color{qink2}October 2026\quad\textperiodcentered\quad\href{https://github.com/QubitMan-hub/Qontext}{github.com/QubitMan-hub/Qontext}\par}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.17\linewidth}\raggedleft\qmark\end{minipage}
+
+\vspace{10pt}
+\noindent{\color{qrule}\rule{\linewidth}{0.4pt}}
+\vspace{4pt}
+
+\noindent{\sffamily\bfseries\color{qink}Abstract.}\enspace Design systems give every token one value. Quantum
+mechanics has a theorem saying some quantities cannot have one: the Mermin-Peres square, a three by three grid of
+two-qubit measurements whose rows and columns obey six product rules that no fixed table of $\pm1$ values can meet.
+Qontext turns the square into a color system. Each of its nine tiles holds two colors, one when it is read with its
+row and one when it is read with its column, and hue plays the role of quantum phase. We show that the two readings
+always differ on an odd number of tiles, and on 3 to 4 tiles on average for any pure state. We describe a contrast
+checker that tests text against every color a tile can take, a theme dial built from an interferometer model, and a
+case study in which the nine panels of a sneaker are the nine tiles. Everything runs as exact simulation in a web
+browser, and we claim no quantum advantage.
+
+\vspace{10pt}
+\begin{tcolorbox}[enhanced,colback=qpaper,colframe=qpaper,boxrule=0pt,arc=1.5pt,left=10pt,right=10pt,top=8pt,bottom=8pt,
+  fontupper=\small]
+\begin{tabular}{@{}p{0.2\linewidth}@{\hspace{10pt}}p{0.74\linewidth}@{}}
+{\sffamily\bfseries\color{qink}The idea} & A color token may have two true values, one per context, with a proof that
+no single palette can stand in for it. \\[4pt]
+{\sffamily\bfseries\color{qink}What we show} & The two readings of the grid differ on an odd number of tiles, never
+zero, and on 3 to 4 on average (Results~\ref{res:odd} and~\ref{res:mean}). \\[4pt]
+{\sffamily\bfseries\color{qink}What it is not} & Two qubits are easy to simulate. The physics gives a grammar for color
+with a guarantee, not speed or power (Section~\ref{sec:limits}).
+\end{tabular}
+\end{tcolorbox}
+\vspace{4pt}
 
 \section{Introduction}
 
@@ -68,7 +134,16 @@ napkin: a three by three grid of two-qubit observables, now called the Mermin-Pe
 quantum mechanics fixes the product of their outcomes. No assignment of $+1$ and $-1$ to the nine cells can satisfy
 all six products at once. So a cell's value depends on whether it was measured with its row or with its column.
 
-Qontext turns this into color. Each cell becomes a tile. Each outcome becomes a hue: $+1$ shows the tile's harmony
+\begin{figure}[tb]
+  \centering
+  \resizebox{\figwidth}{!}{\input{figures/fig-grid.pgf}}
+  \caption{One tile, two true colors. World 4{,}227{,}792 with a triad ($d=3$). Left: the nine observables. Middle and right: the same measurement
+  read by rows and by columns. Outlined tiles differ between the readings. The numbers beside and below the first grid
+  are the products each row and column must have.}
+  \label{fig:grid}
+\end{figure}
+
+Qontext turns this into color (Figure~\ref{fig:grid}). Each cell becomes a tile. Each outcome becomes a hue: $+1$ shows the tile's harmony
 color, $-1$ its complement. Reading the grid by rows gives one coloring, reading it by columns gives another, and the
 mathematics guarantees that the two can never be the same coloring. The context is no longer a label. It is a
 constraint that no fixed palette can meet.
@@ -106,18 +181,18 @@ multiplies to the identity, as do the first two columns. The third column multip
 $X_1X_2 \cdot Z_1Z_2 = -Y_1Y_2$. Our engine derives these six signs from the matrices when it loads, rather than
 storing them.
 
-\begin{table}[h]
+\begin{table}[tb]
 \centering
 \small
-\begin{tabular}{c|ccc|c}
+\begin{tabular}{lccc@{\hspace{18pt}}c}
 \toprule
  & column 1 & column 2 & column 3 & row product \\
 \midrule
-row 1 & $X_1$ & $X_2$ & $X_1X_2$ & $+I$ \\
-row 2 & $Z_2$ & $Z_1$ & $Z_1Z_2$ & $+I$ \\
-row 3 & $X_1Z_2$ & $Z_1X_2$ & $Y_1Y_2$ & $+I$ \\
+row 1 & $X_1$ & $X_2$ & $X_1X_2$ & \textcolor{qink2}{$+I$} \\
+row 2 & $Z_2$ & $Z_1$ & $Z_1Z_2$ & \textcolor{qink2}{$+I$} \\
+row 3 & $X_1Z_2$ & $Z_1X_2$ & $Y_1Y_2$ & \textcolor{qink2}{$+I$} \\
 \midrule
-column product & $+I$ & $+I$ & $-I$ & \\
+column product & \textcolor{qink2}{$+I$} & \textcolor{qink2}{$+I$} & \textcolor{qink2}{$-I$} & \\
 \bottomrule
 \end{tabular}
 \caption{The Mermin-Peres square as Qontext uses it. Rows and columns are the six contexts.}
@@ -137,17 +212,17 @@ Cabello, Estebaranz and Garc\'ia-Alcaine \citep{cabello1996}, and the 13 rays of
 Table~\ref{tab:limits} lists the classical and quantum values the interface shows. Each classical value in the table
 is checked by exhaustive search in the test suite, not copied from the literature.
 
-\begin{table}[h]
+\begin{table}[tb]
 \centering
 \small
-\begin{tabular}{lccc}
+\begin{tabular}{@{}lccl@{}}
 \toprule
-Structure & classical limit & quantum value & search in the tests \\
+Structure & classical limit & quantum value & checked over \\
 \midrule
-Mermin-Peres score (rules held, as $2k-6$) & 4 & 6 & all 512 tables \\
-KCBS sum of probabilities & 2 & $\sqrt5 \approx 2.236$ & all 32 assignments \\
+Mermin-Peres score ($2k-6$ for $k$ rules held) & 4 & 6 & all 512 tables \\
+KCBS sum of probabilities & 2 & $\sqrt5 \approx 2.236$ & all 32 \\
 CHSH value $S$ & 2 & $2\sqrt2 \approx 2.828$ & all 16 strategies \\
-Yu-Oh expression & 8 & $25/3 \approx 8.33$ & all 8{,}192 assignments \\
+Yu-Oh expression & 8 & $25/3 \approx 8.33$ & all 8{,}192 \\
 Peres 33, Cabello 18 coloring & impossible & & complete search \\
 \bottomrule
 \end{tabular}
@@ -193,45 +268,59 @@ amplitudes, normalized). A design, with its harmony, lightness, chroma and seeds
 Reading the grid by rows takes each tile's value from its row's measurement. Reading it by columns takes each tile's
 value from its column's measurement. Figure~\ref{fig:grid} shows both readings for one world. Three tiles differ.
 
-\begin{figure}[t]
-  \centering
-  \resizebox{\figwidth}{!}{\input{figures/fig-grid.pgf}}
-  \caption{World 4{,}227{,}792 with a triad ($d=3$). Left: the observables. Middle and right: the same measurement
-  read by rows and by columns. Outlined tiles differ between the readings. The numbers beside and below the first grid
-  are the products each row and column must have.}
-  \label{fig:grid}
-\end{figure}
 
-\paragraph{The number of differing tiles is always odd.} Let $R_t$ and $C_t$ be tile $t$'s values in the two readings.
-Every row satisfies its rule, so $\prod_t R_t = +1$. Every column satisfies its rule, so $\prod_t C_t = -1$. Hence
-$\prod_t R_t C_t = -1$. A tile where the readings agree contributes $+1$ to this product and a tile where they differ
-contributes $-1$, so the number of differing tiles is odd. It is never zero. That is the square's contradiction seen
-from the designer's side: there is always at least one tile with two true colors.
+Two facts describe what a designer will see. The first says the two readings can never agree. The second says how
+much they disagree.
 
-\paragraph{The expected number.} A tile's two values come from two separate runs on the same state, so they are
-independent draws of the same observable $O_t$. Each is $+1$ with probability $p_t = (1+\expect{O_t})/2$, so they
-differ with probability $2p_t(1-p_t) = (1-\expect{O_t}^2)/2$. By linearity,
+\begin{result}[Always an odd number]\label{res:odd}
+In every measurement, the row reading and the column reading differ on an odd number of tiles: 1, 3, 5, 7 or 9.
+They never agree everywhere.
+\end{result}
+
+\begin{proof}
+Let $R_t$ and $C_t$ be tile $t$'s values in the two readings. Every row satisfies its rule, so $\prod_t R_t = +1$.
+Every column satisfies its rule, so $\prod_t C_t = -1$. Hence $\prod_t R_t C_t = -1$. A tile where the readings
+agree contributes $+1$ to this product and a tile where they differ contributes $-1$, so the number of differing
+tiles is odd.
+\end{proof}
+
+\noindent This is the square's contradiction seen from the designer's side: there is always at least one tile with
+two true colors.
+
+\begin{result}[Three to four on average]\label{res:mean}
+On a state where tile $t$ has expectation $\expect{O_t}$, the expected number of differing tiles is
 \begin{equation}
-  \mathbb{E}[\text{differing tiles}] = \frac12 \sum_{t=1}^{9} \bigl(1 - \expect{O_t}^2\bigr).
+  \mathbb{E}[\textup{differing tiles}] = \frac12 \sum_{t=1}^{9} \bigl(1 - \expect{O_t}^2\bigr).
 \end{equation}
-For a pure two-qubit state the squared expectations of the fifteen non-identity Pauli operators sum to 3, because
-$\operatorname{tr}\rho^2 = 1$. The nine tiles are nine of those fifteen, so $\sum_t \expect{O_t}^2 \le 3$. The
-other six split into two triples of operators that all anticommute with each other, $\{Y_1, X_1Y_2, Z_1Y_2\}$ and
-$\{Y_2, Y_1X_2, Y_1Z_2\}$, and within such a triple the squared expectations sum to at most 1. (For any unit vector
-$c$, the operator $\sum_i c_i P_i$ squares to the identity, so its expectation is at most 1; choose $c$ along the
-vector of expectations.) So the six hold at
-most 2, the nine hold at least 1, and the expected count lies between $3$ and $4$. Both ends are reached. The top
-end is reached by $\ket{0}\otimes\ket{{+}i}$, where only $Z_1$ among the tiles has a definite value. The lower end is
-reached when all of the state's Pauli weight lies on the nine tiles. A Bell state is one example: it fixes $X_1X_2$, $Z_1Z_2$ and $Y_1Y_2$. The product state $\ket{00}$ is
-another: it fixes $Z_1$, $Z_2$ and $Z_1Z_2$. A fixed tile reads the same in both contexts, so for these states at most
-five tiles can differ.
+For any pure two-qubit state this lies between 3 and 4, and both ends are reached.
+\end{result}
+
+\begin{proof}
+A tile's two values come from two separate runs on the same state, so they are independent draws of the same
+observable $O_t$. Each is $+1$ with probability $p_t = (1+\expect{O_t})/2$, so they differ with probability
+$2p_t(1-p_t) = (1-\expect{O_t}^2)/2$. Linearity of expectation gives the formula.
+
+For the bounds: for a pure two-qubit state the squared expectations of the fifteen non-identity Pauli operators sum to
+3, because $\operatorname{tr}\rho^2 = 1$. The nine tiles are nine of those fifteen, so $\sum_t \expect{O_t}^2 \le 3$.
+The other six split into two triples of operators that all anticommute with each other, $\{Y_1, X_1Y_2, Z_1Y_2\}$
+and $\{Y_2, Y_1X_2, Y_1Z_2\}$. Within such a triple the squared expectations sum to at most 1: for any unit vector
+$c$ the operator $\sum_i c_i P_i$ squares to the identity, so its expectation is at most 1, and we choose $c$ along
+the vector of expectations. So the six hold at most 2, the nine hold at least 1, and the expected count lies between
+3 and 4.
+
+The top end is reached by $\ket{0}\otimes\ket{{+}i}$, where only $Z_1$ among the tiles has a definite value. The
+lower end is reached when all of the state's Pauli weight lies on the nine tiles. A Bell state is one example: it
+fixes $X_1X_2$, $Z_1Z_2$ and $Y_1Y_2$. The product state $\ket{00}$ is another: it fixes $Z_1$, $Z_2$ and $Z_1Z_2$.
+\end{proof}
+
+\noindent A fixed tile reads the same in both contexts, so for these states at most five tiles can differ.
 
 Figure~\ref{fig:differ} checks both results against the engine over 100{,}000 worlds. Only odd counts occur. For the
 site's random state the formula predicts 3.752 differing tiles and the simulation gives 3.754. For the Bell state the
 formula gives exactly 3 and the simulation 3.003. The state is therefore a design choice: a state that fixes some
 tiles gives calmer worlds, with fewer tiles that change between readings.
 
-\begin{figure}[t]
+\begin{figure}[tb]
   \centering
   \begin{minipage}[t]{0.49\linewidth}
     \centering
@@ -276,7 +365,7 @@ until it reaches 4.5\,:\,1 on every wall. Figure~\ref{fig:phase} shows the paper
 at all 360 angles. The minimum is 4.50, reached near $93^\circ$. As with hue, the interferometer is a model for
 interpolation, not a claim about optics.
 
-\begin{figure}[t]
+\begin{figure}[tb]
   \centering
   \resizebox{\figwidth}{!}{\input{figures/fig-phase.pgf}}
   \caption{The Phase Dial. Top: the page's paper color at each angle. Bottom: the weakest contrast of any text color
@@ -292,6 +381,26 @@ through a sneaker drop, from first color to finished pair. We chose sneakers bec
 the right shapes. A drop is a limited run. A pair is two objects that are meant to match. Collectors care about
 which run a pair came from.
 
+\begin{figure}[tb]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig-pair.jpg}
+    \caption{The pair. The left foot reads the grid by rows, the right foot by columns. The stripe, heel counter and
+    heel sole differ: the three outlined tiles of Figure~\ref{fig:grid}.}
+    \label{fig:pair}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.475\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig-drop.jpg}
+    \caption{Six of the drop's twelve pairs, each from its own world and labeled with how many panels differ between
+    its feet. Every count is odd.}
+    \label{fig:drop}
+  \end{subfigure}
+  \caption{Pair Production for world 4{,}227{,}792.}
+  \label{fig:pairs}
+\end{figure}
+
 \paragraph{The mapping.} A low-top sneaker is divided into nine panels in three bands and three zones. The bands are
 the rows: the top band (laces, tongue, collar), the body band (toe box, stripe, heel counter) and the sole band (toe
 bumper, midsole, heel sole). The zones are the columns: toe, middle and heel. The left foot shows the row reading and
@@ -300,13 +409,6 @@ readings differ, which by Section~\ref{sec:two} is always an odd number of panel
 pair for the world of Figure~\ref{fig:grid}. The stripe, heel counter and heel sole differ between the feet. The
 other six panels match.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.62\linewidth]{figures/fig-pair.jpg}
-  \caption{Pair Production for world 4{,}227{,}792. The left foot reads the grid by rows, the right foot by columns.
-  The stripe, heel counter and heel sole differ, the three outlined tiles of Figure~\ref{fig:grid}.}
-  \label{fig:pair}
-\end{figure}
 
 \paragraph{The workflow.} The section is a scroll story in six steps beside a pinned display case.
 \begin{enumerate}
@@ -327,13 +429,6 @@ other six panels match.
         a paint sheet with every panel's color, open the design in the Atelier, or put the pair on the Turntable.
 \end{enumerate}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.62\linewidth]{figures/fig-drop.jpg}
-  \caption{Six of a drop's twelve pairs, each from its own world and labeled with how many panels differ between its
-  feet. Every count is odd.}
-  \label{fig:drop}
-\end{figure}
 
 \paragraph{The shoe.} The shoe is a studio photograph of a plain white sneaker, made with an image generator. A script
 finds the seams as thin dark lines, splits the leather into regions between them, and assigns the regions to the
@@ -349,15 +444,14 @@ the photograph and projected through the shoe from the side, so a point at model
 the photograph's pixel at the matching place. The lining and insole, found from the direction their surfaces face,
 stay white. Because the 2D and 3D views share one set of outlines, they cannot disagree about which panel is which.
 
-\begin{figure}[t]
+\begin{figure}[tb]
   \centering
-  \includegraphics[width=0.72\linewidth]{figures/fig-turntable.jpg}
+  \includegraphics[width=0.62\linewidth]{figures/fig-turntable.jpg}
   \caption{The same pair on the Turntable. The panel colors are projected from the photograph's outlines onto a 3D
   model generated from the photograph. The left foot is the right foot mirrored.}
   \label{fig:turntable}
 \end{figure}
 
-\FloatBarrier
 \section{Implementation and verification}
 \label{sec:impl}
 
