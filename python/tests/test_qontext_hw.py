@@ -135,3 +135,70 @@ def test_chsh_beats_the_classical_limit_on_a_simulated_ibm_kingston():
     backend = fake_provider.FakeKingston()
     pool = run(Target(SamplerV2(mode=backend), backend, "fake_kingston", True), shots=1024)
     assert chsh_value(pool["chsh"]) > 2.2
+
+
+# Collecting a finished job later. The run on 12 October 2026 showed why: a queue can take hours, and the job ID
+# used to be printed only once the results were back, so closing the window lost them.
+
+
+def test_run_reports_the_job_id_as_soon_as_it_is_submitted():
+    ids = []
+    pool = run(local_target(), shots=8, on_submit=ids.append)
+    assert len(ids) == 1 and ids[0] == pool["job_ids"][0]
+
+
+class _FakeJob:
+    def __init__(self, result, job_id, backend_name):
+        self._result, self._id, self._backend = result, job_id, backend_name
+
+    def job_id(self):
+        return self._id
+
+    def result(self):
+        return self._result
+
+    def backend(self):
+        class _B:
+            name = self._backend
+
+        return _B()
+
+
+def test_fetch_collects_a_finished_job_into_a_pool(tmp_path, monkeypatch, capsys):
+    from qontext_hw import runner
+    from qontext_hw.runner import build_circuits, pass_manager
+
+    target = local_target()
+    pm = pass_manager(target.backend)
+    result = target.sampler.run([pm.run(qc) for qc in build_circuits(7)], shots=32).result()
+
+    class _Service:
+        def job(self, job_id):
+            assert job_id == "d0fake123"
+            return _FakeJob(result, job_id, "ibm_kingston")
+
+    monkeypatch.setattr(runner, "_service", lambda: _Service())
+    out = tmp_path / "fetched.json"
+    assert main(["--fetch", "d0fake123", "--out", str(out)]) == 0
+    pool = json.loads(out.read_text())
+    assert pool["backend"] == "ibm_kingston" and pool["simulated"] is False
+    assert pool["job_ids"] == ["d0fake123"] and pool["shots"] == 32
+    assert len(pool["contexts"]["R1"]) == 32 and len(pool["chsh"]["a0b0"]) == 32
+    assert "Pool written to" in capsys.readouterr().out
+
+
+def test_an_ibm_submission_says_how_to_collect_it_later(monkeypatch, capsys):
+    from qontext_hw import cli
+
+    def fake_run(target, *, shots, seed, include_chsh, on_submit):
+        on_submit("d0job42")
+        raise runner_error("stop after submission")
+
+    from qontext_hw.runner import RunnerError as runner_error
+
+    monkeypatch.setattr(cli, "ibm_target", lambda name: local_target())
+    monkeypatch.setattr(cli, "run", fake_run)
+    assert main(["--ibm", "least_busy", "--out", "x.json"]) == 2
+    out = capsys.readouterr().out
+    assert "d0job42" in out and "qontext-probe --fetch d0job42 --out x.json" in out
+    assert "keeps running" not in out

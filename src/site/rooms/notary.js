@@ -1,5 +1,5 @@
 // Notary: the provenance seal over the real run on ibm_kingston (typed out the first time it comes into view), and
-// worlds drawn from its shots. A drawn world is one real measurement of each of the six contexts, painted in the
+// Born Draw, worlds drawn from its shots. A drawn world is one real measurement of each of the six contexts, painted in the
 // visitor's colors. Hardware noise sometimes breaks a rule; the note names it instead of hiding it.
 
 import { unpackPool, poolSummary, canonicalShots, CONTEXTS, rowValue, colValue, tileColor, freshSeed } from '../../engine/index.js';

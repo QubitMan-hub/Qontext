@@ -9,8 +9,8 @@ New
   section on the run. Pools can be packed to about 9 KB (`packPool`, `unpackPool`, `scripts/pack-run.mjs`).
 - The paper is on the site (`qontext-paper.pdf`, linked from Tools and the footer), and `npm run paper:arxiv` packs
   an arXiv bundle that is compiled in an empty folder to prove it stands on its own.
-- The site's Notary seals the real ibm_kingston run instead of the practice example, and Draw a world from these
-  shots paints one real measurement of all six contexts in your colors, naming any rule the chip broke.
+- The site's Notary seals the real ibm_kingston run instead of the practice example, and Born Draw (a world from real
+  shots) paints one real measurement of all six contexts in your colors, naming any rule the chip broke.
 - The Atelier explains itself. Every room opens with a Wall Card in everyday words: what the room does, a real
   example, a Try this button and a small goal. Reaching a goal (Eureka) ticks it off, counts it in the header and
   throws a short burst of your own colors, which stays still for anyone who asks for less motion.
@@ -86,6 +86,8 @@ Fixed
   color, gray. The needle stays on the band at both ends, port 1's label sits clear of the room map, and the
   caption says what happens in words instead of energy figures. In the Atelier the marker stays on the band and
   the two ports sit right under it.
+- Probe prints the job ID the moment a job is queued, with the command to collect it later, and `qontext-probe
+  --fetch JOB_ID` collects it. Closing the window during a long IBM queue no longer loses the results.
 - Probe picks quiet qubits. It now lets the transpiler choose qubits by their noise for every circuit. Before,
   a two-qubit circuit that fit qubits 0 and 1 went there unchecked; on ibm_kingston qubit 1 misreads 17% of
   shots, which pulled the CHSH value down to about 1.1. On a simulated ibm_kingston it is now 2.7.

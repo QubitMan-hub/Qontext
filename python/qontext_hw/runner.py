@@ -88,33 +88,61 @@ def transpile_report(target: Target, seed: int, include_chsh: bool = True) -> li
     return rows
 
 
-def run(target: Target, *, shots: int = 512, seed: int = 7, include_chsh: bool = True) -> dict:
+def run(target: Target, *, shots: int = 512, seed: int = 7, include_chsh: bool = True, on_submit=None) -> dict:
+    """Runs the circuits on `target` and returns a pool. `on_submit(job_id)` is called as soon as the job is queued."""
     if shots < 1 or shots > 100_000:
         raise RunnerError("shots must be between 1 and 100000")
     circuits = build_circuits(seed, include_chsh)
     pm = pass_manager(target.backend)
     isa = [pm.run(qc) for qc in circuits]
     job = target.sampler.run(isa, shots=shots)
-    result = job.result()
-    job_id = job.job_id() if callable(getattr(job, "job_id", None)) else "local"
+    job_id = str(job.job_id()) if callable(getattr(job, "job_id", None)) else "local"
+    if on_submit:
+        on_submit(job_id)
+    return pool_from_result(job.result(), backend=target.label, simulated=target.simulated, job_id=job_id, seed=seed)
 
+
+def pool_from_result(result, *, backend: str, simulated: bool, job_id: str, seed: int) -> dict:
+    """A pool from a sampler result: six context circuits, then the four CHSH settings if they were run."""
     pubs = list(result)
-    if len(pubs) != len(circuits):
-        raise RunnerError(f"Expected {len(circuits)} results, got {len(pubs)}")
+    if len(pubs) not in (len(CONTEXTS), len(CONTEXTS) + len(SETTING_KEYS)):
+        raise RunnerError(f"Expected {len(CONTEXTS)} or {len(CONTEXTS) + len(SETTING_KEYS)} results, got {len(pubs)}")
 
     def values_of(pub, width):
         return [bits_to_values(b, width) for b in pub.data.c.get_bitstrings()]
 
     contexts = {cid: values_of(pub, 3) for cid, pub in zip(CONTEXTS, pubs[: len(CONTEXTS)], strict=True)}
     chsh = None
-    if include_chsh:
+    if len(pubs) > len(CONTEXTS):
         chsh = {key: values_of(pub, 2) for key, pub in zip(SETTING_KEYS, pubs[len(CONTEXTS) :], strict=True)}
     return build_pool(
-        backend=target.label,
-        simulated=target.simulated,
-        job_ids=[str(job_id)],
-        shots=shots,
+        backend=backend,
+        simulated=simulated,
+        job_ids=[job_id],
+        shots=len(contexts[next(iter(CONTEXTS))]),
         seed=seed,
         contexts=contexts,
         chsh=chsh,
     )
+
+
+def _service():
+    try:
+        from qiskit_ibm_runtime import QiskitRuntimeService
+    except ImportError as e:
+        raise RunnerError("Fetching needs qiskit-ibm-runtime: pip install 'qontext-hw[ibm]'") from e
+    try:
+        return QiskitRuntimeService()
+    except Exception as e:  # noqa: BLE001 - surface the runtime's own reason
+        raise RunnerError("No IBM Quantum account found. Save one first (see the README). " + str(e)) from e
+
+
+def fetch(job_id: str, *, seed: int = 7) -> dict:
+    """Collects a job submitted earlier (waiting if it has not finished) and returns its pool."""
+    try:
+        job = _service().job(job_id)
+    except RunnerError:
+        raise
+    except Exception as e:  # noqa: BLE001 - an unknown or mistyped ID
+        raise RunnerError(f"IBM Quantum has no job {job_id!r} on this account. " + str(e)) from e
+    return pool_from_result(job.result(), backend=job.backend().name, simulated=False, job_id=job_id, seed=seed)

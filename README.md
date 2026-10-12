@@ -26,6 +26,7 @@ Every product and feature has one name, used the same way in the website, the At
 | **Spooky Pair** | Entangled light and dark assets (CHSH) | Atelier tab, site room |
 | **Unpaintables** | Kochen-Specker shape packs no coloring can finish | Atelier tab, site room |
 | **Notary** | Hardware results, scores and the SHA-256 provenance seal | Atelier tab, site room |
+| **Born Draw** | A world drawn from the real ibm_kingston shots, one measurement per context, naming any rule the chip broke | The site's Notary room |
 | **Handoff** | Exports: CSS variables, design tokens, Tailwind, SVG | Atelier tab |
 | **Bouncer** | Contrast checks (WCAG 2.2 and APCA) against every color a tile can take; blocks failing exports | Inside Janus and Handoff |
 | **Many Worlds** | Per-visitor collapses of one design | Janus, the site's world switcher |
@@ -177,6 +178,7 @@ pip install './python[ibm]'
 qontext-probe --noisy                # local test with noise
 qontext-probe --ibm least_busy       # IBM Quantum, needs a saved account
 qontext-probe --dry-run --ibm least_busy
+qontext-probe --fetch JOB_ID --out run.json   # collect a job after closing the window
 ```
 
 `qontext-hw` still works as the old command name. See `python/README.md`.

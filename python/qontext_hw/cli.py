@@ -9,7 +9,7 @@ import sys
 from . import __version__
 from .circuits import CONTEXTS, SETTING_KEYS
 from .pool import PoolError, chsh_value, mermin_score, validate_pool
-from .runner import RunnerError, ibm_target, local_target, run, transpile_report
+from .runner import RunnerError, fetch, ibm_target, local_target, run, transpile_report
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -20,6 +20,7 @@ def _parser() -> argparse.ArgumentParser:
     where = ap.add_mutually_exclusive_group()
     where.add_argument("--ibm", metavar="BACKEND", help="IBM Quantum backend name, or least_busy")
     where.add_argument("--noisy", action="store_true", help="local simulator with a noise model")
+    where.add_argument("--fetch", metavar="JOB_ID", help="collect an IBM Quantum job submitted earlier")
     ap.add_argument("--shots", type=int, default=512, help="shots per circuit (default 512)")
     ap.add_argument("--seed", type=int, default=7, help="state seed (default 7)")
     ap.add_argument("--out", default="qontext_pool.json", help="output file (default qontext_pool.json)")
@@ -42,6 +43,14 @@ def _summary(pool: dict) -> str:
     return "\n".join(lines)
 
 
+def _write(pool: dict, out: str) -> int:
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(pool, f, separators=(",", ":"))
+    print(_summary(pool))
+    print(f"Pool written to {out}. Load it in the Atelier's Notary room.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
@@ -52,6 +61,11 @@ def main(argv: list[str] | None = None) -> int:
             print("Valid qontext-pool/1 file.")
             return 0
 
+        if args.fetch:
+            print(f"Collecting job {args.fetch} from IBM Quantum (waits if it has not finished).")
+            pool = fetch(args.fetch, seed=args.seed)
+            return _write(pool, args.out)
+
         target = ibm_target(args.ibm) if args.ibm else local_target(noisy=args.noisy)
         if args.dry_run:
             print(f"Target: {target.label}")
@@ -61,15 +75,16 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{n} circuits x {args.shots} shots = {n * args.shots} executions")
             return 0
 
+        def submitted(job_id: str) -> None:
+            if args.ibm:
+                print(f"Job {job_id} submitted to {target.label}. Queue time depends on the device.")
+                later = f"qontext-probe --fetch {job_id} --out {args.out}"
+                print(f"If you close this window, collect it later with: {later}")
+
         if args.ibm:
-            print(f"Submitting to {target.label}. Queue time depends on the device.")
-            print("The job keeps running on IBM's side if you close this terminal.")
-        pool = run(target, shots=args.shots, seed=args.seed, include_chsh=not args.no_chsh)
-        with open(args.out, "w", encoding="utf-8") as f:
-            json.dump(pool, f, separators=(",", ":"))
-        print(_summary(pool))
-        print(f"Pool written to {args.out}. Load it in the Atelier's Notary room.")
-        return 0
+            print(f"Preparing the circuits for {target.label}.")
+        pool = run(target, shots=args.shots, seed=args.seed, include_chsh=not args.no_chsh, on_submit=submitted)
+        return _write(pool, args.out)
     except (RunnerError, PoolError, OSError, json.JSONDecodeError) as e:
         print(f"qontext-probe: {e}", file=sys.stderr)
         return 2
