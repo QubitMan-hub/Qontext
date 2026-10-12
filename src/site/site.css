@@ -217,21 +217,7 @@ body.locked { overflow: hidden; }
 .vitrine svg { display: block; width: 100%; height: auto; max-height: 40vh; margin-inline: auto; }
 .pair svg .caption { font-family: var(--font-display); font-weight: 560; font-size: 54px; fill: var(--band-ink-2); }
 .pair svg .shoe { isolation: isolate; }
-.pair svg.focus-stripe .pnl:not([data-panel="stripe"]) { opacity: 0.35; }
 .pair svg .pnl { mix-blend-mode: multiply; }
-.pair svg .brand { pointer-events: none; }
-.pair svg .brand text { font-family: var(--font-display); font-weight: 800; font-size: 50px; letter-spacing: 0.02em; }
-.pair svg .brand .word.dark { mix-blend-mode: multiply; }
-.pair svg .brand .press { fill: #fff; opacity: 0.32; }
-.pair svg .stamp .sink { fill: #000; opacity: 0.16; mix-blend-mode: multiply; }
-.pair svg .stamp .sink.half { opacity: 0.07; }
-.pair svg .stamp .lift { fill: none; stroke: #fff; stroke-width: 2.5; opacity: 0.5; }
-.pair svg .stamp .shade { fill: none; stroke: #000; stroke-width: 2.5; opacity: 0.22; mix-blend-mode: multiply; }
-.pair svg .label rect { fill: #f4f4ef; stroke: rgba(0, 0, 0, 0.18); stroke-width: 1.5; }
-.pair svg .label .mk { fill: #1d1f52; }
-.pair svg .label .mk.half { opacity: 0.45; }
-.pair svg .label text { font-size: 14px; font-weight: 800; letter-spacing: 0.01em; fill: #1d1f52; }
-.pair svg .label .st { stroke: rgba(0, 0, 0, 0.3); stroke-width: 1.2; stroke-dasharray: 3 3; }
 .pair-steps { list-style: none; margin: 0; padding: 0; }
 .pair-step { min-height: 60vh; padding-block: 36px; padding-left: clamp(16px, 2.4vw, 30px); border-left: 2px solid color-mix(in oklab, var(--band-ink) 16%, transparent); display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: center; }
 .pair-step.on { border-left-color: var(--band-ink); }

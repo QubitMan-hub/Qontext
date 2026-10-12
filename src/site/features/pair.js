@@ -12,7 +12,7 @@ import { h, svg, whenNear, onVisible, reduced } from '../lib.js';
 import { collapse } from '../../runtime/qontext-runtime.js';
 import { goToWorld } from './worlds.js';
 import { site, onWorld, worldNumber, paletteFor } from '../world.js';
-import { PANELS, PHOTO, LOGO, pairOf, footValues, pairChecks, dropSeeds } from '../pair-shape.js';
+import { PANELS, PHOTO, pairOf, footValues, pairChecks, dropSeeds } from '../pair-shape.js';
 
 /** What the visitor has done to the pair in this world. A new world starts it over. */
 export const pair = { nudge: 0, d: 3, L: null, painted: new Set(), match: false };
@@ -23,7 +23,6 @@ const H = PHOTO.height;
 const SIDES = { L: { y: 80, flip: true, caption: 'Left foot reads the rows' }, R: { y: 800, flip: false, caption: 'Right foot reads the columns' } };
 const paths = { L: new Map(), R: new Map() };
 const stops = { L: new Map(), R: new Map() };
-const logos = [];
 const legend = new Map();
 let built = false;
 let dropShown = false;
@@ -69,51 +68,6 @@ function gradient(defs, side, id) {
   stops[side].set(id, [a, b]);
 }
 
-/**
- * The branding, where a real sneaker carries it: the wordmark printed along the stripe's curve (ink multiplied
- * into the leather, with a faint pressed edge), a stamped mark on the heel, and a woven label on the tongue. On
- * the mirrored foot it is drawn in unmirrored coordinates, so it reads the right way round.
- */
-function brand(side, flip) {
-  const fx = (x) => (flip ? W - x : x);
-  // The stripe's center line through its widest part, left to right on either foot.
-  const [a, c, b] = [[312, 324], [445, 297], [580, 281]].map(([x, y]) => [fx(x), y]);
-  const [p0, p2] = flip ? [b, a] : [a, b];
-  const pathId = `pairLogo-${side}`;
-  const g = svg('g', { class: 'brand', transform: flip ? `translate(${W} 0) scale(-1 1)` : '' });
-  g.append(svg('path', { id: pathId, d: `M${p0[0]} ${p0[1]} Q${c[0]} ${c[1]} ${p2[0]} ${p2[1]}`, fill: 'none' }));
-  const along = (cls, dy) =>
-    svg('text', { class: cls, dy }, svg('textPath', { href: `#${pathId}`, startOffset: '50%', 'text-anchor': 'middle' }, 'Qontext'));
-  const edge = along('press', 2.2);
-  const word = along('word', 0);
-  // The heel: the split-tile mark pressed into the leather.
-  const k = 58;
-  const [hx, hy] = [fx(125), 382];
-  const heel = svg(
-    'g',
-    { class: 'stamp', transform: `translate(${hx - k / 2} ${hy - k / 2}) rotate(${flip ? 6 : -6} ${k / 2} ${k / 2})` },
-    svg('path', { class: 'sink', d: `M0 0H${k}L0 ${k}Z` }),
-    svg('path', { class: 'sink half', d: `M${k} 0V${k}H0Z` }),
-    // Pressed in: light from above catches the lower and right inner edges.
-    svg('path', { class: 'lift', d: `M${k - 1} 2V${k - 1}H2` }),
-    svg('path', { class: 'shade', d: `M1 ${k - 2}V1H${k - 2}` }),
-  );
-  // The tongue: a woven label across it.
-  const [tx, ty] = [fx(551), 84];
-  const label = svg(
-    'g',
-    { class: 'label', transform: `translate(${tx} ${ty}) rotate(${flip ? -17 : 17})` },
-    svg('rect', { x: -54, y: -21, width: 108, height: 42, rx: 5 }),
-    svg('path', { class: 'mk', d: 'M-44 -8H-28L-44 8Z' }),
-    svg('path', { class: 'mk half', d: 'M-28 -8V8H-44Z' }),
-    svg('text', { x: -22, y: 5.5 }, 'Qontext'),
-    svg('path', { class: 'st', d: 'M-49 -17V17M49 -17V17' }),
-  );
-  g.append(edge, word, heel, label);
-  logos.push({ word, edge });
-  return g;
-}
-
 function build() {
   const root = $('pairSvg');
   const defs = svg('defs');
@@ -123,7 +77,6 @@ function build() {
     for (const p of PANELS) gradient(defs, side, p.id);
     root.append(svg('text', { class: 'caption', x: 28, y: s.y - 26 }, s.caption));
     const g = foot(`translate(${s.flip ? W : 0} ${s.y})${s.flip ? ' scale(-1 1)' : ''}`, (id) => `url(#pg-${side}-${id})`, side);
-    g.append(brand(side, s.flip));
     root.append(g);
   }
   built = true;
@@ -136,52 +89,53 @@ function washed(hex) {
   return oklch(c.L + (0.97 - c.L) * 0.62, c.C * 0.42, c.h).hex;
 }
 
-/** A color as it shows on the white leather under the logo: multiplied by the leather's brightness. */
-function onLeather(hex) {
+/** A color as it shows on a panel: multiplied by that panel's white leather (measured from the photo). */
+function onLeather(hex, id) {
   const n = parseInt(hex.slice(1), 16);
-  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * LOGO.shade));
+  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * PHOTO.shade[id]));
   return `#${ch.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
 const ratio = (ink, fill) => wcagContrast(hexToLin(ink), hexToLin(fill));
 
 /**
- * Bouncer on the logo: the stripe can come out in either of its two colors (as they show on the leather), so the
- * logo takes whichever of the two inks reads better on the weaker of them. Returns { ink, ratio, stripe }.
+ * Bouncer on the print: sizes, names and numbers get printed on a sneaker, and a panel can come out in either of
+ * its two colors. Print takes whichever of the two inks reads better on the weakest of all 18 colors, as they
+ * show on the leather. Returns { ink, ratio, colors }.
  */
-function logoInk(stripeColors) {
-  const stripe = stripeColors.map(onLeather);
-  const rate = (ink) => Math.min(...stripe.map((c) => ratio(ink, c)));
+function printInk(both) {
+  const colors = PANELS.flatMap((p) => both.get(p.id).map((c) => onLeather(c, p.id)));
+  const rate = (ink) => Math.min(...colors.map((c) => ratio(ink, c)));
   const dark = rate(INKS.dark);
   const light = rate(INKS.light);
-  return dark >= light ? { ink: INKS.dark, ratio: dark, stripe } : { ink: INKS.light, ratio: light, stripe };
+  return dark >= light ? { ink: INKS.dark, ratio: dark, colors } : { ink: INKS.light, ratio: light, colors };
 }
 
-/** Step 2 and step 3: the harmony's chips and the logo's contrast. */
-function renderControls(pal, logo) {
+/** Step 2 and step 3: the harmony's chips and the print's contrast. */
+function renderControls(pal, print) {
   $('pairLight').value = String(Math.round(pal.L * 100));
   $('pairLightOut').textContent = pal.L.toFixed(2);
   $('pairTurn').value = String(pair.nudge);
   $('pairTurnOut').textContent = `${pair.nudge}°`;
   for (const b of $('pairD').children) b.setAttribute('aria-pressed', String(Number(b.dataset.d) === pair.d));
   $('pairHarmony').replaceChildren(...harmony(pal).map((c) => h('li', { class: 'chip' }, h('i', { style: { background: c.hex } }), h('code', {}, c.hex))));
-  const shown = Math.floor(logo.ratio * 10) / 10;
-  const ok = logo.ratio >= WCAG_AA;
+  const shown = Math.floor(print.ratio * 10) / 10;
+  const ok = print.ratio >= WCAG_AA;
   $('pairInkRatio').textContent = `${shown.toFixed(1)} : 1`;
   $('pairFix').hidden = ok;
-  const which = logo.ink === INKS.dark ? 'Dark ink' : 'Light ink';
+  const which = print.ink === INKS.dark ? 'Dark ink' : 'Light ink';
   $('pairInkNote').textContent = ok
-    ? `${which} reads on both stripe colors. Bouncer lets this pair ship.`
-    : `${which} is too faint on one stripe color. Fix moves every color's lightness together until it reads.`;
+    ? `${which} reads on every color this pair can take. Bouncer lets it ship.`
+    : `${which} is too faint on some panel. Fix moves every color's lightness together until it reads.`;
   const stage = $('pairStage');
-  stage.dataset.stripe = logo.stripe.join(' ');
-  stage.dataset.ink = logo.ink;
+  stage.dataset.colors = print.colors.join(' ');
+  stage.dataset.ink = print.ink;
 }
 
-/** Fix: the lightness closest to today's at which the logo reads on both stripe colors, in 0.01 steps. */
+/** Fix: the lightness closest to today's at which print reads on every panel, in 0.01 steps. */
 function fix() {
   const pal = palette();
-  const reads = (L) => logoInk(pairOf({ ...pal, L }, site.result.outcomes).both.get('stripe')).ratio >= WCAG_AA;
+  const reads = (L) => printInk(pairOf({ ...pal, L }, site.result.outcomes).both).ratio >= WCAG_AA;
   for (let step = 0; step <= 60; step++) {
     for (const dir of [1, -1]) {
       const L = Math.round((pal.L + dir * step * 0.01) * 100) / 100;
@@ -375,21 +329,16 @@ export function render() {
   sec.style.setProperty('--glass', oklch(GLASS_L, 0.036, pal.base).hex);
   $('pairWorld').textContent = worldNumber();
   const p = pairOf(pal, site.result.outcomes);
-  const logo = logoInk(p.both.get('stripe'));
-  renderControls(pal, logo);
+  renderControls(pal, printInk(p.both));
   renderPaint(p, site.result.outcomes);
   if (!built) return;
-  for (const l of logos) {
-    l.word.setAttribute('fill', logo.ink);
-    l.word.classList.toggle('dark', logo.ink === INKS.dark);
-  }
   for (const side of ['L', 'R']) {
     const foot = side === 'L' || pair.match ? p.left : p.right;
     for (const panel of PANELS) {
       const [a, b] = stops[side].get(panel.id);
       const [plus, minus] = p.both.get(panel.id);
-      // In step 3 the stripe shows both of its outcomes at full strength: they are what the logo must read on.
-      const full = step === 3 && panel.id === 'stripe';
+      // In step 3 every panel shows both of its outcomes at full strength: they are what print must read on.
+      const full = step === 3;
       a.setAttribute('stop-color', full ? plus : washed(plus));
       b.setAttribute('stop-color', full ? minus : washed(minus));
       paths[side].get(panel.id).setAttribute('fill', pair.painted.has(panel.id) ? foot.get(panel.id) : `url(#pg-${side}-${panel.id})`);
@@ -403,7 +352,6 @@ function setStep(n, steps) {
   step = n;
   for (const li of steps) li.classList.toggle('on', Number(li.dataset.step) === n);
   $('pairStage').dataset.step = String(n);
-  $('pairSvg').classList.toggle('focus-stripe', n === 3);
   render();
 }
 

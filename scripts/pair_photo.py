@@ -146,7 +146,9 @@ def main():
     image.crop(CROP).save(WEBP, "WEBP", quality=84, method=6)
     w, h = CROP[2] - CROP[0], CROP[3] - CROP[1]
     paths = {k: to_path(m) for k, m in parts.items()}
-    data = {"src": WEBP.name, "width": w, "height": h, "silhouette": to_path(shoe), "panels": paths}
+    # How bright the white leather is on each panel: a color laid on it with multiply shows this much darker.
+    shade = {k: round(float(gray[m].mean() / 255), 3) for k, m in parts.items()}
+    data = {"src": WEBP.name, "width": w, "height": h, "silhouette": to_path(shoe), "panels": paths, "shade": shade}
     body = json.dumps(data, indent=2)
     MODULE.write_text(
         "// Written by scripts/pair_photo.py from art/pair-shoe.png. Do not edit by hand: change the photo or the\n"

@@ -82,19 +82,18 @@ def test_harmony_changes_the_pair_not_the_site(site):
     assert site.get_attribute('#pairD [data-d="5"]', "aria-pressed") == "true"
 
 
-def test_logo_reads_on_both_stripe_colors(site):
+def test_print_reads_on_every_panel(site):
     enter_pair(site, 3)
     for deg in [0, 60, 120, 180, 240, 300]:
         turn(site, deg)
         if site.is_visible("#pairFix"):
             site.click("#pairFix")
-        stripe = site.get_attribute("#pairStage", "data-stripe").split()
+        colors = site.get_attribute("#pairStage", "data-colors").split()
         ink = site.get_attribute("#pairStage", "data-ink")
-        assert len(stripe) == 2
-        assert min(wcag(ink, c) for c in stripe) >= 4.5, (deg, ink, stripe)
+        assert len(colors) == 18
+        assert min(wcag(ink, c) for c in colors) >= 4.5, (deg, ink, colors)
         shown = float(site.inner_text("#pairInkRatio").split(":")[0])
         assert shown >= 4.5
-        assert site.eval_on_selector("#pairSvg .brand .word", "(t) => t.getAttribute('fill')") == ink
 
 
 def test_mid_tone_paint_fails_the_logo_and_fix_brings_it_back(site):
@@ -112,9 +111,9 @@ def test_mid_tone_paint_fails_the_logo_and_fix_brings_it_back(site):
     assert site.is_visible("#pairFix")
     site.click("#pairFix")
     assert site.is_hidden("#pairFix")
-    stripe = site.get_attribute("#pairStage", "data-stripe").split()
+    colors = site.get_attribute("#pairStage", "data-colors").split()
     ink = site.get_attribute("#pairStage", "data-ink")
-    assert min(wcag(ink, c) for c in stripe) >= 4.5
+    assert min(wcag(ink, c) for c in colors) >= 4.5
     assert site.eval_on_selector("#pairLight", "(el) => el.value") != failing
 
 
@@ -304,14 +303,14 @@ def test_steps_come_alive_in_order(site):
         assert site.get_attribute(".pair-step.on", "data-step") == str(n)
 
 
-def test_step_three_shows_the_stripe_in_full(site):
+def test_step_three_shows_every_outcome_in_full(site):
+    enter_pair(site, 2)
+    pale = site.eval_on_selector_all("#pg-R-stripe stop", "els => els.map((e) => e.getAttribute('stop-color'))")
     enter_pair(site, 3)
     site.wait_for_function("() => document.getElementById('pairStage').dataset.step === '3'")
-    stripe = site.get_attribute("#pairStage", "data-stripe").split()
-    stops = site.eval_on_selector_all("#pg-R-stripe stop", "els => els.map((e) => e.getAttribute('stop-color'))")
-    # The stripe's two outcomes at full strength (before the leather), not the pale unpainted tint.
-    assert len(stops) == 2 and all(s not in stripe for s in stops)
-    assert site.eval_on_selector("#pairSvg", "(s) => s.classList.contains('focus-stripe')")
+    full = site.eval_on_selector_all("#pg-R-stripe stop", "els => els.map((e) => e.getAttribute('stop-color'))")
+    # The pale unpainted tint gives way to both outcomes at full strength: what print must read on.
+    assert len(full) == 2 and full != pale
 
 
 def test_pair_fits_a_phone(site_phone):

@@ -25,12 +25,6 @@ const NAMES = [
 ];
 export const PANELS = NAMES.map(([id, name], k) => ({ id, name, r: Math.floor(k / 3), c: k % 3, d: PHOTO.panels[id] }));
 
-/**
- * Where the logo sits on the stripe (photo pixels), and how bright the white leather is there (0 to 1). Colors
- * are multiplied by the leather, so Bouncer checks the logo against the stripe as it really shows.
- */
-export const LOGO = { x: 446, y: 304, angle: -9, size: 46, shade: 0.87 };
-
 /** Every grid value a world measured, as the two feet read them: rows on the left, columns on the right. */
 export function footValues(outcomes) {
   const grid = (read) => [0, 1, 2].map((r) => [0, 1, 2].map((c) => read(outcomes, r, c)));
