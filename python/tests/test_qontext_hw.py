@@ -103,3 +103,35 @@ def test_shared_sample_pool_matches_the_contract():
     pool = json.loads((ROOT / "examples" / "sample-pool-noisy.json").read_text())
     validate_pool(pool)
     assert mermin_score(pool["contexts"]) > 4
+
+
+# On real chips the transpiler must pick qubits by their noise. At optimization level 1 a two-qubit circuit that
+# fits qubits 0 and 1 is placed there without looking: on ibm_kingston qubit 1 misreads 17% of shots, which halved
+# every CHSH correlation in the first hardware runs (S about 1.1 instead of about 2.6).
+
+
+def test_circuits_land_on_quiet_qubits():
+    fake_provider = pytest.importorskip("qiskit_ibm_runtime.fake_provider")
+    from qontext_hw.circuits import CONTEXTS, SETTING_KEYS, chsh_circuit, context_circuit
+    from qontext_hw.runner import pass_manager
+
+    backend = fake_provider.FakeKingston()
+    pm = pass_manager(backend)
+    readout = backend.target["measure"]
+    circuits = [chsh_circuit(k) for k in SETTING_KEYS] + [context_circuit(c, 7) for c in CONTEXTS]
+    for qc in circuits:
+        qubits = pm.run(qc).layout.final_index_layout()
+        worst = max(readout[(q,)].error for q in qubits)
+        assert worst < 0.03, (qc.name, qubits, worst)
+
+
+def test_chsh_beats_the_classical_limit_on_a_simulated_ibm_kingston():
+    fake_provider = pytest.importorskip("qiskit_ibm_runtime.fake_provider")
+    from qiskit_ibm_runtime import SamplerV2
+
+    from qontext_hw.pool import chsh_value
+    from qontext_hw.runner import Target, run
+
+    backend = fake_provider.FakeKingston()
+    pool = run(Target(SamplerV2(mode=backend), backend, "fake_kingston", True), shots=1024)
+    assert chsh_value(pool["chsh"]) > 2.2

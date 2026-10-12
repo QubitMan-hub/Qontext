@@ -78,6 +78,9 @@ Fixed
   color, gray. The needle stays on the band at both ends, port 1's label sits clear of the room map, and the
   caption says what happens in words instead of energy figures. In the Atelier the marker stays on the band and
   the two ports sit right under it.
+- Probe picks quiet qubits. It now lets the transpiler choose qubits by their noise for every circuit. Before,
+  a two-qubit circuit that fit qubits 0 and 1 went there unchecked; on ibm_kingston qubit 1 misreads 17% of
+  shots, which pulled the CHSH value down to about 1.1. On a simulated ibm_kingston it is now 2.7.
 
 Sturdier
 - Probe's pool validator agrees with the Atelier on the size limit per context; duplicate helpers and dead

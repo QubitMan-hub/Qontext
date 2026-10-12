@@ -60,6 +60,16 @@ def ibm_target(name: str) -> Target:
     return Target(SamplerV2(mode=backend), backend, backend.name, False)
 
 
+def pass_manager(backend):
+    """Transpiles for `backend`, choosing qubits by their noise.
+
+    Level 2 runs a noise-aware layout search for every circuit. Level 1 takes qubits 0 and 1 for a two-qubit
+    circuit whenever they fit, without looking at them: on ibm_kingston qubit 1 misreads 17% of shots, which
+    halved every CHSH correlation in the first hardware runs. Level 3 can trade a quiet qubit for fewer gates.
+    """
+    return generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=7)
+
+
 def build_circuits(seed: int, include_chsh: bool = True):
     circuits = [context_circuit(cid, seed) for cid in CONTEXTS]
     if include_chsh:
@@ -68,7 +78,7 @@ def build_circuits(seed: int, include_chsh: bool = True):
 
 
 def transpile_report(target: Target, seed: int, include_chsh: bool = True) -> list[dict]:
-    pm = generate_preset_pass_manager(optimization_level=1, backend=target.backend)
+    pm = pass_manager(target.backend)
     rows = []
     for qc in build_circuits(seed, include_chsh):
         isa = pm.run(qc)
@@ -82,7 +92,7 @@ def run(target: Target, *, shots: int = 512, seed: int = 7, include_chsh: bool =
     if shots < 1 or shots > 100_000:
         raise RunnerError("shots must be between 1 and 100000")
     circuits = build_circuits(seed, include_chsh)
-    pm = generate_preset_pass_manager(optimization_level=1, backend=target.backend)
+    pm = pass_manager(target.backend)
     isa = [pm.run(qc) for qc in circuits]
     job = target.sampler.run(isa, shots=shots)
     result = job.result()

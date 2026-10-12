@@ -15,7 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 ibm = ["qiskit-ibm-runtime>=0.40"]
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = ["pytest>=8", "ruff>=0.6", "qiskit-ibm-runtime>=0.40"]  # the IBM extra gives the tests a simulated ibm_kingston
 
 [project.scripts]
 qontext-probe = "qontext_hw.cli:main"
