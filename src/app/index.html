@@ -76,6 +76,21 @@
       <p class="muted small">Six visitors, six worlds of the same design. Each obeys all six rules, and no two have to match. This is what Observer does on a website.</p>
     </div>
     <div class="visitors" id="visitors"></div>
+    <div class="card object-editor">
+      <div class="head"><h3>Object Lab <span class="muted small">— your image, two contexts</span></h3>
+      <p class="muted small">Try Janus on a photo, poster or product mockup. Your image never leaves your browser. This first version overlays nine rectangular regions; it does not detect object boundaries.</p></div>
+      <label class="field" for="object-upload">Choose your image <input id="object-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+      <div class="row"><span class="muted small">Color strength</span><input id="object-opacity" type="range" min="0" max="100" value="55" aria-label="Overlay strength"><span class="muted small" id="object-opacity-value">55%</span></div>
+      <div class="row"><span class="muted small">Paint these regions:</span><div class="object-region-grid" role="group" aria-label="Image regions">
+        <button type="button" data-object-tile="0" aria-pressed="true">1</button><button type="button" data-object-tile="1" aria-pressed="true">2</button><button type="button" data-object-tile="2" aria-pressed="true">3</button>
+        <button type="button" data-object-tile="3" aria-pressed="true">4</button><button type="button" data-object-tile="4" aria-pressed="true">5</button><button type="button" data-object-tile="5" aria-pressed="true">6</button>
+        <button type="button" data-object-tile="6" aria-pressed="true">7</button><button type="button" data-object-tile="7" aria-pressed="true">8</button><button type="button" data-object-tile="8" aria-pressed="true">9</button>
+      </div></div>
+      <div class="row"><div class="seg" role="group" aria-label="Object view"><button type="button" data-object-view="pair" aria-pressed="true">Both</button><button type="button" data-object-view="row" aria-pressed="false">Row</button><button type="button" data-object-view="column" aria-pressed="false">Column</button></div><button class="btn ghost sm" id="object-reshuffle" type="button">New world</button></div>
+      <div class="object-previews"><figure id="object-row-wrap"><canvas id="object-row" width="600" height="400" aria-label="Row-context image preview"></canvas><figcaption>Row context</figcaption><button class="btn ghost sm" id="object-download-row" type="button">Save row PNG</button></figure>
+      <figure id="object-col-wrap"><canvas id="object-col" width="600" height="400" aria-label="Column-context image preview"></canvas><figcaption>Column context</figcaption><button class="btn ghost sm" id="object-download-col" type="button">Save column PNG</button></figure></div>
+      <p class="muted small" id="object-status" role="status">Upload a photo to preview contextual colors.</p>
+    </div>
   </div>
   <aside class="rail">
     <div class="card">
