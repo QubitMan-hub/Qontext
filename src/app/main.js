@@ -13,6 +13,7 @@ import * as shapes from './modules/shapes.js';
 import * as hardware from './modules/hardware.js';
 import * as exporter from './modules/export.js';
 import * as guide from './guide.js';
+import * as objectEditor from './object.js';
 
 const MODULES = { grid, learn, harmony, mixer, penta, entangle, shapes, hardware, export: exporter };
 const TAB_KEY = 'qontext-tab-v1';
@@ -100,6 +101,7 @@ function boot() {
   document.documentElement.lang = document.documentElement.lang || 'en';
   for (const m of Object.values(MODULES)) safe(() => m.init());
   safe(() => guide.init());
+  safe(() => objectEditor.init());
   initTabs();
   initGlobal();
   subscribe((kind) => {
