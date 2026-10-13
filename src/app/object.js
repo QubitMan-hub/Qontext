@@ -1,12 +1,14 @@
 // Real-object preview: local images only. Three-by-three regions map directly to Janus tiles.
 import { rowValue, colValue, tileColor, contextualTiles } from '../engine/index.js';
-import { store, palette, remeasure, subscribe } from './store.js';
+import { store, palette, remeasure, subscribe, setProject } from './store.js';
 
 const $ = (id) => document.getElementById(id);
 let photo = null;
 let imageUrl = null;
 let opacity = 0.55;
 let view = 'pair';
+let baseline = 'contextual';
+const PRESETS = Object.freeze({ editorial: { base: 215, d: 3, L: 0.75, C: 0.11 }, electric: { base: 295, d: 4, L: 0.68, C: 0.19 }, earth: { base: 42, d: 3, L: 0.72, C: 0.10 }, quiet: { base: 180, d: 2, L: 0.81, C: 0.06 } });
 let active = new Set(Array.from({ length: 9 }, (_, i) => i));
 
 function paint(canvas, context) {
@@ -19,7 +21,7 @@ function paint(canvas, context) {
   ctx.globalAlpha = opacity;
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
     if (!active.has(r * 3 + c)) continue;
-    const value = context === 'row' ? rowValue(store.out, r, c) : colValue(store.out, r, c);
+    const value = baseline === 'fixed' || context === 'row' ? rowValue(store.out, r, c) : colValue(store.out, r, c);
     ctx.fillStyle = tileColor(pal, r, c, value).hex;
     ctx.fillRect(Math.round(c * w / 3), Math.round(r * h / 3),
       Math.round((c + 1) * w / 3) - Math.round(c * w / 3),
@@ -37,6 +39,7 @@ function render() {
     paint($('object-col'), 'col');
   }
   const differences = contextualTiles(store.out).length;
+  $('object-comparison-note').textContent = baseline === 'fixed' ? 'Ordinary baseline: both views use the same fixed row colors. This is a design comparison, not a claim of quantum advantage.' : 'Qontext: each view uses its measured row or column outcomes, obeying the context rules.';
   $('object-status').textContent = photo
     ? `${differences} of 9 contextual outcomes differ. ${active.size} image regions selected. Colors are preview overlays, not automatic object segmentation.`
     : 'Upload a photo to preview contextual colors. Your image stays on this device.';
@@ -97,6 +100,8 @@ export function init() {
     render();
   });
   $('object-reshuffle').addEventListener('click', remeasure);
+  $('object-compare').addEventListener('change', (e) => { baseline = e.target.value === 'fixed' ? 'fixed' : 'contextual'; render(); });
+  for (const b of document.querySelectorAll('[data-object-preset]')) b.addEventListener('click', () => setProject(PRESETS[b.dataset.objectPreset]));
   for (const b of document.querySelectorAll('[data-object-view]')) {
     b.addEventListener('click', () => { view = b.dataset.objectView; render(); });
   }
