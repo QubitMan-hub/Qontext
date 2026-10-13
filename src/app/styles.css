@@ -312,3 +312,14 @@ footer a { margin-right: 12px; white-space: nowrap; }
 .choice span { font-size: 0.875rem; color: var(--ink-2); }
 .choice[aria-pressed="true"] { border: 2px solid var(--ink); background: var(--accent-soft); padding: 11px; }
 .savecode { font-size: 0.9375rem; background: var(--field); padding: 8px 10px; border-radius: var(--radius); overflow-wrap: anywhere; max-width: none; }
+
+/* Object Lab: intentionally inherits Atelier's existing palette, type and card language. */
+.object-editor { margin-top: 1.5rem; }
+.object-region-grid { display: grid; grid-template-columns: repeat(3, 2rem); gap: .2rem; }
+.object-region-grid button { border: 1px solid currentColor; border-radius: .3rem; background: transparent; color: inherit; cursor: pointer; min-height: 2rem; }
+.object-region-grid button[aria-pressed="true"] { background: var(--ink, currentColor); color: var(--paper, #fff); }
+.object-previews { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 1rem; }
+.object-previews figure { min-width: 0; margin: 0; }
+.object-previews canvas { display: block; width: 100%; height: auto; border-radius: .4rem; border: 1px solid currentColor; }
+.object-previews figcaption { margin: .45rem 0; font-size: .85rem; }
+.object-editor input[type="file"] { max-width: 100%; }
